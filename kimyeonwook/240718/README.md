@@ -61,3 +61,13 @@
         - B-tree일 경우 정렬(트리의 구조 조정)을 해야하므로 많은 시간이 걸릴 수 있음
     - 추가적인 저장 공간 차지
     - 즉, 불필요한 index를 만들지 말자
+
+### ERD
+- 소셜 로그인은 구현하지 않기로 함! (oauth와 security 등 학습 시간 부족 판단)
+- 자체 회원가입 및 로그인 서비스로 계획 변경!
+- challenge를 연습한 영상을 저장할 테이블이 필요해 보여서 추가함
+- dancer를 stepper라는 우리 사이트만의 용어로 변경함! (댄스 강사 느낌)
+- stepper_info 테이블에서 status를 추가하여 stepper가 되기 위한 지원 중인지, stepper 인지 등의 정보 표시를 위한 컬럼 추가할 예정
+- lesson_info에서 thumbnail에 대한 파일 경로 컬럼 추가함
+- ERD
+    ![ERD.PNG](./img/ERD.PNG)
