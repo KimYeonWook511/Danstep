@@ -288,7 +288,7 @@ const PoseEstimator: React.FC = () => {
             const norm_v2 = l2_norm(v2);
             console.log(v1, v2, similarity(v1, v2));
             let tempSum =
-                diffConfidence > 0.5
+                diffConfidence > 0.3
                     ? 0
                     : similarity(v1, v2) * (1 - diffConfidence);
             pose1ConfidenceSum += 1 - diffConfidence;
@@ -313,6 +313,8 @@ const PoseEstimator: React.FC = () => {
         const norm2 = Math.sqrt(v2.x * v2.x + v2.y * v2.y + v2.z * v2.z);
         return dotProduct / (norm1 * norm2);
     };
+
+    
 
     const calculateZAlignment = (z1: number[], z2: number[]): number => {
         let sum = 0;
