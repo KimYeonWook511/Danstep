@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import * as tf from '@tensorflow/tfjs';
-import { createDetector, PoseDetector, SupportedModels, BlazePoseMediaPipeModelConfig, util } from '@tensorflow-models/pose-detection';
+import { createDetector, PoseDetector, SupportedModels, BlazePoseMediaPipeModelConfig, util, Keypoint } from '@tensorflow-models/pose-detection';
 
 const PoseEstimator: React.FC = () => {
     const camRef = useRef<HTMLVideoElement>(null);
@@ -179,10 +179,12 @@ const PoseEstimator: React.FC = () => {
                     //     "videoRef => ", videoRef.current
                     // )
                     const poses = await detector.estimatePoses(videoRef.current);
-                    console.log(new Date().getSeconds()," " , new Date().getMilliseconds(), "->", poses); // 디버깅을 위한 콘솔 출력
+                    console.log(new Date().getSeconds()," " , new Date().getMilliseconds(), "->", poses[0]); // 디버깅을 위한 콘솔 출력
     
+                    if (poses[0]) drawGreen(ctx, detector, poses[0].keypoints);
+                    /*
+                    // 빨간선과 점으로 사람 표시
                     poses.forEach((pose) => {
-                        // console.log(pose);
                         // if (pose.score && !isNaN(pose.score) && pose.score > 0.5) {
                             pose.keypoints.forEach((keypoint) => {
                                 if (keypoint.score && !isNaN(keypoint.score) && keypoint.score > 0.5) {
@@ -194,6 +196,7 @@ const PoseEstimator: React.FC = () => {
                             });
                         // }
                     });
+                    */
                 }
 
                 // 다음 프레임을 위해 다시 호출
@@ -224,58 +227,52 @@ const PoseEstimator: React.FC = () => {
 
     // 초록선 그리기
     // const drawGreen = (keypoints: poseDetection.Keypoint[], color: string) => {
-    //     const drawGreen = (ctx: CanvasRenderingContext2D, detector: PoseDetector) => {
-    //         const color = "rgba(0,255,0,0.5)";
-    //         ctx.fillStyle = color;
-    //         ctx.strokeStyle = color;
-    //         ctx.lineWidth = 10;
+    // /*
+    const drawGreen = (ctx: CanvasRenderingContext2D, detector: PoseDetector, keypoints: Keypoint[]) => {
+        const color = "rgba(0,255,0,0.5)";
+        ctx.fillStyle = color;
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 10;
 
-    //         util
-    //         .getAdjacentPairs(SupportedModels.BlazePose)
-    //         .forEach(([i, j]) => {
-    //             const kp1 = keypoints[i];
-    //             const kp2 = keypoints[j];
+        util.getAdjacentPairs(SupportedModels.BlazePose).forEach(([i, j]) => {
+            const kp1 = keypoints[i];
+            const kp2 = keypoints[j];
 
-    //             const score1 = kp1.score != null ? kp1.score : 1;
-    //             const score2 = kp2.score != null ? kp2.score : 1;
-    //             const scoreThreshold = BLAZEPOSE_CONFIG.scoreThreshold || 0;
+            const score1 = kp1.score != null ? kp1.score : 1;
+            const score2 = kp2.score != null ? kp2.score : 1;
+            // const scoreThreshold = BLAZEPOSE_CONFIG.scoreThreshold || 0;
+            const scoreThreshold = 0.1;
 
-    //             if (
-    //             score1 >= scoreThreshold &&
-    //             score2 >= scoreThreshold &&
-    //             i > 10 &&
-    //             j > 10
-    //             ) {
-    //             ctx.beginPath();
-    //             ctx.moveTo(kp1.x, kp1.y);
-    //             ctx.lineTo(kp2.x, kp2.y);
-    //             ctx.stroke();
-    //             }
-    //         });
+            if (score1 >= scoreThreshold && 
+                score2 >= scoreThreshold && 
+                i > 10 && j > 10) {
+                ctx.beginPath();
+                ctx.moveTo(kp1.x, kp1.y);
+                ctx.lineTo(kp2.x, kp2.y);
+                ctx.stroke();
+            }
+        });
 
-    //         // 얼굴그리기
-    //         const left = Math.sqrt(
-    //         Math.pow(keypoints[0].x - keypoints[8].x, 2) +
-    //             Math.pow(keypoints[0].y - keypoints[8].y, 2) +
-    //             Math.pow(keypoints[0].z! - keypoints[8].z!, 2)
-    //         );
-    //         const right = Math.sqrt(
-    //         Math.pow(keypoints[0].x - keypoints[7].x, 2) +
-    //             Math.pow(keypoints[0].y - keypoints[7].y, 2) +
-    //             Math.pow(keypoints[0].z! - keypoints[7].z!, 2)
-    //         );
-    //         const circle = new Path2D();
-    //         circle.arc(
-    //         (keypoints[0].x + keypoints[7].x + keypoints[8].x) / 3,
-    //         (keypoints[0].y + keypoints[7].y + keypoints[8].y) / 3,
-    //         (left + right) / 2,
-    //         0,
-    //         2 * Math.PI
-    //         );
-    //         ctx.fill(circle);
-    // ctx.stroke(circle);
-    // };
+        // 얼굴그리기
+        const left = Math.sqrt(Math.pow(keypoints[0].x - keypoints[8].x, 2) +
+                                Math.pow(keypoints[0].y - keypoints[8].y, 2) +
+                                Math.pow(keypoints[0].z! - keypoints[8].z!, 2));
+        
+        const right = Math.sqrt(Math.pow(keypoints[0].x - keypoints[7].x, 2) +
+                                Math.pow(keypoints[0].y - keypoints[7].y, 2) +
+                                Math.pow(keypoints[0].z! - keypoints[7].z!, 2));
 
+        const circle = new Path2D();
+        circle.arc((keypoints[0].x + keypoints[7].x + keypoints[8].x) / 3, 
+                    (keypoints[0].y + keypoints[7].y + keypoints[8].y) / 3,
+                    (left + right) / 2,
+                    0,
+                    2 * Math.PI
+                    );
+        ctx.fill(circle);
+        ctx.stroke(circle);
+    };
+    // */
     return (
         <div>
             {/* <video ref={videoRef} style={{ width: '640px', height: '480px' }} autoPlay muted /> */}
