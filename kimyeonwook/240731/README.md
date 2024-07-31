@@ -21,6 +21,7 @@
 - db 설정 변경
     - jdbc:mysql://i11a406.p.ssafy.io:3306/danstep_db?serverTimezone=UTC&characterEncoding=UTF-8
     - 계정 및 비밀번호 또한 변경
+    - MySQL 계정은 이번 프로젝트에서 쓰이는 데이터 베이스에만 접근할 수 있는 전용 계정으로 생성함!!
 
 ### Infra (EC2)
 - Spring Boot - Docker
