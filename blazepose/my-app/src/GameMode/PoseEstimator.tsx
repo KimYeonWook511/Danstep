@@ -26,7 +26,7 @@ const PoseEstimator: React.FC = () => {
     // const isZAligned = useRef(false);
     // const detectedArmsUp = useRef(false);
     let isZAligned = false;
-    let detectedArmsUp = false;
+    const [detectedArmsUp, setDetectedArmsUp] = useState<boolean>(false);
 
     useEffect(() => {
         const setupVideo = async () => {
@@ -143,7 +143,8 @@ const PoseEstimator: React.FC = () => {
                     isZAligned = await checkInitialZAlignment(camdetector, camRef, firstFrameZ);
         
                     if (checkKeypoints && isArmsUp(checkKeypoints)) {
-                        detectedArmsUp = true;
+                        // detectedArmsUp = true;
+                        setDetectedArmsUp(true);
                         clearInterval(checkintervalRef.current);
                         checkintervalRef.current = null;
 
@@ -323,6 +324,7 @@ const PoseEstimator: React.FC = () => {
 
     return (
         <div>
+            <p>{detectedArmsUp ? "true" : "false"}</p>
             {detectedArmsUp ? (
                 <div>
                     <video ref={camRef} style={{ display: 'none', width: '640px', height: '480px' }} autoPlay muted />
@@ -334,8 +336,8 @@ const PoseEstimator: React.FC = () => {
                 <div>
                     <video ref={camRef} style={{ display: 'none', width: '1280px', height: '960px' }} autoPlay muted />
                     <video ref={videoRef} style={{ display: 'none', width: '640px', height: '480px' }} autoPlay muted />
-                    <canvas ref={camcanvasRef} className="canvas cam-canvas" />
-                    <canvas ref={canvasRef} className="canvas video-canvas" />
+                    <canvas ref={camcanvasRef} className="canvas cam2-canvas" />
+                    <canvas ref={canvasRef} className="canvas video2-canvas" />
                 </div>
             )}
         </div>
