@@ -158,8 +158,7 @@
 // export default PoseDetection;
 // src/App.tsx
 import React from 'react';
-import PoseEstimator from './PoseEstimator';
-import PoseEstimatorVideo from './PoseEstimatoVideo';
+import PoseEstimator from './GameMode/PoseEstimator';
 
 const App: React.FC = () => {
     return (
