@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as tf from '@tensorflow/tfjs';
 import { createDetector, PoseDetector, SupportedModels, BlazePoseMediaPipeModelConfig, util, Keypoint } from '@tensorflow-models/pose-detection';
 import '../canvas.css';
-import { detectFirstFrame, checkInitialZAlignment, isArmsUp, keypointsDetected } from './zVerification';
+import { detectFirstFrame, checkInitialZAlignment, isArmsUp, keypointsDetected } from './GameMode/zVerification';
 
 const JOINTS = [
     [11, 13], [13, 15], [12, 14], [14, 16], // 팔
@@ -16,12 +16,17 @@ const PoseEstimator: React.FC = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const camcanvasRef = useRef<HTMLCanvasElement>(null);
 
+    const checkcamRef = useRef<HTMLVideoElement>(null);
+    const checkcamcanvasRef = useRef<HTMLCanvasElement>(null);
+
     const checkintervalRef = useRef<number | null>(null);
-    const animationFrameIdRef = useRef<number | null>(null);
+    const intervalRef = useRef<number | null>(null);
     const firstFrameZ = useRef<number[]>([]);
 
     const requiredKeypointsIndices = [11, 12, 13, 14, 15, 16, 23, 24, 25, 26, 27, 28];
 
+    // const isZAligned = useRef(false);
+    // const detectedArmsUp = useRef(false);
     let isZAligned = false;
     let iskeypoint = false;
     const [detectedArmsUp, setDetectedArmsUp] = useState<boolean>(false);
@@ -55,6 +60,7 @@ const PoseEstimator: React.FC = () => {
         };
 
         const detectPose = async (detector: PoseDetector) => {
+            console.log(videoRef.current);
             if (videoRef.current && camRef.current && canvasRef.current) {
                 const ctx = canvasRef.current.getContext('2d');
 
@@ -133,61 +139,39 @@ const PoseEstimator: React.FC = () => {
         
                 await detectFirstFrame(checkdetector, videoRef, firstFrameZ);
         
-                const checkAndDetect = async () => {
+                checkintervalRef.current = window.setInterval(async () => {
                     if (checkintervalRef.current == null) return;
         
                     const checkKeypoints = await checkdetectPose(checkdetector);
                     isZAligned = await checkInitialZAlignment(camdetector, camRef, firstFrameZ);
                     if(checkKeypoints)
                         iskeypoint = await keypointsDetected(checkKeypoints, requiredKeypointsIndices);
+                    console.log(iskeypoint);
                     if (checkKeypoints && isArmsUp(checkKeypoints) && iskeypoint) {
+                        // detectedArmsUp = true;
                         setDetectedArmsUp(true);
-                        cancelAnimationFrame(checkintervalRef.current);
+                        clearInterval(checkintervalRef.current);
                         checkintervalRef.current = null;
 
+                        // 비디오 시작 및 포즈 감지 루프 실행
                         if (isZAligned) {
+                            videoRef.current!.play();
+                            console.log("Video is playing...");
                             
-                            
-                            let startTime: number | null = null;
-                            let lastLoggedSecond = 0;
-
-                            const startTimer = (timestamp: number) => {
-                                if (!startTime) startTime = timestamp;
-                                const elapsed = timestamp - startTime;
-                                const seconds = Math.floor(elapsed / 1000);
-
-                            if (seconds > lastLoggedSecond && seconds <= 3) {
-                                lastLoggedSecond = seconds;
-                                console.log(`${seconds} second${seconds > 1 ? 's' : ''}`);
-                            }
-                                if (elapsed >= 3000) {
-                                    // 3 seconds elapsed, start pose detection
-                                    videoRef.current!.play();
-                                    const detectAndScore = async () => {
-                                        const posesKeypoints = await detectPose(detector);
-                                        const camKeypoints = await camdetectPose(camdetector);
-                                        if (posesKeypoints && camKeypoints) {
-                                            const sum = calculateScore(posesKeypoints, camKeypoints);
-                                            console.log(sum);
-                                        }
-                                        animationFrameIdRef.current = requestAnimationFrame(detectAndScore);
-                                    };
-                                    detectAndScore();
-                                } else {
-                                    animationFrameIdRef.current = requestAnimationFrame(startTimer);
+                            intervalRef.current = window.setInterval(async () => {
+                                console.log("Running pose detection...");
+                                const posesKeypoints = await detectPose(detector);
+                                const camKeypoints = await camdetectPose(camdetector);
+                                if (posesKeypoints && camKeypoints) {
+                                    const sum = calculateScore(posesKeypoints, camKeypoints);
+                                    console.log(sum);
                                 }
-                            };
-
-                            animationFrameIdRef.current = requestAnimationFrame(startTimer);
+                            }, 20);
                         } else {
                             console.log("Initial Z alignment failed.");
                         }
-                    } else {
-                        checkintervalRef.current = requestAnimationFrame(checkAndDetect);
                     }
-                };
-
-                checkintervalRef.current = requestAnimationFrame(checkAndDetect);
+                }, 20);
             }
         };
         
@@ -195,10 +179,10 @@ const PoseEstimator: React.FC = () => {
         
         return () => {
             if (checkintervalRef.current !== null) {
-                cancelAnimationFrame(checkintervalRef.current);
+                clearInterval(checkintervalRef.current);
             }
-            if (animationFrameIdRef.current !== null) {
-                cancelAnimationFrame(animationFrameIdRef.current);
+            if (intervalRef.current !== null) {
+                clearInterval(intervalRef.current);
             }
         };
     },[]);

@@ -1,7 +1,7 @@
 import { PoseDetector } from '@tensorflow-models/pose-detection';
 
 // 팔과 다리 키포인트 인덱스
-const requiredKeypointsIndices = [11, 12, 13, 14, 15, 16, 23, 24, 25, 26, 27, 28];
+
 
 
 // 팔이 머리 위로 올라가는지 체크하는 함수
@@ -19,7 +19,7 @@ export const isArmsUp = (keypoints: any[]): boolean => {
     );
 };
 
-const keypointsDetected = (keypoints: any[], requiredIndices: number[]): boolean => {
+export const keypointsDetected = (keypoints: any[], requiredIndices: number[]): boolean => {
     return requiredIndices.every(index => keypoints[index] && keypoints[index].score > 0.1);
 };
 
