@@ -3,6 +3,7 @@ import * as tf from '@tensorflow/tfjs';
 import { createDetector, PoseDetector, SupportedModels, BlazePoseMediaPipeModelConfig, util, Keypoint } from '@tensorflow-models/pose-detection';
 import '../canvas.css';
 import { detectFirstFrame, checkInitialZAlignment, isArmsUp, keypointsDetected } from './zVerification';
+import { sendScores } from './result';
 
 const JOINTS = [
     [11, 13], [13, 15], [12, 14], [14, 16], // 팔
@@ -204,6 +205,17 @@ const PoseEstimator: React.FC = () => {
                                                         health.current = 100;
                                                     }
                                                     console.log(bad, good, great, perfect, health);
+
+                                                    videoRef.current!.onended = () => {
+                                                        sendScores({
+                                                            bad: bad.current,
+                                                            good: good.current,
+                                                            great: great.current,
+                                                            perfect: perfect.current,
+                                                            health: health.current
+                                                        });
+                                                    };
+
                                                     return []; // Reset scores array
                                                 }
                                             }
@@ -228,7 +240,6 @@ const PoseEstimator: React.FC = () => {
 
                 checkAnimationRef.current = requestAnimationFrame(checkAndDetect);
             }
-            
         };
         
         init();
@@ -245,18 +256,22 @@ const PoseEstimator: React.FC = () => {
 
     const drawGreen = (ctx: CanvasRenderingContext2D, keypoints: Keypoint[]) => {
         const color = "rgba(0,255,0,0.5)";
+        ctx.save();
+        ctx.scale(-1, 1);
+        ctx.translate(-ctx.canvas.width, 0);
+    
         ctx.fillStyle = color;
         ctx.strokeStyle = color;
         ctx.lineWidth = 10;
-
+    
         util.getAdjacentPairs(SupportedModels.BlazePose).forEach(([i, j]) => {
             const kp1 = keypoints[i];
             const kp2 = keypoints[j];
-
+    
             const score1 = kp1.score != null ? kp1.score : 1;
             const score2 = kp2.score != null ? kp2.score : 1;
             const scoreThreshold = 0.1;
-
+    
             if (score1 >= scoreThreshold &&
                 score2 >= scoreThreshold &&
                 i > 10 && j > 10) {
@@ -266,15 +281,15 @@ const PoseEstimator: React.FC = () => {
                 ctx.stroke();
             }
         });
-
+    
         const left = Math.sqrt(Math.pow(keypoints[0].x - keypoints[8].x, 2) +
             Math.pow(keypoints[0].y - keypoints[8].y, 2) +
             Math.pow(keypoints[0].z! - keypoints[8].z!, 2));
-
+    
         const right = Math.sqrt(Math.pow(keypoints[0].x - keypoints[7].x, 2) +
             Math.pow(keypoints[0].y - keypoints[7].y, 2) +
             Math.pow(keypoints[0].z! - keypoints[7].z!, 2));
-
+    
         const circle = new Path2D();
         circle.arc((keypoints[0].x + keypoints[7].x + keypoints[8].x) / 3,
             (keypoints[0].y + keypoints[7].y + keypoints[8].y) / 3,
@@ -284,22 +299,28 @@ const PoseEstimator: React.FC = () => {
         );
         ctx.fill(circle);
         ctx.stroke(circle);
+        ctx.restore();
     };
+    
 
     const drawRed = (ctx: CanvasRenderingContext2D, keypoints: Keypoint[]) => {
         const color = "rgba(255,0,0,0.5)";
+        ctx.save();
+        ctx.scale(-1, 1);
+        ctx.translate(-ctx.canvas.width, 0);
+    
         ctx.fillStyle = color;
         ctx.strokeStyle = color;
         ctx.lineWidth = 10;
-
+    
         util.getAdjacentPairs(SupportedModels.BlazePose).forEach(([i, j]) => {
             const kp1 = keypoints[i];
             const kp2 = keypoints[j];
-
+    
             const score1 = kp1.score != null ? kp1.score : 1;
             const score2 = kp2.score != null ? kp2.score : 1;
             const scoreThreshold = 0.1;
-
+    
             if (score1 >= scoreThreshold &&
                 score2 >= scoreThreshold &&
                 i > 10 && j > 10) {
@@ -309,15 +330,15 @@ const PoseEstimator: React.FC = () => {
                 ctx.stroke();
             }
         });
-
+    
         const left = Math.sqrt(Math.pow(keypoints[0].x - keypoints[8].x, 2) +
             Math.pow(keypoints[0].y - keypoints[8].y, 2) +
             Math.pow(keypoints[0].z! - keypoints[8].z!, 2));
-
+    
         const right = Math.sqrt(Math.pow(keypoints[0].x - keypoints[7].x, 2) +
             Math.pow(keypoints[0].y - keypoints[7].y, 2) +
             Math.pow(keypoints[0].z! - keypoints[7].z!, 2));
-
+    
         const circle = new Path2D();
         circle.arc((keypoints[0].x + keypoints[7].x + keypoints[8].x) / 3,
             (keypoints[0].y + keypoints[7].y + keypoints[8].y) / 3,
@@ -327,7 +348,9 @@ const PoseEstimator: React.FC = () => {
         );
         ctx.fill(circle);
         ctx.stroke(circle);
+        ctx.restore();
     };
+    
 
     const calculateScore = (
         keypoints1: Keypoint[],
