@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as tf from '@tensorflow/tfjs';
 import { createDetector, PoseDetector, SupportedModels, BlazePoseMediaPipeModelConfig, util, Keypoint } from '@tensorflow-models/pose-detection';
 import '../canvas.css';
-import { detectFirstFrame, checkInitialZAlignment, isArmsUp, keypointsDetected } from './GameMode/zVerification';
+import { detectFirstFrame, checkInitialZAlignment, isArmsUp, keypointsDetected } from './GameMode/utils/Verification';
 
 const JOINTS = [
     [11, 13], [13, 15], [12, 14], [14, 16], // 팔
