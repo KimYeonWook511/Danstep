@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as tf from '@tensorflow/tfjs';
 import { createDetector, PoseDetector, SupportedModels, BlazePoseMediaPipeModelConfig, util, Keypoint } from '@tensorflow-models/pose-detection';
 import '../canvas.css';
-import { detectFirstFrame, checkInitialZAlignment, isArmsUp, keypointsDetected } from './zVerification';
+import { detectFirstFrame, checkInitialZAlignment, isArmsUp, keypointsDetected } from './GameMode/zVerification';
 
 const JOINTS = [
     [11, 13], [13, 15], [12, 14], [14, 16], // 팔
@@ -24,16 +24,7 @@ const PoseEstimator: React.FC = () => {
 
     let isZAligned = false;
     let iskeypoint = false;
-    let cnt=0;
-
-    const bad = useRef(0);
-    const good = useRef(0);
-    const great = useRef(0);
-    const perfect = useRef(0);
-    const health = useRef(100);
-
     const [detectedArmsUp, setDetectedArmsUp] = useState<boolean>(false);
-    const [scores, setScores] = useState<number[]>([]); // State to store the scores
 
     useEffect(() => {
         const setupVideo = async () => {
@@ -176,39 +167,10 @@ const PoseEstimator: React.FC = () => {
                                     const detectAndScore = async () => {
                                         const posesKeypoints = await detectPose(detector);
                                         const camKeypoints = await camdetectPose(camdetector);
-                                        setScores((prevScores) => {
-                                            const newScores = [...prevScores];
-                                            if (posesKeypoints && camKeypoints) {
-                                                const sum = calculateScore(posesKeypoints, camKeypoints);
-                                                newScores.push(sum);
-                                                if (newScores.length === 16) {
-                                                    const averageScore = newScores.reduce((a, b) => a + b, 0) / 16;
-                                                    console.log("Average Score:", averageScore);
-                                                    if (averageScore < 80) {
-                                                        bad.current++;
-                                                        health.current -= 0.5;
-                                                    } else if (averageScore < 85) {
-                                                        good.current++;
-                                                        health.current += 0.1;
-                                                    } else if (averageScore < 90) {
-                                                        great.current++;
-                                                        health.current += 0.3;
-                                                    } else {
-                                                        perfect.current++;
-                                                        health.current += 0.5;
-                                                    }
-                                                    if (health.current < 0) {
-                                                        health.current = 0;
-                                                    }
-                                                    if (health.current > 100) {
-                                                        health.current = 100;
-                                                    }
-                                                    console.log(bad, good, great, perfect, health);
-                                                    return []; // Reset scores array
-                                                }
-                                            }
-                                            return newScores;
-                                        });
+                                        if (posesKeypoints && camKeypoints) {
+                                            const sum = calculateScore(posesKeypoints, camKeypoints);
+                                            console.log(sum);
+                                        }
                                         animationFrameIdRef.current = requestAnimationFrame(detectAndScore);
                                     };
                                     detectAndScore();
@@ -228,7 +190,6 @@ const PoseEstimator: React.FC = () => {
 
                 checkAnimationRef.current = requestAnimationFrame(checkAndDetect);
             }
-            
         };
         
         init();
