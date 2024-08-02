@@ -7,6 +7,12 @@ plugins {
 group = 'com'
 version = '0.0.1-SNAPSHOT'
 
+// 기본.jar / plain.jar 파일 두개가 생성됨
+// jar가 2개면 도커 이미지가 생성되지 않을 수도 있기 때문에 추가함
+jar {
+	enabled = false
+}
+
 java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(17)
