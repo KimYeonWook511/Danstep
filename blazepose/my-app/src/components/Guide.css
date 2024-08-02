@@ -1,0 +1,74 @@
+/* Guide.css */
+
+.guide-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent dark background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.guide-content {
+    background: rgba(255, 255, 255, 0.9); /* Semi-transparent white background for content */
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    position: relative;
+    width: 80%;
+    max-width: 800px;
+}
+
+.warning-message {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+.guide-instructions {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.instruction {
+    width: 48%;
+    text-align: left;
+}
+
+.instruction img {
+    width: 100%;
+    height: auto; /* 자동 높이 조절 */
+    max-height: 200px; /* 원하는 최대 높이 설정 */
+    border: 5px solid transparent;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    object-fit: cover; /* 이미지 비율을 유지하면서 상하 크기 조절 */
+}
+
+.instruction.left img {
+    border-color: green;
+}
+
+.instruction.right img {
+    border-color: red;
+}
+
+.play-button {
+    padding: 10px 20px;
+    background-color: #007bff; /* Button background color */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+}
+
+.play-button:hover {
+    background-color: #0056b3; /* Button hover color */
+}
