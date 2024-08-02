@@ -7,10 +7,6 @@ pipeline {
                 script {
                     // Backend 디렉토리로 이동
                     dir('backend') {
-                        // Gradle 빌드
-                        // sh 'gradlew build'
-                        sh 'gradlew clean build -x test' // 테스트 생략
-
                         // Docker 이미지 빌드
                         sh 'docker build -t danstep-backend-image .'
                         
@@ -37,12 +33,6 @@ pipeline {
                 script {
                     // Frontend 디렉토리로 이동
                     dir('frontend') {
-                        // 필요한 패키지 설치
-                        sh 'npm install'
-
-                        // React TypeScript 애플리케이션 빌드
-                        sh 'npm run build'
-
                         // Docker 이미지 빌드
                         sh 'docker build -t danstep-frontend-image .'
                         
