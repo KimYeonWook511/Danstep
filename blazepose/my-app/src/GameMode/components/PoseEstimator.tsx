@@ -109,8 +109,8 @@ const PoseEstimator: React.FC = () => {
                 if (ctx) {
                     ctx.clearRect(0, 0, camcanvasRef.current.width, camcanvasRef.current.height);
                     camcanvasRef.current.width = camRef.current.videoWidth;
-                    camcanvasRef.current.height = camRef.current.videoHeight;
-                    
+                    camcanvasRef.current.height = camRef.current.videoHeight;                    
+
                     const camposes = await detector.estimatePoses(camRef.current);
 
                     if (camposes[0]) drawRed(ctx, camposes[0].keypoints);
@@ -259,14 +259,14 @@ const PoseEstimator: React.FC = () => {
                 <div>
                     <video ref={camRef} style={{ display: 'none', width: '640px', height: '480px' }} autoPlay />
                     <video ref={videoRef} style={{ display: 'none', width: '640px', height: '480px' }} autoPlay />
-                    <canvas ref={camcanvasRef} className="canvas cam-canvas" />
+                    <canvas ref={camcanvasRef} className="canvas cam-canvas" style={{ transform: 'scaleX(-1)' }}/>
                     <canvas ref={canvasRef} className="canvas video-canvas" />
                 </div>
             ) : (
                 <div>
                     <video ref={camRef} style={{ display: 'none', width: '1280px', height: '960px' }} autoPlay muted />
                     <video ref={videoRef} style={{ display: 'none', width: '640px', height: '480px' }} autoPlay muted />
-                    <canvas ref={camcanvasRef} className="canvas cam-canvas" />
+                    <canvas ref={camcanvasRef} className="canvas cam-canvas" style={{ transform: 'scaleX(-1)' }}/>
                     <canvas ref={canvasRef} className="canvas video-canvas" />
                 </div>
             )}

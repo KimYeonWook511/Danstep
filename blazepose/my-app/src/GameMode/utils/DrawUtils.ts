@@ -7,6 +7,10 @@ export const drawGreen = (ctx: CanvasRenderingContext2D, keypoints: Keypoint[]) 
     ctx.strokeStyle = color;
     ctx.lineWidth = 10;
 
+    ctx.save();
+    ctx.scale(-1, 1);
+    ctx.translate(-ctx.canvas.width, 0);
+    
     util.getAdjacentPairs(SupportedModels.BlazePose).forEach(([i, j]) => {
         const kp1 = keypoints[i];
         const kp2 = keypoints[j];
@@ -42,6 +46,7 @@ export const drawGreen = (ctx: CanvasRenderingContext2D, keypoints: Keypoint[]) 
     );
     ctx.fill(circle);
     ctx.stroke(circle);
+    ctx.restore();
 };
 
 export const drawRed = (ctx: CanvasRenderingContext2D, keypoints: Keypoint[]) => {
