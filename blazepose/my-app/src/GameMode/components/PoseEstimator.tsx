@@ -28,7 +28,6 @@ const PoseEstimator: React.FC = () => {
 
     let isZAligned = false;
     let iskeypoint = false;
-    let cnt=0;
 
     const bad = useRef(0);
     const good = useRef(0);
