@@ -159,13 +159,14 @@
 // src/App.tsx
 import React from 'react';
 import PoseEstimator from './GameMode/components/PoseEstimator';
+import ChartTest from './mypage/components/ChartTest'
 
 const App: React.FC = () => {
     return (
         <div>
             <h1>BlazePose with TensorFlow.js</h1>
             <PoseEstimator />
-            {/* <PoseEstimatorVideo/> */}
+            <ChartTest/>
         </div>
     );
 };

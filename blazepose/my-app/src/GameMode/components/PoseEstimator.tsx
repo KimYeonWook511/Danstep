@@ -81,6 +81,15 @@ const PoseEstimator: React.FC = () => {
                     canvasRef.current.height = videoRef.current.videoHeight;
                     ctx.drawImage(camRef.current!, 0, 0, canvasRef.current.width, canvasRef.current.height);
 
+                    // x 축을 반전하기 위해 scale 메서드를 사용
+                    ctx.scale(-1, 1);
+
+                    // 이미지의 너비를 음수로 지정하여 x 축을 반전
+                    ctx.drawImage(camRef.current!, -canvasRef.current.width, 0, canvasRef.current.width, canvasRef.current.height);
+
+                    // 다시 scale을 사용하여 원래대로 돌려놓기
+                    ctx.scale(-1, 1);
+
                     const poses = await detector.estimatePoses(videoRef.current);
 
                     if (poses[0]) drawGreen(ctx, poses[0].keypoints);
@@ -105,6 +114,7 @@ const PoseEstimator: React.FC = () => {
                     const camposes = await detector.estimatePoses(camRef.current);
 
                     if (camposes[0]) drawRed(ctx, camposes[0].keypoints);
+
                     return camposes[0].keypoints;
                 }
             }
@@ -122,6 +132,7 @@ const PoseEstimator: React.FC = () => {
                     const checkposes = await detector.estimatePoses(camRef.current);
 
                     if (checkposes[0]) drawRed(ctx, checkposes[0].keypoints);
+                    
                     return checkposes[0].keypoints;
                 }
             }

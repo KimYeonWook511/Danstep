@@ -2,9 +2,6 @@ import { Keypoint, SupportedModels, util } from '@tensorflow-models/pose-detecti
 
 export const drawGreen = (ctx: CanvasRenderingContext2D, keypoints: Keypoint[]) => {
     const color = "rgba(0,255,0,0.5)";
-    ctx.save();
-    ctx.scale(-1, 1);
-    ctx.translate(-ctx.canvas.width, 0);
 
     ctx.fillStyle = color;
     ctx.strokeStyle = color;
@@ -45,14 +42,10 @@ export const drawGreen = (ctx: CanvasRenderingContext2D, keypoints: Keypoint[]) 
     );
     ctx.fill(circle);
     ctx.stroke(circle);
-    ctx.restore();
 };
 
 export const drawRed = (ctx: CanvasRenderingContext2D, keypoints: Keypoint[]) => {
     const color = "rgba(255,0,0,0.5)";
-    // ctx.save();
-    // ctx.scale(-1, 1);
-    // ctx.translate(-ctx.canvas.width, 0);
 
     ctx.fillStyle = color;
     ctx.strokeStyle = color;
@@ -93,5 +86,5 @@ export const drawRed = (ctx: CanvasRenderingContext2D, keypoints: Keypoint[]) =>
     );
     ctx.fill(circle);
     ctx.stroke(circle);
-    // ctx.restore();
+
 };
