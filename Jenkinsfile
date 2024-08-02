@@ -8,8 +8,8 @@ pipeline {
                     // Backend 디렉토리로 이동
                     dir('danstep/backend') {
                         // Gradle 빌드
-                        // sh './gradlew build'
-                        sh './gradlew clean build -x test' // 테스트 생략
+                        // sh 'gradlew build'
+                        sh 'gradlew clean build -x test' // 테스트 생략
 
                         // Docker 이미지 빌드
                         sh 'docker build -t danstep-backend-image .'
