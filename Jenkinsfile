@@ -6,7 +6,7 @@ pipeline {
             steps {
                 script {
                     // Backend 디렉토리로 이동
-                    dir('danstep/backend') {
+                    dir('backend') {
                         // Gradle 빌드
                         // sh 'gradlew build'
                         sh 'gradlew clean build -x test' // 테스트 생략
@@ -36,7 +36,7 @@ pipeline {
             steps {
                 script {
                     // Frontend 디렉토리로 이동
-                    dir('danstep/frontend') {
+                    dir('frontend') {
                         // 필요한 패키지 설치
                         sh 'npm install'
 
