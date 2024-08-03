@@ -13,7 +13,7 @@ RUN chmod 755 gradlew
 RUN ./gradlew clean build -x test
 
 # 2단계: 실행 환경
-FROM openjdk:17-jre-slim
+FROM openjdk:17-slim
 
 # 빌드된 JAR 파일을 실행 환경으로 복사
 COPY --from=builder /app/build/libs/*.jar app.jar
