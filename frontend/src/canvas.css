@@ -1,0 +1,21 @@
+  .canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 640px;
+    height: 480px;
+  }
+
+  .cam-canvas {
+    z-index: 3;
+  }
+
+  .video-canvas {
+    z-index: 2;
+  }
+
+  .button {
+    z-index: 4;
+    position: fixed;
+    bottom: 20px;
+  }
