@@ -22,7 +22,7 @@ RUN npm run build
 FROM nginx:alpine
 
 # Nginx 설정파일 복사
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY nginx.conf /etc/nginx/conf.d/i11a406.p.ssafy.io.conf
 
 # 빌드된 React 애플리케이션을 Nginx의 기본 HTML 디렉토리로 복사
 COPY --from=build /app/build /usr/share/nginx/html
