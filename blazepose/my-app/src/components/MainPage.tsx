@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './MainPage.css';
-import Example from "./example";
+import Example from './example';
 import SearchBar from './SearchBar';
 import SearchResult from './SearchResult';
 
@@ -44,25 +44,6 @@ const MainPage: React.FC = () => {
       <Example />
       <SearchBar />
       <SearchResult games={games} />
-      <div>test</div>
-      <div>test</div>
-      <div>test</div>
-      <div>test</div>
-      <div>test</div>
-      <div>test</div>
-      <div>test</div>
-      <div>test</div>
-      <div>test</div>
-      <div>test</div>
-      <div>test</div>
-      <div>test</div>
-      <div>test</div>
-      <div>test</div>
-      <div>test</div>
-      <div>test</div>
-      <div>test</div>
-      <div>test</div>
-      <div>test</div>
     </div>
   );
 };
