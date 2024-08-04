@@ -20,6 +20,7 @@ pipeline {
                         // Docker 컨테이너 실행
                         sh 'docker run -d \
                                 --name danstep-backend-container \
+				--network host \
                                 -e TZ=Asia/Seoul \
                                 danstep-backend-image'
                     }
