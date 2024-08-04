@@ -19,10 +19,10 @@ pipeline {
                         
                         // Docker 컨테이너 실행
                         sh 'docker run -d \
-                                --name danstep-backend-container \
-				--network host \
-                                -e TZ=Asia/Seoul \
-                                danstep-backend-image'
+			        --name danstep-backend-container \
+			        -e TZ=Asia/Seoul \
+				--network danstep-network \
+			        danstep-backend-image'
                     }
                 }
             }
@@ -45,13 +45,14 @@ pipeline {
                         
                         // Docker 컨테이너 실행
                         sh 'docker run -d \
-                                --name danstep-frontend-container \
-                                -e TZ=Asia/Seoul \
-                                -p 80:80 \
-                                -p 443:443 \
-                                -v /etc/letsencrypt/live/i11a406.p.ssafy.io/fullchain.pem:/etc/letsencrypt/live/i11a406.p.ssafy.io/fullchain.pem \
-                                -v /etc/letsencrypt/live/i11a406.p.ssafy.io/privkey.pem:/etc/letsencrypt/live/i11a406.p.ssafy.io/privkey.pem \
-                                danstep-frontend-image'
+			        --name danstep-frontend-container \
+			        -e TZ=Asia/Seoul \
+			        -p 80:80 \
+			        -p 443:443 \
+			        -v /etc/letsencrypt/live/i11a406.p.ssafy.io/fullchain.pem:/etc/letsencrypt/live/i11a406.p.ssafy.io/fullchain.pem \
+			        -v /etc/letsencrypt/live/i11a406.p.ssafy.io/privkey.pem:/etc/letsencrypt/live/i11a406.p.ssafy.io/privkey.pem \
+				--network danstep-network \
+			        danstep-frontend-image'
                     }
                 }
             }
