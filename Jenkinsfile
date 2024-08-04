@@ -21,7 +21,6 @@ pipeline {
                         sh 'docker run -d \
                                 --name danstep-backend-container \
                                 -e TZ=Asia/Seoul \
-                                -p 8081:8080 \
                                 danstep-backend-image'
                     }
                 }
