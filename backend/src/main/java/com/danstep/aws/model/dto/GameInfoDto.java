@@ -1,4 +1,4 @@
-package com.danstep.aws.dto;
+package com.danstep.aws.model.dto;
 
 
 import lombok.*;

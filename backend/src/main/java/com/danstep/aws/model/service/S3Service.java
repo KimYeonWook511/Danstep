@@ -1,10 +1,10 @@
-package com.danstep.aws.service;
+package com.danstep.aws.model.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
-import com.danstep.aws.dao.S3Dao;
-import com.danstep.aws.dto.TempDto;
-import com.danstep.aws.dto.GameInfoDto;
+import com.danstep.aws.model.mapper.S3Mapper;
+import com.danstep.aws.model.dto.TempDto;
+import com.danstep.aws.model.dto.GameInfoDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -34,9 +34,9 @@ public class S3Service{
     private String cloudFrontDomain;
 
     private final AmazonS3 amazonS3;
-    private final S3Dao s3Dao;
+    private final S3Mapper s3Dao;
 
-    public S3Service(AmazonS3 amazonS3, S3Dao s3Dao) {
+    public S3Service(AmazonS3 amazonS3, S3Mapper s3Dao) {
         this.amazonS3 = amazonS3;
         this.s3Dao = s3Dao;
     }
