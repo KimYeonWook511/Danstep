@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import MainPage from './components/MainPage';
 import Ranking from './components/Ranking';
 import NavBar from './components/NavBar';
+import S3 from './S3Test/S3';
 
 const App: React.FC = () => {
     // const [showPoseEstimator, setShowPoseEstimator] = useState(false);
@@ -22,6 +23,7 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/" element={<MainPage />} />
           <Route path="/ranking" element={<Ranking />} />
+          <Route path="/kyw/test" element={<S3/>}/>
         </Routes>
       
 {/* 
