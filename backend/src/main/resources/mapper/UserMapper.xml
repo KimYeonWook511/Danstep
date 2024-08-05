@@ -8,12 +8,12 @@
         WHERE username = #{username}
     </select>
 
-    <insert id="insertUser" parameterType="UserEntity" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertUser" parameterType="userEntity" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO user_info (username, password, nickname, profile)
         VALUES (#{username}, #{password}, #{nickname}, #{profile})
     </insert>
 
-    <select id="findByUsername" parameterType="String" resultType="UserEntity">
+    <select id="findByUsername" parameterType="String" resultType="userEntity">
         SELECT *
         FROM user_info
         WHERE username = #{username}
