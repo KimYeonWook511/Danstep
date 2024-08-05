@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.danstep.model.mapper.UserMapper">
+
+    <select id="existsByUsername" parameterType="String" resultType="boolean">
+        SELECT IF(COUNT(*) = 1, 1, 0)
+        FROM user_info
+        WHERE username = #{username}
+    </select>
+
+    <insert id="insertUser" parameterType="UserEntity" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO user_info (username, password, nickname, profile)
+        VALUES (#{username}, #{password}, #{nickname}, #{profile})
+    </insert>
+
+    <select id="findByUsername" parameterType="String" resultType="UserEntity">
+        SELECT *
+        FROM user_info
+        WHERE username = #{username}
+    </select>
+
+</mapper>

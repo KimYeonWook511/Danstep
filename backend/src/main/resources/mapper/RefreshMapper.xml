@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.danstep.model.mapper.RefreshMapper">
+
+    <select id="existsByRefresh" parameterType="Map" resultType="boolean">
+        SELECT IF(COUNT(*) = 1, 1, 0)
+        FROM user_info
+        WHERE username = #{username} AND refresh = #{refresh}
+    </select>
+
+    <update id="deleteByRefresh" parameterType="String">
+        UPDATE user_info
+        SET refresh = null
+        WHERE refresh = #{refresh}
+    </update>
+
+    <update id="insertRefresh" parameterType="Map">
+        UPDATE user_info
+        SET refresh = #{refresh}
+        WHERE username = #{username}
+    </update>
+
+</mapper>
