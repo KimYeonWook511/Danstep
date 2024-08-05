@@ -11,6 +11,7 @@ import {
   keypointsDetected,
 } from '../utils/Verification';
 import { sendScores } from '../utils/Result';
+import { drawGreen, drawRed } from '../utils/DrawUtils';
 import { calculateScore } from '../utils/CalculateUtils';
 import { updateScores } from '../utils/ScoreUtils';
 import NeonButton from '../neon/NeonButton';
@@ -25,6 +26,7 @@ const PoseEstimator: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const camcanvasRef = useRef<HTMLCanvasElement>(null);
+  const offscreenCanvasRef = useRef<HTMLCanvasElement>(document.createElement('canvas'));
 
   const checkAnimationRef = useRef<number | null>(null);
   const animationFrameIdRef = useRef<number | null>(null);
@@ -45,8 +47,6 @@ const PoseEstimator: React.FC = () => {
   const [scores, setScores] = useState<number[]>([]);
   const [isFinished, setIsFinished] = useState<boolean>(false);
   const [poseKeypoints, setPoseKeypoints] = useState<any[]>([]);
-
-  const workerRef = useRef<Worker | null>(null);
 
   const init = useCallback(async () => {
     await tf.setBackend('webgl');
@@ -163,91 +163,83 @@ const PoseEstimator: React.FC = () => {
   }, []);
 
   const detectPose = useCallback(async (detector: PoseDetector) => {
-    if (videoRef.current && canvasRef.current) {
-      const offscreen = new OffscreenCanvas(
-        videoRef.current.videoWidth,
-        videoRef.current.videoHeight
-      );
-      if (workerRef.current) {
-        workerRef.current.postMessage(
-          { canvas: offscreen, keypoints: [], color: 'green', canvasId: 'video' },
-          [offscreen]
-        );
-      }
+    if (videoRef.current && camRef.current && canvasRef.current) {
+      const ctx = canvasRef.current.getContext('2d');
+      const offscreenCtx = offscreenCanvasRef.current.getContext('2d');
+      if (videoRef.current.paused || videoRef.current.ended) return;
+      if (ctx && offscreenCtx) {
+        offscreenCanvasRef.current.width = videoRef.current.videoWidth;
+        offscreenCanvasRef.current.height = videoRef.current.videoHeight;
 
-      const poses = await detector.estimatePoses(videoRef.current);
-      if (poses[0]) {
-        workerRef.current?.postMessage(
-          { canvas: offscreen, keypoints: poses[0].keypoints, color: 'green', canvasId: 'video' },
-          [offscreen]
-        );
+        const poses = await detector.estimatePoses(videoRef.current);
+        if (poses[0]) drawGreen(offscreenCtx, poses[0].keypoints);
+
+        ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+        canvasRef.current.width = videoRef.current.videoWidth;
+        canvasRef.current.height = videoRef.current.videoHeight;
+        ctx.drawImage(offscreenCanvasRef.current, 0, 0);
+        return poses[0].keypoints;
       }
-      return poses[0]?.keypoints;
+      return undefined;
     }
-    return undefined;
   }, []);
 
   const camdetectPose = useCallback(async (detector: PoseDetector) => {
-    if (camRef.current && camcanvasRef.current) {
-      const offscreen = new OffscreenCanvas(camRef.current.videoWidth, camRef.current.videoHeight);
-      if (workerRef.current) {
-        workerRef.current.postMessage(
-          { canvas: offscreen, keypoints: [], color: 'red', canvasId: 'cam' },
-          [offscreen]
-        );
-      }
+    if (videoRef.current && camRef.current && camcanvasRef.current) {
+      const ctx = camcanvasRef.current.getContext('2d');
+      const offscreenCtx = offscreenCanvasRef.current.getContext('2d');
+      if (videoRef.current.paused || videoRef.current.ended) return;
+      if (ctx && offscreenCtx) {
+        offscreenCanvasRef.current.width = camRef.current.videoWidth;
+        offscreenCanvasRef.current.height = camRef.current.videoHeight;
 
-      const camposes = await detector.estimatePoses(camRef.current);
-      if (camposes[0]) {
-        workerRef.current?.postMessage(
-          { canvas: offscreen, keypoints: camposes[0].keypoints, color: 'red', canvasId: 'cam' },
-          [offscreen]
+        offscreenCtx.clearRect(
+          0,
+          0,
+          offscreenCanvasRef.current.width,
+          offscreenCanvasRef.current.height
         );
+        const camposes = await detector.estimatePoses(camRef.current);
+        if (camposes[0]) drawRed(offscreenCtx, camposes[0].keypoints);
+
+        ctx.clearRect(0, 0, camcanvasRef.current.width, camcanvasRef.current.height);
+        camcanvasRef.current.width = camRef.current.videoWidth;
+        camcanvasRef.current.height = camRef.current.videoHeight;
+        ctx.drawImage(offscreenCanvasRef.current, 0, 0);
+        return camposes[0].keypoints;
       }
-      return camposes[0]?.keypoints;
     }
     return undefined;
   }, []);
 
   const checkdetectPose = useCallback(async (detector: PoseDetector) => {
     if (camRef.current && camcanvasRef.current) {
-      const offscreen = new OffscreenCanvas(camRef.current.videoWidth, camRef.current.videoHeight);
-      if (workerRef.current) {
-        workerRef.current.postMessage(
-          { canvas: offscreen, keypoints: [], color: 'red', canvasId: 'cam' },
-          [offscreen]
-        );
-      }
+      const ctx = camcanvasRef.current.getContext('2d');
+      const offscreenCtx = offscreenCanvasRef.current.getContext('2d');
+      if (ctx && offscreenCtx) {
+        offscreenCanvasRef.current.width = camRef.current.videoWidth;
+        offscreenCanvasRef.current.height = camRef.current.videoHeight;
 
-      const checkposes = await detector.estimatePoses(camRef.current);
-      if (checkposes[0]) {
-        workerRef.current?.postMessage(
-          { canvas: offscreen, keypoints: checkposes[0].keypoints, color: 'red', canvasId: 'cam' },
-          [offscreen]
+        offscreenCtx.clearRect(
+          0,
+          0,
+          offscreenCanvasRef.current.width,
+          offscreenCanvasRef.current.height
         );
+        const checkposes = await detector.estimatePoses(camRef.current);
+        if (checkposes[0]) drawRed(offscreenCtx, checkposes[0].keypoints);
+
+        ctx.clearRect(0, 0, camcanvasRef.current.width, camcanvasRef.current.height);
+        camcanvasRef.current.width = camRef.current.videoWidth;
+        camcanvasRef.current.height = camRef.current.videoHeight;
+        ctx.drawImage(offscreenCanvasRef.current, 0, 0);
+        return checkposes[0].keypoints;
       }
-      return checkposes[0]?.keypoints;
     }
     return undefined;
   }, []);
 
   useEffect(() => {
-    workerRef.current = new Worker(new URL('../utils/offscreenWorker.ts', import.meta.url));
-    workerRef.current.onmessage = (event) => {
-      if (event.data.status === 'done') {
-        const { imageBitmap, canvasId } = event.data;
-        if (canvasId === 'video' && canvasRef.current) {
-          const ctx = canvasRef.current.getContext('2d');
-          ctx?.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-          ctx?.drawImage(imageBitmap, 0, 0);
-        } else if (canvasId === 'cam' && camcanvasRef.current) {
-          const ctx = camcanvasRef.current.getContext('2d');
-          ctx?.clearRect(0, 0, camcanvasRef.current.width, camcanvasRef.current.height);
-          ctx?.drawImage(imageBitmap, 0, 0);
-        }
-      }
-    };
-
     setupCamera().then(() => init());
 
     return () => {
@@ -256,9 +248,6 @@ const PoseEstimator: React.FC = () => {
       }
       if (animationFrameIdRef.current !== null) {
         cancelAnimationFrame(animationFrameIdRef.current);
-      }
-      if (workerRef.current) {
-        workerRef.current.terminate();
       }
     };
   }, [init, setupCamera]);

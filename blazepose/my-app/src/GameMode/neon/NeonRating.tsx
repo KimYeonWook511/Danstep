@@ -40,4 +40,4 @@ const NeonRating: React.FC = () => {
   );
 };
 
-export default NeonRating;
+export default React.memo(NeonRating);

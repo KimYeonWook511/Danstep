@@ -14,4 +14,4 @@ const RainbowHealthBar: React.FC<RainbowHealthBarProps> = ({ health }) => {
   );
 };
 
-export default RainbowHealthBar;
+export default React.memo(RainbowHealthBar);
