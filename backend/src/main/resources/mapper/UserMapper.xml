@@ -8,12 +8,13 @@
         WHERE username = #{username}
     </select>
 
-    <insert id="insertUser" parameterType="userDTO" useGeneratedKeys="true" keyProperty="id">
+<!--    <insert id="insertUser" parameterType="userDTO" useGeneratedKeys="true" keyProperty="id">-->
+    <insert id="insertUser" parameterType="com.danstep.model.dto.UserDTO" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO user_info (username, password, nickname, profile)
         VALUES (#{username}, #{password}, #{nickname}, #{profile})
     </insert>
 
-    <select id="findByUsername" parameterType="String" resultType="userDTO">
+    <select id="findByUsername" parameterType="String" resultType="com.danstep.model.dto.UserDTO">
         SELECT *
         FROM user_info
         WHERE username = #{username}
