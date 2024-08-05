@@ -1,6 +1,6 @@
 package com.danstep.model.service;
 
-import com.danstep.model.entity.UserEntity;
+import com.danstep.model.dto.UserDTO;
 import com.danstep.model.dto.JoinDTO;
 import com.danstep.model.mapper.UserMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -34,7 +34,7 @@ public class JoinService {
             return;
         }
 
-        UserEntity data = new UserEntity();
+        UserDTO data = new UserDTO();
 
         data.setUsername(username);
         data.setPassword(bCryptPasswordEncoder.encode(password));

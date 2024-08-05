@@ -1,6 +1,5 @@
 package com.danstep.model.dto;
 
-import com.danstep.model.entity.UserEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -9,11 +8,11 @@ import java.util.Collection;
 
 public class CustomUserDetails implements UserDetails {
 
-    private final UserEntity userEntity;
+    private final UserDTO userDTO;
 
-    public CustomUserDetails(UserEntity userEntity) {
+    public CustomUserDetails(UserDTO userDTO) {
 
-        this.userEntity = userEntity;
+        this.userDTO = userDTO;
     }
 
 
@@ -27,7 +26,7 @@ public class CustomUserDetails implements UserDetails {
             @Override
             public String getAuthority() {
 
-                return userEntity.getRole();
+                return userDTO.getRole();
             }
         });
 
@@ -37,13 +36,13 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public String getPassword() {
 
-        return userEntity.getPassword();
+        return userDTO.getPassword();
     }
 
     @Override
     public String getUsername() {
 
-        return userEntity.getUsername();
+        return userDTO.getUsername();
     }
 
     @Override

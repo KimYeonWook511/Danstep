@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class GameInfoDto {
+public class GameInfoDTO {
     private Integer gameId;
     private String title;
     private String content;

@@ -1,6 +1,6 @@
 package com.danstep.aws.controller;
 
-import com.danstep.aws.model.dto.GameInfoDto;
+import com.danstep.aws.model.dto.GameInfoDTO;
 import com.danstep.aws.model.service.S3Service;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -63,7 +63,7 @@ public class S3Controller {
             return ResponseEntity.badRequest().body("동영상이 아닙니다");
         }
 
-        GameInfoDto uploadFile = new GameInfoDto(1, title, content, duration, originalFilename, extension, file);
+        GameInfoDTO uploadFile = new GameInfoDTO(1, title, content, duration, originalFilename, extension, file);
         String fileUrl = s3Service.uploadVideoFile(uploadFile);
         return ResponseEntity.ok(fileUrl);
     }
