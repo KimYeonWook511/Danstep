@@ -6,14 +6,16 @@ export const drawGreen = (ctx: CanvasRenderingContext2D, keypoints: Keypoint[]) 
 
   ctx.fillStyle = color;
   ctx.strokeStyle = color;
-  ctx.lineWidth = 10;
+  ctx.lineWidth = 12;
+  ctx.lineCap = 'round'; // 선의 끝을 둥글게 설정
+  ctx.lineJoin = 'round'; // 선의 연결 부분을 둥글게 설정
 
   ctx.save();
   ctx.scale(-1, 1);
   ctx.translate(-ctx.canvas.width, 0);
 
   ctx.shadowColor = neonColor;
-  ctx.shadowBlur = 20;
+  ctx.shadowBlur = 30;
   ctx.shadowOffsetX = 0;
   ctx.shadowOffsetY = 0;
 
@@ -65,6 +67,8 @@ export const drawRed = (ctx: CanvasRenderingContext2D, keypoints: Keypoint[]) =>
   ctx.fillStyle = color;
   ctx.strokeStyle = color;
   ctx.lineWidth = 12;
+  ctx.lineCap = 'round'; // 선의 끝을 둥글게 설정
+  ctx.lineJoin = 'round'; // 선의 연결 부분을 둥글게 설정
 
   ctx.shadowColor = neonColor;
   ctx.shadowBlur = 30;

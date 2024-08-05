@@ -22,7 +22,7 @@ const App: React.FC = () => {
     <Router>
       {/* <NavBar /> */}
       <Routes>
-        {/* <Route path="/" element={<PoseEstimator />} /> */}
+        <Route path="/" element={<PoseEstimator />} />
         {/* <Route path="/" element={<MainPage />} /> */}
         {/* <Route path="/ranking" element={<Ranking />} /> */}
         {/* <Route path="/effect" element={<Test />} /> */}
