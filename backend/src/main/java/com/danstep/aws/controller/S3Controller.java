@@ -1,7 +1,7 @@
 package com.danstep.aws.controller;
 
-import com.danstep.aws.dto.GameInfoDto;
-import com.danstep.aws.service.S3Service;
+import com.danstep.aws.model.dto.GameInfoDto;
+import com.danstep.aws.model.service.S3Service;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

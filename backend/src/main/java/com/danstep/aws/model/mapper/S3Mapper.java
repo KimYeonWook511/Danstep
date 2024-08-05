@@ -1,11 +1,11 @@
-package com.danstep.aws.dao;
+package com.danstep.aws.model.mapper;
 
-import com.danstep.aws.dto.TempDto;
+import com.danstep.aws.model.dto.TempDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 @Mapper
-public interface S3Dao {
+public interface S3Mapper {
 
     void insertGameUUID(TempDto gameInfoDto);
 
