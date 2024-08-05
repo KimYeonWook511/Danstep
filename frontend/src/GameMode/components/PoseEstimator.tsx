@@ -180,8 +180,12 @@ const PoseEstimator: React.FC = () => {
                 camcanvasRef.current.width = camRef.current.videoWidth;
                 camcanvasRef.current.height = camRef.current.videoHeight;
                 const camposes = await detector.estimatePoses(camRef.current);
-                if (camposes[0]) drawRed(ctx, camposes[0].keypoints);
-                return camposes[0].keypoints;
+                if (camposes[0]) {
+                    drawRed(ctx, camposes[0].keypoints);
+                    return camposes[0].keypoints;
+                }
+
+                return null;
             }
         }
     };
@@ -194,8 +198,12 @@ const PoseEstimator: React.FC = () => {
                 camcanvasRef.current.width = camRef.current.videoWidth;
                 camcanvasRef.current.height = camRef.current.videoHeight;
                 const checkposes = await detector.estimatePoses(camRef.current);
-                if (checkposes[0]) drawRed(ctx, checkposes[0].keypoints);
-                return checkposes[0].keypoints;
+                if (checkposes[0]) {
+                    drawRed(ctx, checkposes[0].keypoints);
+                    return checkposes[0].keypoints;
+                }
+
+                return null;
             }
         }
     };
