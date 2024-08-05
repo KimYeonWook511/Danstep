@@ -15,7 +15,7 @@ const JOINTS = [
 ];
 
 const PoseEstimator: React.FC = () => {
-  const baseUrl = 'http://localhost:8080';
+  const baseUrl = 'http://danstep-backend-container:8080';
 
   const [downloadFileName, setDownloadFileName] = useState('');
   const [uploadFileName, setUploadFileName] = useState('');
@@ -211,7 +211,7 @@ const PoseEstimator: React.FC = () => {
   };
 
   return (
-    <div>
+    <div style={{marginTop:'100px'}}>
       <form
         className='download-form'
         onSubmit={downloadHandleSubmit}
