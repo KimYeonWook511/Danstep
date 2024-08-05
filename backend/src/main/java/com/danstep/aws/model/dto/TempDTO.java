@@ -7,7 +7,7 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class TempDto {
+public class TempDTO {
     private String id;
     private String uuid;
 

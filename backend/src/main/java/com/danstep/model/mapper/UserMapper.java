@@ -1,6 +1,6 @@
 package com.danstep.model.mapper;
 
-import com.danstep.model.entity.UserEntity;
+import com.danstep.model.dto.UserDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -12,8 +12,8 @@ public interface UserMapper {
 
     Boolean existsByUsername(String username);
 
-    void insertUser(UserEntity user);
+    void insertUser(UserDTO user);
 
     //username을 받아 DB 테이블에서 회원을 조회하는 메소드 작성
-    UserEntity findByUsername(String username);
+    UserDTO findByUsername(String username);
 }

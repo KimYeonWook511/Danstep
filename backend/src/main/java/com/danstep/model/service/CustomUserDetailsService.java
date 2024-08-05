@@ -1,7 +1,7 @@
 package com.danstep.model.service;
 
 import com.danstep.model.dto.CustomUserDetails;
-import com.danstep.model.entity.UserEntity;
+import com.danstep.model.dto.UserDTO;
 import com.danstep.model.mapper.UserMapper;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -22,7 +22,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         //DB에서 조회
-        UserEntity userData = userMapper.findByUsername(username);
+        UserDTO userData = userMapper.findByUsername(username);
 
         if (userData != null) {
 

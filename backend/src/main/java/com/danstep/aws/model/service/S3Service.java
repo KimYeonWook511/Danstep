@@ -3,8 +3,8 @@ package com.danstep.aws.model.service;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
 import com.danstep.aws.model.mapper.S3Mapper;
-import com.danstep.aws.model.dto.TempDto;
-import com.danstep.aws.model.dto.GameInfoDto;
+import com.danstep.aws.model.dto.TempDTO;
+import com.danstep.aws.model.dto.GameInfoDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -66,7 +66,7 @@ public class S3Service{
         String uuid = UUID.randomUUID() + extension;
 
         //일단 DTO가 같으므로 GameInfoDto 사용 추후 변경 예정
-        s3Dao.insertProfileUUID(new TempDto(folderId,uuid));
+        s3Dao.insertProfileUUID(new TempDTO(folderId,uuid));
 
         String profilePath = createUUIDName("profiles",folderId,uuid);//경로 profiles/{id}/{uuid}
         ObjectMetadata metadata = makeMetadata(uploadProfile);//metadata 생성
@@ -76,7 +76,7 @@ public class S3Service{
         return amazonS3.getUrl(bucket, originalProfileName).toString();
     }
 
-    public String uploadVideoFile(GameInfoDto uploadVideoFile)
+    public String uploadVideoFile(GameInfoDTO uploadVideoFile)
             throws IOException{
 
         //String originalFile = uploadVideoFile.getOriginalName() + uploadVideoFile.getExtension();
@@ -85,7 +85,7 @@ public class S3Service{
         String uuid = UUID.randomUUID() + uploadVideoFile.getExtension();
         String originalFile = createUUIDName("games",folderId,uuid);
 
-        s3Dao.insertGameUUID(new TempDto(folderId,uuid));
+        s3Dao.insertGameUUID(new TempDTO(folderId,uuid));
 
         ObjectMetadata metadata = makeMetadata(uploadVideoFile.getFile());
 

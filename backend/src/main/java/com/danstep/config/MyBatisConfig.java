@@ -34,8 +34,8 @@ public class MyBatisConfig {
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
         sqlSessionFactoryBean.setDataSource(DataSource);
         sqlSessionFactoryBean.setMapperLocations(applicationContext.getResources(mPath));
-        sqlSessionFactoryBean.setTypeAliasesPackage("com.danstep.model");
-        sqlSessionFactoryBean.setTypeAliasesPackage("com.danstep.aws.model");
+        sqlSessionFactoryBean.setTypeAliasesPackage("com.danstep.model.dto");
+        sqlSessionFactoryBean.setTypeAliasesPackage("com.danstep.aws.model.dto");
         return sqlSessionFactoryBean.getObject();
     }
 

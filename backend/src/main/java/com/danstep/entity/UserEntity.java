@@ -1,4 +1,4 @@
-package com.danstep.model.entity;
+package com.danstep.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
