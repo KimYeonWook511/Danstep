@@ -14,4 +14,4 @@ const NeonButton: React.FC<ButtonProps> = ({ onClick, children }) => {
   );
 };
 
-export default React.memo(NeonButton);
+export default NeonButton;
