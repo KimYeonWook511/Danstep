@@ -29,6 +29,8 @@ const PoseEstimator: React.FC = () => {
 
   const [downloadedVideoUrl, setDownloadedVideoUrl] = useState<string | null>(null);
 
+  const videoRef = useRef<HTMLVideoElement>(null);
+
   const getVideoDuration = (file: File): Promise<number> => {
     return new Promise((resolve, reject) => {
       const video = document.createElement('video');
@@ -213,14 +215,25 @@ const PoseEstimator: React.FC = () => {
 
   const getUrlApi = async () => {
     try {
-      const downloadFileName = "4"
+      const response = await axios.get(`${baseUrl}/api/v1/games/1`);
 
-      const response_src = await axios.get(`${baseUrl}/api/v1/s3/getUrl/${downloadFileName}`, {
-        responseType: 'text',
-      });
+      console.log(response);
 
-      console.log(response_src);
-      setDownloadedVideoUrl(response_src.data);
+      const gameData = response.data;
+
+      if (gameData.fileData) {
+        // Base64 인코딩된 fileData를 Blob으로 변환
+        const byteCharacters = atob(gameData.fileData);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], { type: 'video/mp4' });
+        const url = URL.createObjectURL(blob);
+        videoRef.current!.src = url;
+      }
+
     } catch (error) {
       console.log(error);
     }
@@ -297,16 +310,13 @@ const PoseEstimator: React.FC = () => {
         <button type='submit'>프로필 업로드</button>
       </form>
 
-      {downloadedVideoUrl && (
         <video
-          src={downloadedVideoUrl}
-          controls
+          ref={videoRef}
           width='640'
           height='480'
         />
-      )}
       <div>
-        <button onClick={getUrlApi}>가져오기!</button>
+        <button type="button" onClick={getUrlApi}>가져오기!</button>
       </div>
     </div>
   );
