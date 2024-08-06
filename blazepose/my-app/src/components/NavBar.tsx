@@ -4,6 +4,7 @@ import logo from '../assets/logo.png';
 import trophy from '../assets/trophy.png';
 import LoginForm from './LoginForm';
 import SignUpModal from './SignUpModal';
+import './NavBar.css';  // 스타일을 위한 CSS 파일을 임포트합니다.
 
 const NavBar: FC = () => {
   const [showLoginForm, setShowLoginForm] = useState<boolean>(false);
@@ -29,38 +30,34 @@ const NavBar: FC = () => {
   }, []);
 
   return (
-    <div
-      ref={navRef}
-      className={`fixed top-0 w-full bg-purple-400 shadow-sm transition-all duration-300 z-50`}
-    >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <img className="h-12 w-auto" src={logo} alt="Logo" />
-            </div>
-            <div className={`ml-4 text-white text-lg font-semibold`}>
-              DanStep
-            </div>
+    <>
+      <div
+        ref={navRef}
+        className="nav-bar"
+      >
+        <div className="nav-content">
+          <div className="left-items">
+            <img className="h-12 w-auto logo" src={logo} alt="Logo" />
+            <div className="brand-name">DanStep</div>
           </div>
 
-          <div className="flex-1 flex flex-col items-center">
-            <div className={`flex space-x-4 mb-2 transition-all duration-300`}>
-              <Link to="/" className="text-white">Game</Link>
-              <div className="text-white">|</div>
-              <Link to="/ranking" className="text-white flex items-center">
+          <div className="center-items">
+            <div className="nav-links">
+              <Link to="/" className="nav-link">Game</Link>
+              <span className="separator">|</span>
+              <Link to="/ranking" className="nav-link flex items-center">
                 <span>Ranking</span>
-                <img src={trophy} alt="Trophy" className="h-6 w-6 ml-1" />
+                <img src={trophy} alt="Trophy" className="trophy-icon" />
               </Link>
             </div>
           </div>
 
-          <div className="flex items-center space-x-4">
-            <button onClick={() => setShowLoginForm(!showLoginForm)} className="text-white">로그인</button>
-            <button onClick={() => setShowSignUpModal(true)} className="text-white">회원가입</button>
-            <button className="bg-white p-2 rounded-full text-gray-400 hover:text-gray-500">
+          <div className="right-items">
+            <button onClick={() => setShowLoginForm(!showLoginForm)} className="nav-button">로그인</button>
+            <button onClick={() => setShowSignUpModal(true)} className="nav-button">회원가입</button>
+            <button className="profile-button">
               <span className="sr-only">User Profile</span>
-              <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+              <svg className="profile-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                 <path d="M10 0a10 10 0 100 20A10 10 0 1010 0zM5 15a6 6 0 0110 0H5zm5-9a3 3 0 100 6 3 3 0 000-6z" />
               </svg>
             </button>
@@ -69,7 +66,7 @@ const NavBar: FC = () => {
       </div>
       {showLoginForm && <LoginForm />}
       {showSignUpModal && <SignUpModal onClose={() => setShowSignUpModal(false)} />}
-    </div>
+    </>
   );
 };
 

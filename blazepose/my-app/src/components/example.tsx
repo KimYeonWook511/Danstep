@@ -45,7 +45,13 @@ export default class Example extends Component<{}, ExampleState> {
     {
       key: uuidv4(),
       content: <img src={image1} alt="1" />,
-      onClick: () => this.setState({ showGuide: true }), // 1번 이미지를 클릭하면 showGuide를 true로 설정
+      onClick: () => {
+        if (this.state.goToSlide === 0) {
+          this.setState({showGuide : true});
+        } else {
+          this.setState({ goToSlide: 0});
+        }
+      }
     },
     {
       key: uuidv4(),
@@ -93,15 +99,6 @@ export default class Example extends Component<{}, ExampleState> {
       onClick: () => this.setState({ goToSlide: 9 }),
     },
   ];
-  // ].map((slide, index) => {
-  //   return { ...slide, onClick: () => this.setState({ goToSlide: index }) };
-  // });
-
-  // onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   this.setState({
-  //     [e.target.name]: parseInt(e.target.value, 10) || 0
-  //   });
-  // };
 
   onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.setState((prevState: ExampleState) => ({
@@ -110,44 +107,20 @@ export default class Example extends Component<{}, ExampleState> {
     }));
   };
 
-  // onShowPoseEstimator = () => {
-  //   // Pose Estimator를 보여주는 로직을 여기에 추가하세요.
-  //   console.log("Showing Pose Estimator");
-  // };
-
-  // onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   this.setState({
-  //     [e.target.name]: parseInt(e.target.value, 10) || 0
-  //   });
-  // };
-
   onShowPoseEstimator = () => {
     this.setState({ showPoseEstimator: true });
   };
-
-  // const [showPoseEstimator, setShowPoseEstimator] = useState(false);
-
-  //   const handleShowPoseEstimator = () => {
-  //       setShowPoseEstimator(true);
-  //   };
 
   render() {
     return (
       <div style={{ width: '80%', height: '500px', margin: '0 auto' }}>
         {this.state.showGuide ? (
-          //    <div>
-          //    {!showPoseEstimator && <Guide onShowPoseEstimator={handleShowPoseEstimator} />}
-          //    {showPoseEstimator && <PoseEstimator />}
-          //    <h1 className="text-3xl font-bold underline">BlazePose with TensorFlow.js</h1>
-          //    <ChartTest />
-          //  </div>
 
           <div>
             {!this.state.showPoseEstimator && (
               <Guide onShowPoseEstimator={this.onShowPoseEstimator} />
             )}
             {this.state.showPoseEstimator && <PoseEstimator />}
-            {/* <h1 className="text-3xl font-bold underline">BlazePose with TensorFlow.js</h1> */}
             <ChartTest />
           </div>
         ) : (
