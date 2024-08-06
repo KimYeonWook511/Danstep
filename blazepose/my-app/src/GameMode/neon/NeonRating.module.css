@@ -16,6 +16,7 @@
   animation:
     neon 1.5s ease-in-out infinite alternate,
     fadeOut 3s forwards;
+  will-change: opacity, transform, text-shadow;
 }
 
 @keyframes neon {

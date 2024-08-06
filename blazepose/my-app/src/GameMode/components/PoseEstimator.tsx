@@ -11,7 +11,7 @@ import {
   keypointsDetected,
 } from '../utils/Verification';
 import { sendScores } from '../utils/Result';
-import { drawGreen, drawRed } from '../utils/DrawUtils';
+import { drawGreen, drawHandFoot, drawRed } from '../utils/DrawUtils';
 import { calculateScore } from '../utils/CalculateUtils';
 import { updateScores } from '../utils/ScoreUtils';
 import NeonButton from '../neon/NeonButton';
@@ -56,17 +56,16 @@ const PoseEstimator: React.FC = () => {
       const modelConfig = {
         runtime: 'mediapipe',
         modelType: 'full',
-        solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/pose/',
-        render3D: true,
+        solutionPath: '/pose/',
       };
       const detector = await createDetector(SupportedModels.BlazePose, modelConfig);
       const camdetector = await createDetector(SupportedModels.BlazePose, modelConfig);
-      const checkdetector = await createDetector(SupportedModels.BlazePose, modelConfig);
-      await detectFirstFrame(checkdetector, videoRef, firstFrameZ);
+      // const checkdetector = await createDetector(SupportedModels.BlazePose, modelConfig);
+      await detectFirstFrame(camdetector, videoRef, firstFrameZ);
 
       const checkAndDetect = async () => {
         if (checkAnimationRef.current == null) return;
-        const checkKeypoints = await checkdetectPose(checkdetector);
+        const checkKeypoints = await checkdetectPose(camdetector);
         isZAligned = await checkInitialZAlignment(camdetector, camRef, firstFrameZ);
         if (checkKeypoints && checkKeypoints.length > 0)
           iskeypoint = await keypointsDetected(checkKeypoints, requiredKeypointsIndices);
@@ -204,7 +203,9 @@ const PoseEstimator: React.FC = () => {
           camcanvasRef.current.width = camRef.current.videoWidth;
           camcanvasRef.current.height = camRef.current.videoHeight;
           const checkposes = await detector.estimatePoses(camRef.current);
-          if (checkposes[0]) drawRed(ctx, checkposes[0].keypoints);
+          if (checkposes[0]) {drawRed(ctx, checkposes[0].keypoints);
+            drawHandFoot(ctx,checkposes[0].keypoints);
+          };
           return checkposes[0]?.keypoints;
       }
   }
@@ -250,7 +251,7 @@ const PoseEstimator: React.FC = () => {
       </div>
       <RainbowHealthBar health={health.current} />
       <NeonCircle />
-      {/* <NeonRating /> */}
+      <NeonRating />
       {detectedArmsUp ? (
         <div className="container">
           <video ref={camRef} className="cam-video" style={{ display: 'none' }} autoPlay muted />

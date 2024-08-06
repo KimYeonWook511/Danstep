@@ -18,7 +18,7 @@ const changeRating = () => {
   setTimeout(() => {
     currentRating = null;
     self.postMessage({ action: 'updateRating', currentRating: null, color: '' });
-  }, 3000); // The rating text will disappear after 3 seconds
+  }, 500); // The rating text will disappear after 3 seconds
 };
 
 setInterval(changeRating, 4000); // Change rating every 4 seconds

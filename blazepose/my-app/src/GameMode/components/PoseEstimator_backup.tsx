@@ -57,6 +57,7 @@ const PoseEstimator: React.FC = () => {
         runtime: 'mediapipe',
         modelType: 'full',
         solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/pose/',
+        render3D: true,
       };
       const detector = await createDetector(SupportedModels.BlazePose, modelConfig);
       const camdetector = await createDetector(SupportedModels.BlazePose, modelConfig);
@@ -67,7 +68,7 @@ const PoseEstimator: React.FC = () => {
         if (checkAnimationRef.current == null) return;
         const checkKeypoints = await checkdetectPose(checkdetector);
         isZAligned = await checkInitialZAlignment(camdetector, camRef, firstFrameZ);
-        if (checkKeypoints)
+        if (checkKeypoints && checkKeypoints.length > 0)
           iskeypoint = await keypointsDetected(checkKeypoints, requiredKeypointsIndices);
         if (checkKeypoints && isArmsUp(checkKeypoints) && iskeypoint) {
           setDetectedArmsUp(true);
@@ -165,78 +166,49 @@ const PoseEstimator: React.FC = () => {
   const detectPose = useCallback(async (detector: PoseDetector) => {
     if (videoRef.current && camRef.current && canvasRef.current) {
       const ctx = canvasRef.current.getContext('2d');
-      const offscreenCtx = offscreenCanvasRef.current.getContext('2d');
       if (videoRef.current.paused || videoRef.current.ended) return;
-      if (ctx && offscreenCtx) {
-        offscreenCanvasRef.current.width = videoRef.current.videoWidth;
-        offscreenCanvasRef.current.height = videoRef.current.videoHeight;
-
-        const poses = await detector.estimatePoses(videoRef.current);
-        if (poses[0]) drawGreen(offscreenCtx, poses[0].keypoints);
-
-        ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-        canvasRef.current.width = videoRef.current.videoWidth;
-        canvasRef.current.height = videoRef.current.videoHeight;
-        ctx.drawImage(offscreenCanvasRef.current, 0, 0);
-        return poses[0].keypoints;
+      if (ctx) {
+          ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+          canvasRef.current.width = videoRef.current.videoWidth;
+          canvasRef.current.height = videoRef.current.videoHeight;
+        
+          const poses = await detector.estimatePoses(videoRef.current);
+          if (poses[0]) drawGreen(ctx, poses[0].keypoints);
+          return poses[0]?.keypoints;
       }
-      return undefined;
-    }
+  }
+
   }, []);
 
   const camdetectPose = useCallback(async (detector: PoseDetector) => {
     if (videoRef.current && camRef.current && camcanvasRef.current) {
       const ctx = camcanvasRef.current.getContext('2d');
-      const offscreenCtx = offscreenCanvasRef.current.getContext('2d');
       if (videoRef.current.paused || videoRef.current.ended) return;
-      if (ctx && offscreenCtx) {
-        offscreenCanvasRef.current.width = camRef.current.videoWidth;
-        offscreenCanvasRef.current.height = camRef.current.videoHeight;
-
-        offscreenCtx.clearRect(
-          0,
-          0,
-          offscreenCanvasRef.current.width,
-          offscreenCanvasRef.current.height
-        );
-        const camposes = await detector.estimatePoses(camRef.current);
-        if (camposes[0]) drawRed(offscreenCtx, camposes[0].keypoints);
-
-        ctx.clearRect(0, 0, camcanvasRef.current.width, camcanvasRef.current.height);
-        camcanvasRef.current.width = camRef.current.videoWidth;
-        camcanvasRef.current.height = camRef.current.videoHeight;
-        ctx.drawImage(offscreenCanvasRef.current, 0, 0);
-        return camposes[0].keypoints;
+      if (ctx) {
+          ctx.clearRect(0, 0, camcanvasRef.current.width, camcanvasRef.current.height);
+          camcanvasRef.current.width = camRef.current.videoWidth;
+          camcanvasRef.current.height = camRef.current.videoHeight;
+          const camposes = await detector.estimatePoses(camRef.current);
+          if (camposes[0]) drawRed(ctx, camposes[0].keypoints);
+          return camposes[0]?.keypoints;
       }
-    }
-    return undefined;
+  }
+
   }, []);
 
   const checkdetectPose = useCallback(async (detector: PoseDetector) => {
     if (camRef.current && camcanvasRef.current) {
       const ctx = camcanvasRef.current.getContext('2d');
-      const offscreenCtx = offscreenCanvasRef.current.getContext('2d');
-      if (ctx && offscreenCtx) {
-        offscreenCanvasRef.current.width = camRef.current.videoWidth;
-        offscreenCanvasRef.current.height = camRef.current.videoHeight;
-
-        offscreenCtx.clearRect(
-          0,
-          0,
-          offscreenCanvasRef.current.width,
-          offscreenCanvasRef.current.height
-        );
-        const checkposes = await detector.estimatePoses(camRef.current);
-        if (checkposes[0]) drawRed(offscreenCtx, checkposes[0].keypoints);
-
-        ctx.clearRect(0, 0, camcanvasRef.current.width, camcanvasRef.current.height);
-        camcanvasRef.current.width = camRef.current.videoWidth;
-        camcanvasRef.current.height = camRef.current.videoHeight;
-        ctx.drawImage(offscreenCanvasRef.current, 0, 0);
-        return checkposes[0].keypoints;
+      if (ctx) {
+          ctx.clearRect(0, 0, camcanvasRef.current.width, camcanvasRef.current.height);
+          camcanvasRef.current.width = camRef.current.videoWidth;
+          camcanvasRef.current.height = camRef.current.videoHeight;
+          const checkposes = await detector.estimatePoses(camRef.current);
+          if (checkposes[0]) drawRed(ctx, checkposes[0].keypoints);
+          return checkposes[0]?.keypoints;
       }
-    }
-    return undefined;
+  }
+
   }, []);
 
   useEffect(() => {
@@ -278,13 +250,13 @@ const PoseEstimator: React.FC = () => {
       </div>
       <RainbowHealthBar health={health.current} />
       <NeonCircle />
-      <NeonRating />
+      {/* <NeonRating /> */}
       {detectedArmsUp ? (
         <div className="container">
-          <video ref={camRef} className="cam-video" style={{ display: 'none' }} autoPlay />
+          <video ref={camRef} className="cam-video" style={{ display: 'none' }} autoPlay muted />
           <video ref={videoRef} className="game-video" style={{ display: 'none' }} autoPlay />
 
-          <canvas ref={camcanvasRef} className="canvas cam-canvas" />
+          <canvas ref={camcanvasRef} className="canvas cam-canvas" style={{ transform: 'scaleX(-1)' }}/>
           <canvas ref={canvasRef} className="canvas video-canvas" />
 
           {isFinished && (
@@ -301,7 +273,7 @@ const PoseEstimator: React.FC = () => {
         <div className="container">
           <video ref={camRef} className="cam-video" autoPlay muted />
           <video ref={videoRef} className="game-video" autoPlay muted />
-          <canvas ref={camcanvasRef} className="canvas cam-canvas" />
+          <canvas ref={camcanvasRef} className="canvas cam-canvas" style={{ transform: 'scaleX(-1)' }}/>
           <canvas ref={canvasRef} className="canvas video-canvas" />
         </div>
       )}
