@@ -17,7 +17,8 @@ const JOINTS = [
 const PoseEstimator: React.FC = () => {
   // const baseUrl = 'https://danstep-backend-container:8080';
   // const baseUrl = 'http://localhost:8080';
-  const baseUrl = 'https://danstep-backend-container:8080';
+  // const baseUrl = 'https://danstep-backend-container:8080';
+  const baseUrl = 'https://i11a406.p.ssafy.io';
 
   const [downloadFileName, setDownloadFileName] = useState('');
   const [uploadFileName, setUploadFileName] = useState('');
