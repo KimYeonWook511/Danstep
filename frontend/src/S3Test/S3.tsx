@@ -17,7 +17,7 @@ const JOINTS = [
 const PoseEstimator: React.FC = () => {
   // const baseUrl = 'https://danstep-backend-container:8080';
   // const baseUrl = 'http://localhost:8080';
-  const baseUrl = 'http://danstep-backend-container:8080';
+  const baseUrl = 'https://danstep-backend-container:8080';
 
   const [downloadFileName, setDownloadFileName] = useState('');
   const [uploadFileName, setUploadFileName] = useState('');
@@ -240,6 +240,16 @@ const PoseEstimator: React.FC = () => {
     }
   };
 
+  const apiTest = async () => {
+    try {
+      const response = await axios.get(`${baseUrl}/api/v1/test/hi`);
+
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div style={{marginTop:'100px'}}>
       <form
@@ -318,6 +328,7 @@ const PoseEstimator: React.FC = () => {
         />
       <div>
         <button type="button" onClick={getUrlApi}>가져오기!</button>
+        <button type="button" onClick={apiTest}>apiTest!</button>
       </div>
     </div>
   );
