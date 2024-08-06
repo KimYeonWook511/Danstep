@@ -11,7 +11,7 @@ import {
   keypointsDetected,
 } from '../utils/Verification';
 import { sendScores } from '../utils/Result';
-import { drawGreen, drawRed } from '../utils/DrawUtils';
+import { drawGreen, drawRed,drawHandFoot } from '../utils/DrawUtils';
 import { calculateScore } from '../utils/CalculateUtils';
 import { updateScores } from '../utils/ScoreUtils';
 import NeonButton from '../neon/NeonButton';
@@ -39,7 +39,6 @@ const PoseEstimator: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const camcanvasRef = useRef<HTMLCanvasElement>(null);
-  const offscreenCanvasRef = useRef<HTMLCanvasElement>(document.createElement('canvas'));
 
   const checkAnimationRef = useRef<number | null>(null);
   const animationFrameIdRef = useRef<number | null>(null);
@@ -59,7 +58,6 @@ const PoseEstimator: React.FC = () => {
   const [detectedArmsUp, setDetectedArmsUp] = useState<boolean>(false);
   const [scores, setScores] = useState<number[]>([]);
   const [isFinished, setIsFinished] = useState<boolean>(false);
-  const [poseKeypoints, setPoseKeypoints] = useState<any[]>([]);
 
   const init = useCallback(async () => {
     await tf.setBackend('webgl');
@@ -94,7 +92,7 @@ const PoseEstimator: React.FC = () => {
               if (!startTime) startTime = timestamp;
               const elapsed = timestamp - startTime;
               const seconds = Math.floor(elapsed / 1000);
-              console.log(timestamp, startTime, seconds)
+              // console.log(timestamp, startTime, seconds)
               if (seconds > lastLoggedSecond && seconds <= 3) {
                 lastLoggedSecond = seconds;
                 console.log(`${seconds} second${seconds > 1 ? 's' : ''}`);
@@ -129,7 +127,6 @@ const PoseEstimator: React.FC = () => {
                     }
                     return newScores;
                   });
-                  setPoseKeypoints(posesKeypoints || []);
                   animationFrameIdRef.current = requestAnimationFrame(detectAndScore);
                 };
                 detectAndScore();
@@ -218,7 +215,7 @@ const PoseEstimator: React.FC = () => {
           camcanvasRef.current.height = camRef.current.videoHeight;
           const checkposes = await detector.estimatePoses(camRef.current);
           if (checkposes[0]) {drawRed(ctx, checkposes[0].keypoints);
-            // drawHandFoot(ctx,checkposes[0].keypoints);
+            drawHandFoot(ctx,checkposes[0].keypoints);
           };
           return checkposes[0]?.keypoints;
       }
@@ -244,7 +241,6 @@ const PoseEstimator: React.FC = () => {
     setIsFinished(false);
     setScores([]);
     firstFrameZ.current = [];
-    setPoseKeypoints([]);
     init();
   };
 
@@ -324,8 +320,8 @@ const PoseEstimator: React.FC = () => {
         </div>
       ) : (
         <div className="container">
-          <video ref={camRef} className="cam-video" autoPlay muted />
-          <video ref={videoRef} className="game-video" autoPlay muted />
+          <video ref={camRef} className="cam-video" style={{display:'none'}} autoPlay muted />
+          <video ref={videoRef} className="game-video" style={{display:'none'}} autoPlay muted />
           <canvas ref={camcanvasRef} className="canvas cam-canvas" style={{ transform: 'scaleX(-1)' }}/>
           <canvas ref={canvasRef} className="canvas video-canvas" />
         </div>
