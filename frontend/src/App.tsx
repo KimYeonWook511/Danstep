@@ -3,7 +3,7 @@
 // import ChartTest from './mypage/components/ChartTest';
 // import Guide from './components/Guide';
 
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import MainPage from './components/MainPage';
 import Ranking from './components/Ranking';
 import NavBar from './components/NavBar';
@@ -19,12 +19,15 @@ const App: React.FC = () => {
     return (
 
         <Router>
-        <NavBar />
-        <Routes>
-          <Route path="/" element={<MainPage />} />
-          <Route path="/ranking" element={<Ranking />} />
-          <Route path="/kyw/test" element={<S3/>}/>
-        </Routes>
+            <NavBar />
+            <Routes>
+            <Route path="/" element={<MainPage />} />
+            <Route path="/ranking" element={<Ranking />} />
+            <Route path="/kyw/test" element={<S3/>}/>
+            </Routes>
+            <Routes>
+                <Route path="/api/*" element={<Navigate to="/" />} />
+            </Routes>
       
 {/* 
         <div>
