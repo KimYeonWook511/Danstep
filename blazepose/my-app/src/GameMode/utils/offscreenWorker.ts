@@ -1,7 +1,8 @@
+/* eslint-disable*/
 import { Keypoint, SupportedModels, util } from '@tensorflow-models/pose-detection';
 
 const drawKeypoints = (
-  ctx: CanvasRenderingContext2D,
+  ctx: OffscreenCanvasRenderingContext2D,
   keypoints: Keypoint[],
   color: string,
   neonColor: string
@@ -9,8 +10,8 @@ const drawKeypoints = (
   ctx.fillStyle = color;
   ctx.strokeStyle = color;
   ctx.lineWidth = 12;
-  ctx.lineCap = 'round'; // 선의 끝을 둥글게 설정
-  ctx.lineJoin = 'round'; // 선의 연결 부분을 둥글게 설정
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
 
   ctx.save();
   ctx.scale(-1, 1);
@@ -62,10 +63,16 @@ const drawKeypoints = (
   ctx.restore();
 };
 
-export const drawGreen = (ctx: CanvasRenderingContext2D, keypoints: Keypoint[]) => {
-  drawKeypoints(ctx, keypoints, 'rgba(0,255,0,0.5)', 'rgba(0, 255, 0, 1)');
-};
+self.onmessage = (event) => {
+  const { canvas, keypoints, color, canvasId } = event.data;
+  const ctx = canvas.getContext('2d') as OffscreenCanvasRenderingContext2D;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-export const drawRed = (ctx: CanvasRenderingContext2D, keypoints: Keypoint[]) => {
-  drawKeypoints(ctx, keypoints, 'rgba(255,0,0,0.5)', 'rgba(255, 0, 0, 1)');
+  if (keypoints && keypoints.length > 0) {
+    drawKeypoints(ctx, keypoints, color, color);
+  }
+
+  // 오프스크린 캔버스의 내용을 이미지 데이터로 변환하여 주 스레드에 전송
+  const imageBitmap = canvas.transferToImageBitmap();
+  self.postMessage({ status: 'done', imageBitmap, canvasId });
 };

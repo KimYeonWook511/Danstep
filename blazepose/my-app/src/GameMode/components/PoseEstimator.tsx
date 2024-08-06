@@ -11,7 +11,6 @@ import {
   keypointsDetected,
 } from '../utils/Verification';
 import { sendScores } from '../utils/Result';
-import { drawGreen, drawRed } from '../utils/DrawUtils';
 import { calculateScore } from '../utils/CalculateUtils';
 import { updateScores } from '../utils/ScoreUtils';
 import NeonButton from '../neon/NeonButton';
@@ -20,13 +19,13 @@ import RainbowHealthBar from '../neon/RainbowHealthBar';
 import NeonCircle from '../neon/NeonCircle';
 import ScoreDisplay from '../neon/ScoreDisplay';
 import ThreeStars from '../neon/ThreeStars';
+import { drawRed, drawGreen } from '../utils/DrawUtils';
 
 const PoseEstimator: React.FC = () => {
   const camRef = useRef<HTMLVideoElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const camcanvasRef = useRef<HTMLCanvasElement>(null);
-  const offscreenCanvasRef = useRef<HTMLCanvasElement>(document.createElement('canvas'));
 
   const checkAnimationRef = useRef<number | null>(null);
   const animationFrameIdRef = useRef<number | null>(null);
