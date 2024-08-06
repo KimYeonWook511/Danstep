@@ -8,6 +8,7 @@ import musicbar3 from '../../assets/lottie/musicbar3.json';
 import musicbar4 from '../../assets/lottie/musicbar4.json';
 
 import 'tailwindcss/tailwind.css';
+import './Bounce.css'
 
 const animations = [bounce, bounce, bounce, bounce]; // 동일한 애니메이션을 여러 번 사용
 
@@ -21,7 +22,7 @@ const LottieAnimations = () => {
   };
 
   return (
-    <div className="relative w-screen h-screen">
+    <div className="bounce relative w-screen h-screen">
       {/* 네 방향 애니메이션
       <div className="absolute top-0 left-0 p-5">
         <Lottie

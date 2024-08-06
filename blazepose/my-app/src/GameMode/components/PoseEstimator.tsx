@@ -11,7 +11,7 @@ import {
   keypointsDetected,
 } from '../utils/Verification';
 import { sendScores } from '../utils/Result';
-import { drawGreen, drawHandFoot, drawRed } from '../utils/DrawUtils';
+import { drawGreen, drawRed } from '../utils/DrawUtils';
 import { calculateScore } from '../utils/CalculateUtils';
 import { updateScores } from '../utils/ScoreUtils';
 import NeonButton from '../neon/NeonButton';
@@ -20,6 +20,19 @@ import RainbowHealthBar from '../neon/RainbowHealthBar';
 import NeonCircle from '../neon/NeonCircle';
 import ScoreDisplay from '../neon/ScoreDisplay';
 import ThreeStars from '../neon/ThreeStars';
+import Bounce from '../animations/Bounce'
+
+import Lottie from 'react-lottie';
+import bounce from '../../assets/lottie/bounce.json';
+import android from '../../assets/lottie/danceroid.json';
+import firework from '../../assets/lottie/firework.json';
+// import firework2 from '../../assets/lottie/firework2.json';
+import musicbar3 from '../../assets/lottie/musicbar3.json';
+import musicbar4 from '../../assets/lottie/musicbar4.json';
+
+import 'tailwindcss/tailwind.css';
+import '../animations/Bounce.css'
+
 
 const PoseEstimator: React.FC = () => {
   const camRef = useRef<HTMLVideoElement>(null);
@@ -81,6 +94,7 @@ const PoseEstimator: React.FC = () => {
               if (!startTime) startTime = timestamp;
               const elapsed = timestamp - startTime;
               const seconds = Math.floor(elapsed / 1000);
+              console.log(timestamp, startTime, seconds)
               if (seconds > lastLoggedSecond && seconds <= 3) {
                 lastLoggedSecond = seconds;
                 console.log(`${seconds} second${seconds > 1 ? 's' : ''}`);
@@ -204,7 +218,7 @@ const PoseEstimator: React.FC = () => {
           camcanvasRef.current.height = camRef.current.videoHeight;
           const checkposes = await detector.estimatePoses(camRef.current);
           if (checkposes[0]) {drawRed(ctx, checkposes[0].keypoints);
-            drawHandFoot(ctx,checkposes[0].keypoints);
+            // drawHandFoot(ctx,checkposes[0].keypoints);
           };
           return checkposes[0]?.keypoints;
       }
@@ -234,6 +248,14 @@ const PoseEstimator: React.FC = () => {
     init();
   };
 
+    const defaultOptions = {
+      loop: true,
+      autoplay: true,
+      rendererSettings: {
+        preserveAspectRatio: 'xMidYMid slice',
+      },
+    };
+
   return (
     <div className="Neon">
       <ThreeStars />
@@ -251,7 +273,37 @@ const PoseEstimator: React.FC = () => {
       </div>
       <RainbowHealthBar health={health.current} />
       <NeonCircle />
-      <NeonRating />
+      {/* <NeonRating /> */}
+      
+        <div className="absolute top-0 left-0 p-5">
+        <Lottie
+          options={{ ...defaultOptions, animationData: firework }}
+          height={300}
+          width={300}
+        />
+      </div>
+      <div className="absolute top-0 right-0 p-5">
+        <Lottie
+          options={{ ...defaultOptions, animationData: firework }}
+          height={300}
+          width={300}
+        />
+      </div>
+      <div className="absolute bottom-0 left-0">
+        <Lottie
+          options={{ ...defaultOptions, animationData: musicbar3 }}
+          height={400} 
+          width={300}  
+        />
+      </div>
+      <div className="absolute bottom-0 right-0 p-3" style={{ transform: 'scaleX(-1)' }}>
+        <Lottie
+          options={{ ...defaultOptions, animationData: musicbar4 }}
+          height={400}
+          width={300}
+        />
+      </div> 
+      
       {detectedArmsUp ? (
         <div className="container">
           <video ref={camRef} className="cam-video" style={{ display: 'none' }} autoPlay muted />
