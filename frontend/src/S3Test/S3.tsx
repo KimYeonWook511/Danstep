@@ -217,7 +217,8 @@ const PoseEstimator: React.FC = () => {
 
   const getUrlApi = async () => {
     try {
-      const response = await axios.get(`${baseUrl}/api/v1/games/1`);
+      // const response = await axios.get(`${baseUrl}/api/v1/games/1`);
+      const response = await axios.get(`/api/v1/games/1`); // 상대 경로로 수정
 
       console.log(response);
 
