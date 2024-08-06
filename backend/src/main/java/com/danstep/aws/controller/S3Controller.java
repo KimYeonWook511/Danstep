@@ -2,12 +2,14 @@ package com.danstep.aws.controller;
 
 import com.danstep.aws.model.dto.GameInfoDTO;
 import com.danstep.aws.model.service.S3Service;
+import com.danstep.aws.model.service.S3ServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.http.HttpResponse;
 
 @RestController
 @RequestMapping("/api/v1/s3")
@@ -17,7 +19,7 @@ public class S3Controller {
 
     private final S3Service s3Service;
 
-    public S3Controller(S3Service s3Service) {
+    public S3Controller(S3ServiceImpl s3Service) {
         this.s3Service = s3Service;
     }
 
@@ -85,10 +87,38 @@ public class S3Controller {
     @GetMapping("/getUrl/{fileName}")
     public String getUrl(@PathVariable String fileName) throws IOException{
         System.out.println("지금 나를 부른건가>???");
-        String ex = s3Service.getUrl(fileName);
+//        String ex = s3Service.getUrl(fileName);
+
+//        String uuid = s3Dao.getGameUUID(fileName);
+//        String path = "games"+"/"+originalFileName+"/"+uuid;
+        String ex = "https://d3gnfa5yiksyfe.cloudfront.net/games" + "/" + "4" + "/" + "cab86047-4688-440b-a35d-8baafc423613.mp4";
+//        System.out.println("경로입니다 ==>" + path);
+//        return "https://"+cloudFrontDomain+"/"+path;
+
         System.out.println("url  ==>  "+ex);
         return ex;
     }
 
-
+//    @GetMapping("/games/{gameId}")
+//    public ResponseEntity<byte[]> getGame(@PathVariable Integer gameId) throws IOException {
+//        if (gameId == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//
+//        HttpResponse<byte[]> response = s3Service.getFile(1);
+//
+//        if (response.statusCode() == HttpStatus.OK.value()) {
+//            byte[] videoBytes = response.body();
+//            ByteArrayResource resource = new ByteArrayResource(videoBytes);
+//
+//            // HTTP 응답 반환
+//            return ResponseEntity.ok()
+//                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + videoName + "\"")
+//                    .contentLength(videoBytes.length)
+//                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+//                    .body(resource);
+//        } else {
+//            return ResponseEntity.status(response.statusCode()).build();
+//        }
+//
+//        return new ResponseEntity<>(, HttpStatus.OK);
+//    }
 }

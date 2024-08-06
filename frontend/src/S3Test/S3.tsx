@@ -15,7 +15,8 @@ const JOINTS = [
 ];
 
 const PoseEstimator: React.FC = () => {
-  const baseUrl = 'http://danstep-backend-container:8080';
+  // const baseUrl = 'http://danstep-backend-container:8080';
+  const baseUrl = 'http://localhost:8080';
 
   const [downloadFileName, setDownloadFileName] = useState('');
   const [uploadFileName, setUploadFileName] = useState('');
@@ -111,7 +112,7 @@ const PoseEstimator: React.FC = () => {
         formData.append('profile', uploadProfile!);
         console.log('\n\n\n\n\n\n\n\n\n내부입니다!\n\n\n\n\n\n\n\n\n');
 
-        const response = await axios.post(`${baseUrl}/s3/upload-profile`, formData, {
+        const response = await axios.post(`${baseUrl}/api/v1/s3/profile`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -148,7 +149,7 @@ const PoseEstimator: React.FC = () => {
         // console.log(uploadFileName.split('.').join('.'));
         // console.log(uploadFileName.split('.').pop()!);
 
-        const response = await axios.post(`${baseUrl}/s3/upload-video`, formData, {
+        const response = await axios.post(`${baseUrl}/api/v1/s3/video`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -167,13 +168,13 @@ const PoseEstimator: React.FC = () => {
     console.log('\n\nHello World\n\n');
     if (downloadFileName) {
       try {
-        const response = await axios.get(`${baseUrl}/s3/download/${downloadFileName}`, {
+        const response = await axios.get(`${baseUrl}/api/v1/s3/download/${downloadFileName}`, {
           responseType: 'blob', // 중요한 부분: 파일을 blob 형태로 받기 위해 설정
         });
         console.log(response);
         // Blob을 사용하여 파일 다운로드 처리
 
-        const response_src = await axios.get(`${baseUrl}/s3/getUrl/${downloadFileName}`, {
+        const response_src = await axios.get(`${baseUrl}/api/v1/s3/getUrl/${downloadFileName}`, {
           responseType: 'text',
         });
 
@@ -207,6 +208,21 @@ const PoseEstimator: React.FC = () => {
       }
     } else {
       console.log('Please enter a file name.');
+    }
+  };
+
+  const getUrlApi = async () => {
+    try {
+      const downloadFileName = "4"
+
+      const response_src = await axios.get(`${baseUrl}/api/v1/s3/getUrl/${downloadFileName}`, {
+        responseType: 'text',
+      });
+
+      console.log(response_src);
+      setDownloadedVideoUrl(response_src.data);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -289,6 +305,9 @@ const PoseEstimator: React.FC = () => {
           height='480'
         />
       )}
+      <div>
+        <button onClick={getUrlApi}>가져오기!</button>
+      </div>
     </div>
   );
 };
