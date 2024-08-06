@@ -1,42 +1,93 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './NeonRating.module.css';
-
-const worker = new Worker(new URL('./NeonRatingWorker.ts', import.meta.url));
+import firework2 from '../../assets/lottie/firework2.json';
+import LottieComponent from '../animations/LottieComponent';
 
 type Rating = 'PERFECT' | 'GREAT' | 'GOOD' | 'BAD';
 
+const ratings: Rating[] = ['PERFECT', 'GREAT', 'GOOD', 'BAD'];
+const colors: Record<Rating, string> = {
+  PERFECT: '#48cae4',
+  GREAT: '#0f0',
+  GOOD: '#ff0',
+  BAD: '#f00',
+};
+
 const NeonRating: React.FC = () => {
-  const [currentRating, setCurrentRating] = useState<Rating | null>(null);
-  const [color, setColor] = useState<string>('');
+  const animationDuration = 7000; // 애니메이션과 텍스트 지속 시간 (고정)
+
+  const [currentRating, setCurrentRating] = useState<Rating | null>('PERFECT');
 
   useEffect(() => {
-    const handleWorkerMessages = (event: MessageEvent) => {
-      const { action, currentRating, color } = event.data;
+    const intervalId = setInterval(() => {
+      const randomRating = ratings[Math.floor(Math.random() * ratings.length)];
+      setCurrentRating(randomRating);
 
-      if (action === 'updateRating') {
-        setCurrentRating(currentRating);
-        setColor(color);
-      }
-    };
+      const displayDuration = randomRating === 'PERFECT' ? animationDuration : 3000;
 
-    worker.onmessage = handleWorkerMessages;
+      setTimeout(() => {
+        setCurrentRating(null);
+      }, displayDuration);
+    }, 6000); // 6초마다 평점 변경
 
-    return () => {
-      worker.terminate();
-    };
-  }, []);
-
-  const ratingStyle = useMemo(() => ({ '--rating-color': color } as React.CSSProperties), [color]);
+    return () => clearInterval(intervalId);
+  }, [animationDuration]); // animationDuration이 변할 때만 useEffect를 실행
 
   return (
     <div className={styles.ratingContainer}>
-      {currentRating && (
-        <div className={styles.ratingText} style={ratingStyle}>
-          {currentRating}
+      {currentRating === 'PERFECT' && (
+        <div className={styles.perfectContainer}>
+          <div className={styles.lottieContainer}>
+            <LottieComponent
+              animationData={firework2}
+              loop={false}
+              autoplay={true}
+              speed={1} // 속도 설정
+              onComplete={() => {
+                setTimeout(() => {
+                  setCurrentRating(null);
+                }, animationDuration); // 애니메이션 완료 후 텍스트 제거
+              }}
+            />
+          </div>
+          <div
+            className={styles.ratingText}
+            style={
+              {
+                '--rating-color': colors[currentRating],
+                '--rating-color-shadow': colors[currentRating],
+                '--rating-color-shadow-light': colors[currentRating],
+              } as React.CSSProperties
+            }
+          >
+            {currentRating.split('').map((char, index) => (
+              <span key={index} className={index % 2 === 0 ? '' : styles.light}>
+                {char}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+      {currentRating && currentRating !== 'PERFECT' && (
+        <div
+          className={styles.ratingText}
+          style={
+            {
+              '--rating-color': colors[currentRating],
+              '--rating-color-shadow': colors[currentRating],
+              '--rating-color-shadow-light': colors[currentRating],
+            } as React.CSSProperties
+          }
+        >
+          {currentRating.split('').map((char, index) => (
+            <span key={index} className={index % 2 === 0 ? '' : styles.light}>
+              {char}
+            </span>
+          ))}
         </div>
       )}
     </div>
   );
 };
 
-export default React.memo(NeonRating);
+export default NeonRating;

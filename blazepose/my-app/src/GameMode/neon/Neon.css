@@ -13,3 +13,22 @@ body {
   justify-content: center;
   height: 100vh;
 }
+
+.danceroid-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.danceroid-wrapper > :first-child {
+  margin : 0px; 
+}
+
+.danceroid-wrapper > :last-child {
+  margin-left: 0px;
+}
+
+.score-container {
+ /* margin-left : 50px; */
+ margin-right:200px;
+}
