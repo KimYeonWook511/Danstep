@@ -50,11 +50,3 @@ body {
 .game-video {
   display: none;
 }
-
-.health-bar {
-  position: absolute;
-  top: 50%;
-  right: -100px; /* Adjust as necessary to move the health bar outside the canvas */
-  transform: translateY(-50%);
-  z-index: 10;
-}

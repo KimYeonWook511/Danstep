@@ -1,38 +1,37 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import styles from './NeonRating.module.css';
+
+const worker = new Worker(new URL('./NeonRatingWorker.ts', import.meta.url));
 
 type Rating = 'PERFECT' | 'GREAT' | 'GOOD' | 'BAD';
 
-const ratings: Rating[] = ['PERFECT', 'GREAT', 'GOOD', 'BAD'];
-const colors: Record<Rating, string> = {
-  PERFECT: '#0fa',
-  GREAT: '#0f0',
-  GOOD: '#ff0',
-  BAD: '#f00',
-};
-
 const NeonRating: React.FC = () => {
   const [currentRating, setCurrentRating] = useState<Rating | null>(null);
+  const [color, setColor] = useState<string>('');
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      const randomRating = ratings[Math.floor(Math.random() * ratings.length)];
-      setCurrentRating(randomRating);
-      setTimeout(() => {
-        setCurrentRating(null);
-      }, 3000); // The rating text will disappear after 3 seconds
-    }, 4000); // Change rating every 4 seconds
+    const handleWorkerMessages = (event: MessageEvent) => {
+      const { action, currentRating, color } = event.data;
 
-    return () => clearInterval(interval);
+      if (action === 'updateRating') {
+        setCurrentRating(currentRating);
+        setColor(color);
+      }
+    };
+
+    worker.onmessage = handleWorkerMessages;
+
+    return () => {
+      worker.terminate();
+    };
   }, []);
+
+  const ratingStyle = useMemo(() => ({ '--rating-color': color } as React.CSSProperties), [color]);
 
   return (
     <div className={styles.ratingContainer}>
       {currentRating && (
-        <div
-          className={styles.ratingText}
-          style={{ '--rating-color': colors[currentRating] } as React.CSSProperties}
-        >
+        <div className={styles.ratingText} style={ratingStyle}>
           {currentRating}
         </div>
       )}
@@ -40,4 +39,4 @@ const NeonRating: React.FC = () => {
   );
 };
 
-export default NeonRating;
+export default React.memo(NeonRating);

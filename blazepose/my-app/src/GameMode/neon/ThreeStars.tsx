@@ -1,14 +1,19 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
+const worker = new Worker(new URL('./ThreeStarsWorker.ts', import.meta.url));
+
 const ThreeStars: React.FC = () => {
   const mountRef = useRef<HTMLDivElement>(null);
+  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
+  const sceneRef = useRef<THREE.Scene | null>(null);
+  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
+  const starsRef = useRef<THREE.Points | null>(null);
 
   useEffect(() => {
     const mount = mountRef.current;
     if (!mount) return;
 
-    // Scene, Camera, Renderer 생성
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(
       75,
@@ -16,17 +21,15 @@ const ThreeStars: React.FC = () => {
       0.1,
       1000
     );
-    const renderer = new THREE.WebGLRenderer();
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     mount.appendChild(renderer.domElement);
 
-    // 별 생성
     const starGeometry = new THREE.BufferGeometry();
     const starMaterial = new THREE.PointsMaterial({ color: 0xffffff });
 
-    const starVertices = [];
+    const starVertices: number[] = [];
     for (let i = 0; i < 1000; i++) {
-      // 별 개수 줄이기
       const x = THREE.MathUtils.randFloatSpread(2000);
       const y = THREE.MathUtils.randFloatSpread(2000);
       const z = THREE.MathUtils.randFloatSpread(2000);
@@ -39,16 +42,22 @@ const ThreeStars: React.FC = () => {
 
     camera.position.z = 1;
 
-    const animate = () => {
-      requestAnimationFrame(animate);
-      stars.rotation.x += 0.0005;
-      stars.rotation.y += 0.0005;
-      renderer.render(scene, camera);
+    sceneRef.current = scene;
+    cameraRef.current = camera;
+    rendererRef.current = renderer;
+    starsRef.current = stars;
+
+    const handleWorkerMessages = (event: MessageEvent) => {
+      if (event.data.action === 'updateStars') {
+        const { rotationX, rotationY } = event.data;
+        stars.rotation.x = rotationX;
+        stars.rotation.y = rotationY;
+        renderer.render(scene, camera);
+      }
     };
 
-    animate();
+    worker.onmessage = handleWorkerMessages;
 
-    // 리사이즈 이벤트 핸들러
     const handleResize = () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
@@ -57,13 +66,16 @@ const ThreeStars: React.FC = () => {
 
     window.addEventListener('resize', handleResize);
 
+    worker.postMessage({ action: 'start' });
+
     return () => {
       mount.removeChild(renderer.domElement);
       window.removeEventListener('resize', handleResize);
+      worker.terminate();
     };
   }, []);
 
   return <div ref={mountRef} style={{ position: 'fixed', top: 0, left: 0, zIndex: -1 }} />;
 };
 
-export default ThreeStars;
+export default React.memo(ThreeStars);

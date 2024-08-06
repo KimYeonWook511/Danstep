@@ -30,7 +30,7 @@ export const detectFirstFrame = async (detector: PoseDetector, videoRef: React.R
             firstFrameZ.current = poses[0].keypoints.map(kp => kp.z || 0);
             videoRef.current.pause();
         } else {
-            console.log("Required keypoints not detected in the first frame.");
+            // console.log("Required keypoints not detected in the first frame.");
         }
     }
 };
@@ -41,10 +41,10 @@ export const checkInitialZAlignment = async (detector: PoseDetector, camRef: Rea
         if (camposes[0]) {
             const camZ = camposes[0].keypoints.map(kp => kp.z || 0);
             const alignmentScore = calculateZAlignment(firstFrameZ.current, camZ);
-            console.log(`Initial Z alignment score: ${alignmentScore}`);
+            // console.log(`Initial Z alignment score: ${alignmentScore}`);
             return alignmentScore > 0.7; // 유사도 임계값을 0.7로 설정
         } else {
-            console.log("Required keypoints not detected in the camera frame.");
+            // console.log("Required keypoints not detected in the camera frame.");
         }
     }
     return false;

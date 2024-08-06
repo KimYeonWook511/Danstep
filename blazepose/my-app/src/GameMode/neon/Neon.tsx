@@ -6,7 +6,7 @@ import './Neon.css'; // Ensure global styles are included
 import './TopBar.css'; // Add this line to include your custom CSS
 import NeonCircle from './NeonCircle';
 import ScoreDisplay from './ScoreDisplay';
-import ThreeStars from './ThreeStars';
+// import ThreeStars from './ThreeStars';
 
 const App: React.FC = () => {
   const [health, setHealth] = useState(100);
@@ -30,7 +30,7 @@ const App: React.FC = () => {
 
   return (
     <div className="Neon">
-      <ThreeStars />
+      {/* <ThreeStars /> */}
       <div className="topBar">
         <div className="left">
           <NeonButton onClick={goBack}>Back</NeonButton>

@@ -41,4 +41,4 @@ const NeonCircle: React.FC = () => {
   return <div className={`${styles.neonCircle} ${isBursting ? styles.burst : ''}`} />;
 };
 
-export default NeonCircle;
+export default React.memo(NeonCircle);
