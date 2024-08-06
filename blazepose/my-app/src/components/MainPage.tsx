@@ -3,6 +3,7 @@ import './MainPage.css'; // 스타일 파일 불러오기
 import Example from './example';
 import SearchBar from './SearchBar';
 import SearchResult from './SearchResult';
+import NavBar from './NavBar';
 
 interface Game {
   id: number;
@@ -19,12 +20,15 @@ const MainPage: React.FC = () => {
   ];
 
   return (
+    <div>
+      <NavBar />
     <div className="main-page-container">
       <div className="image-grid">
         <Example />
         <SearchBar />
         <SearchResult games={games} />
       </div>
+    </div>
     </div>
   );
 };
