@@ -1,0 +1,9 @@
+@font-face {
+  font-family: 'neon-text';
+  src: url('./NeonStreet-Regular.otf');
+}
+
+@font-face {
+  font-family: 'neon-number';
+  src: url('./Number9.ttf');
+}

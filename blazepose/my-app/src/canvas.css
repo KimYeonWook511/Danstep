@@ -13,9 +13,34 @@
 
 .container {
   position: relative;
-  width: 360px;
+  width: 80%;
   height: 640px;
+  border-color: red;
+  border-style: solid;
+  border-radius: 5%;
+  border-width: 5px;
+  margin-left: 10px;
+  margin-right: 10px;
+  animation: neon-glow-red-border 0.3s infinite alternate; /* 보라색 네온 효과 */
 }
+
+@keyframes neon-glow-red-border {
+  0% {
+    box-shadow:
+      0 0 5px rgba(255, 0, 0, 0.5),
+      /* 붉은색 */ 0 0 10px rgba(255, 0, 0, 0.3),
+      /* 붉은색 */ 0 0 15px rgba(255, 0, 0, 0.1); /* 붉은색 */
+    opacity: 0.9; /* 초기 투명도 */
+  }
+  100% {
+    box-shadow:
+      0 0 10px rgba(255, 0, 0, 0.9),
+      /* 붉은색 */ 0 0 20px rgba(255, 0, 0, 0.7),
+      /* 붉은색 */ 0 0 30px rgba(255, 0, 0, 0.5); /* 붉은색 */
+    opacity: 1; /* 최대 투명도 */
+  }
+}
+
 
 .canvas {
   position: absolute;

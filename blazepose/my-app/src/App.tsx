@@ -3,7 +3,8 @@ import MainPage from './components/MainPage';
 import Ranking from './components/Ranking';
 import Neon from './GameMode/neon/Neon';
 import GamePage from './components/GamePage';
-import Loading from './components/Loading'
+import Loading from './components/Loading';
+import './fonts/font.css';
 
 const App: React.FC = () => {
 

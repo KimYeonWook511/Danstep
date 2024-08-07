@@ -343,32 +343,133 @@ const PoseEstimator: React.FC = () => {
       <NeonCircle />
       {/* <NeonRating /> */}
       
-      {detectedArmsUp ? (
-        <div className="container">
-          <video ref={camRef} className="cam-video" style={{ display: 'none' }} autoPlay muted />
-          <video ref={videoRef} className="game-video" style={{ display: 'none' }} autoPlay />
 
-          <canvas ref={camcanvasRef} className="canvas cam-canvas" style={{ transform: 'scaleX(-1)' }}/>
-          <canvas ref={canvasRef} className="canvas video-canvas" />
 
-          {isFinished && (
-            <button
-              className="button"
-              onClick={handleRestart}
-              style={{ marginTop: '20px', padding: '10px', fontSize: '16px' }}
-            >
-              Restart
-            </button>
-          )}
+      <div style={{ width: '100%', display: 'flex' }}>
+        <div
+          style={{
+            width: '50%',
+            height: '100%',
+            textAlign: 'center',
+            alignContent: 'center',
+            color: 'black',
+            fontFamily: 'neon-text',
+          }}
+        >
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <div>
+              <div
+                className='animated-text combo'
+                style={{ fontSize: '80px' }}
+              >
+                Combo
+              </div>
+              <div
+                className='animated-text neon-number'
+                style={{ fontFamily: 'neon-number' }}
+              >
+                128
+              </div>
+            </div>
+            <div className='animated-text perfect'>PERFECT</div>
+          </div>
         </div>
-      ) : (
-        <div className="container">
-          <video ref={camRef} className="cam-video" style={{display:'none'}} autoPlay muted />
-          <video ref={videoRef} className="game-video" style={{display:'none'}} autoPlay muted />
-          <canvas ref={camcanvasRef} className="canvas cam-canvas" style={{ transform: 'scaleX(-1)' }}/>
-          <canvas ref={canvasRef} className="canvas video-canvas" />
+        {detectedArmsUp ? (
+          <div
+            className='container'
+            style={{ width: '100%' }}
+          >
+            <video
+              ref={camRef}
+              className='cam-video'
+              style={{ display: 'none' }}
+              autoPlay
+              muted
+            />
+            <video
+              ref={videoRef}
+              className='game-video'
+              style={{ display: 'none' }}
+              autoPlay
+            />
+
+            <canvas
+              ref={camcanvasRef}
+              className='canvas cam-canvas'
+              style={{ transform: 'scaleX(-1)' }}
+            />
+            <canvas
+              ref={canvasRef}
+              className='canvas video-canvas'
+            />
+
+            {isFinished && (
+              <button
+                className='button'
+                onClick={handleRestart}
+                style={{ marginTop: '20px', padding: '10px', fontSize: '16px' }}
+              >
+                Restart
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className='container'>
+            <video
+              ref={camRef}
+              className='cam-video'
+              style={{ display: 'none' }}
+              autoPlay
+              muted
+            />
+            <video
+              ref={videoRef}
+              className='game-video'
+              style={{ display: 'none' }}
+              autoPlay
+              muted
+            />
+            <canvas
+              ref={camcanvasRef}
+              className='canvas cam-canvas'
+              style={{ transform: 'scaleX(-1)' }}
+            />
+            <canvas
+              ref={canvasRef}
+              className='canvas video-canvas'
+            />
+          </div>
+        )}
+        <div
+          style={{
+            width: '50%',
+            height: '100%',
+            textAlign: 'center',
+            alignContent: 'center',
+            color: 'black',
+            fontFamily: 'neon-text',
+          }}
+        >
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <div>
+              <div
+                className='animated-text red'
+                style={{ fontSize: '80px' }}
+              >
+                LIFE
+              </div>
+              <div
+                className='animated-text neon-number'
+                style={{ fontFamily: 'neon-number' }}
+              >
+                78%
+              </div>
+            </div>
+          </div>
         </div>
-      )}
+      </div>
+
+
     </div>
   );
 };
