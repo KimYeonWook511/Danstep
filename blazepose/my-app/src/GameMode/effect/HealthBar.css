@@ -1,0 +1,45 @@
+.health-bar {
+  width: 100%;
+  height: 20px;
+  background-color: #444;
+  border: 2px solid #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  position: absolute;
+  top: 60px; /* 버튼 아래에 위치하도록 설정 */
+  left: 20px;
+  z-index: 5; /* 버튼과 동일한 z-index 설정 */
+}
+
+.health-bar__fill {
+  height: 100%;
+  background: linear-gradient(270deg, red, orange, yellow, green, blue, indigo, violet, red);
+  background-size: 300% 300%;
+  animation: rainbow 10s ease infinite;
+  transition: width 0.25s;
+  box-shadow:
+    0 0 10px #0f0,
+    0 0 20px #0f0,
+    0 0 30px #0f0;
+}
+
+@keyframes rainbow {
+  0% {
+    background-position: 0% 50%;
+  }
+  20% {
+    background-position: 20% 50%;
+  }
+  40% {
+    background-position: 40% 50%;
+  }
+  60% {
+    background-position: 60% 50%;
+  }
+  80% {
+    background-position: 80% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
