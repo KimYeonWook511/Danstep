@@ -37,19 +37,6 @@ const NeonRating: React.FC = () => {
     <div className={styles.ratingContainer}>
       {currentRating === 'PERFECT' && (
         <div className={styles.perfectContainer}>
-          <div className={styles.lottieContainer}>
-            <LottieComponent
-              animationData={firework2}
-              loop={false}
-              autoplay={true}
-              speed={1} // 속도 설정
-              onComplete={() => {
-                setTimeout(() => {
-                  setCurrentRating(null);
-                }, animationDuration); // 애니메이션 완료 후 텍스트 제거
-              }}
-            />
-          </div>
           <div
             className={styles.ratingText}
             style={

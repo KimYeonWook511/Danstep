@@ -11,8 +11,8 @@ const drawKeypoints1 = (
   ctx.fillStyle = color;
   ctx.strokeStyle = color;
   ctx.lineWidth = 20;
-  // ctx.lineCap = 'round'; // 선의 끝을 둥글게 설정
-  // ctx.lineJoin = 'round'; // 선의 연결 부분을 둥글게 설정
+  ctx.lineCap = 'round'; // 선의 끝을 둥글게 설정
+  ctx.lineJoin = 'round'; // 선의 연결 부분을 둥글게 설정
 
   
 
@@ -64,57 +64,6 @@ const drawKeypoints1 = (
   ctx.fill(circle);
   ctx.stroke(circle);
   ctx.restore();
-
-  // const rightEyeLeft = Math.sqrt(
-  //   Math.pow(keypoints[2].x - keypoints[1].x, 2) +
-  //     Math.pow(keypoints[2].y - keypoints[1].y, 2) +
-  //     Math.pow(keypoints[2].z! - keypoints[1].z!, 2)
-  // );
-
-  // const rightEyeRight = Math.sqrt(
-  //   Math.pow(keypoints[2].x - keypoints[3].x, 2) +
-  //     Math.pow(keypoints[2].y - keypoints[3].y, 2) +
-  //     Math.pow(keypoints[2].z! - keypoints[3].z!, 2)
-  // );
-
-  // const rightEye = new Path2D();
-  // rightEye.arc(
-  //   (keypoints[1].x + keypoints[2].x + keypoints[3].x) / 3,
-  //   (keypoints[1].y + keypoints[2].y + keypoints[3].y) / 3,
-  //   1,
-  //   0,
-  //   Math.PI
-  // );
-
-  // ctx.fillStyle = `rgb(0,0,0)`;
-  // ctx.fill(rightEye);
-  // ctx.stroke(rightEye);
-
-  // const leftEyeLeft = Math.sqrt(
-  //   Math.pow(keypoints[5].x - keypoints[4].x, 2) +
-  //     Math.pow(keypoints[5].y - keypoints[4].y, 2) +
-  //     Math.pow(keypoints[5].z! - keypoints[4].z!, 2)
-  // );
-
-  // const leftEyeRight = Math.sqrt(
-  //   Math.pow(keypoints[5].x - keypoints[6].x, 2) +
-  //     Math.pow(keypoints[5].y - keypoints[6].y, 2) +
-  //     Math.pow(keypoints[5].z! - keypoints[6].z!, 2)
-  // );
-
-  // const leftEye = new Path2D();
-  // leftEye.arc(
-  //   (keypoints[4].x + keypoints[5].x + keypoints[6].x) / 3,
-  //   (keypoints[4].y + keypoints[5].y + keypoints[6].y) / 3,
-  //   (leftEyeLeft + leftEyeRight) / 2,
-  //   0,
-  //   Math.PI
-  // );
-
-  // ctx.fillStyle = `rgb(0,0,0)`;
-  // ctx.fill(leftEye);
-  // ctx.stroke(leftEye);
-  // ctx.restore();
 };
 
 const drawKeypoints2 = (

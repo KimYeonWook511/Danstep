@@ -23,15 +23,21 @@ export const keypointsDetected = (keypoints: any[], requiredIndices: number[]): 
     return requiredIndices.every(index => keypoints[index] && keypoints[index].score > 0.1);
 };
 
-export const detectFirstFrame = async (detector: PoseDetector, videoRef: React.RefObject<HTMLVideoElement>, firstFrameZ: React.MutableRefObject<number[]>) => {
-    if (videoRef.current) {
-        const poses = await detector.estimatePoses(videoRef.current);
-        if (poses[0]) {
-            firstFrameZ.current = poses[0].keypoints.map(kp => kp.z || 0);
-            videoRef.current.pause();
-        } else {
-            // console.log("Required keypoints not detected in the first frame.");
-        }
+// export const detectFirstFrame = async (detector: PoseDetector, videoRef: React.RefObject<HTMLVideoElement>, firstFrameZ: React.MutableRefObject<number[]>) => {
+//     if (videoRef.current) {
+//         const poses = await detector.estimatePoses(videoRef.current);
+//         if (poses[0]) {
+//             firstFrameZ.current = poses[0].keypoints.map(kp => kp.z || 0);
+//             videoRef.current.pause();
+//         } else {
+//             // console.log("Required keypoints not detected in the first frame.");
+//         }
+//     }
+// };
+
+export const detectFirstFrame = async (keypoints: any[], firstFrameZ: React.MutableRefObject<number[]>) => {
+    if (keypoints) {
+        firstFrameZ.current = keypoints.map(kp => kp.z || 0);
     }
 };
 
