@@ -271,7 +271,7 @@ const PoseEstimator: React.FC = () => {
       <NeonCircle />
       {/* <NeonRating /> */}
       
-        <div className="absolute top-0 left-0 p-5">
+        {/* <div className="absolute top-0 left-0 p-5">
         <Lottie
           options={{ ...defaultOptions, animationData: firework }}
           height={300}
@@ -298,7 +298,7 @@ const PoseEstimator: React.FC = () => {
           height={400}
           width={300}
         />
-      </div> 
+      </div>  */}
       
       {detectedArmsUp ? (
         <div className="container">
