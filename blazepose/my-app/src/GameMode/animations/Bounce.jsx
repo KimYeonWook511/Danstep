@@ -77,7 +77,7 @@ const LottieAnimations = () => {
       </div> */}
 
       {/* 음악 바 애니메이션 */}
-      <div className="absolute bottom-0 left-0">
+      {/* <div className="absolute bottom-0 left-0">
         <Lottie
           options={{ ...defaultOptions, animationData: musicbar3 }}
           height={400} 
@@ -90,7 +90,7 @@ const LottieAnimations = () => {
           height={400}
           width={300}
         />
-      </div>
+      </div> */}
     </div>
   );
 };

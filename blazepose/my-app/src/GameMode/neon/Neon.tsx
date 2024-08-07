@@ -32,34 +32,18 @@ const App: React.FC = () => {
   };
 
   return (
+    <div className="BackgroundVideo">
+    {/* 배경 비디오 */}
+    <video autoPlay loop muted className="background-video">
+      <source src="/background3.mp4" type="video/mp4" />
+      {/* src="/background.mp4"를 통해 public 폴더에 있는 파일 접근 */}
+    </video>
+
     <div className="Neon">
-      <ThreeStars />
+      {/* <ThreeStars /> */}
       <div className="topBar">
         <div className="left">
           <NeonButton onClick={goBack}>Back</NeonButton>
-        </div>
-
-        
-        <div className="center">
-          <div className="danceroid-wrapper">
-            {/* 왼쪽 danceroid 애니메이션 */}
-            <LottieComponent
-              animationData={danceroid}
-              loop={true}
-              autoplay={true}
-              style={{ width: 50, height: 50 }}
-            />
-              <div className="score-container">
-              <ScoreDisplay score={health} />
-            </div>
-            {/* 오른쪽 danceroid 애니메이션 */}
-            <LottieComponent
-              animationData={danceroid}
-              loop={true}
-              autoplay={true}
-              style={{ width: 50, height: 50 }}
-            />
-          </div>
         </div>
 
         <div className="right">
@@ -75,7 +59,7 @@ const App: React.FC = () => {
       <Bounce/>
 
     </div>
-
+    </div>
   );
 };
 

@@ -4,6 +4,24 @@ body {
   background-color: #000;
   color: #fff;
   text-align: center;
+  overflow: hidden;
+}
+
+.BackgroundVideo {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.background-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0; /* Ensure the video is behind all other elements */
 }
 
 .Neon {
@@ -12,20 +30,9 @@ body {
   align-items: center;
   justify-content: center;
   height: 100vh;
-}
-
-.danceroid-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.danceroid-wrapper > :first-child {
-  margin : 0px; 
-}
-
-.danceroid-wrapper > :last-child {
-  margin-left: 0px;
+  height: 100vh;
+  position: relative; /* Ensures that elements are positioned relative to this div */
+  z-index: 1; /* Ensure the elements are on top of the video */
 }
 
 .score-container {

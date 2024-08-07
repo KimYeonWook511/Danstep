@@ -3,6 +3,7 @@ import MainPage from './components/MainPage';
 import Ranking from './components/Ranking';
 import Neon from './GameMode/neon/Neon';
 import GamePage from './components/GamePage';
+import Loading from './components/Loading'
 
 const App: React.FC = () => {
 
@@ -14,6 +15,8 @@ const App: React.FC = () => {
         <Route path="/ranking" element={<Ranking />} />
         <Route path="/neon" element={<Neon />} />
         <Route path="/game" element={<GamePage />} />
+        <Route path="/loading" element={<Loading />} />
+
       </Routes>
     </Router>
   );
