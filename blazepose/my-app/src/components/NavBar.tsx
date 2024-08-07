@@ -5,6 +5,7 @@ import trophy from '../assets/trophy.png';
 import LoginForm from './LoginForm';
 import SignUpModal from './SignUpModal';
 import './NavBar.css';  // 스타일을 위한 CSS 파일을 임포트합니다.
+import Category from './Category'
 
 const NavBar: FC = () => {
   const [showLoginForm, setShowLoginForm] = useState<boolean>(false);
@@ -41,7 +42,7 @@ const NavBar: FC = () => {
             <div className="brand-name">DanStep</div>
           </div>
 
-          <div className="center-items">
+          {/* <div className="center-items">
             <div className="nav-links">
               <Link to="/" className="nav-link">Game</Link>
               <span className="separator">|</span>
@@ -50,7 +51,11 @@ const NavBar: FC = () => {
                 <img src={trophy} alt="Trophy" className="trophy-icon" />
               </Link>
             </div>
-          </div>
+          </div> */}
+
+            <div className='center-items'>
+            <Category/>
+            </div>
 
           <div className="right-items">
             <button onClick={() => setShowLoginForm(!showLoginForm)} className="nav-button">로그인</button>

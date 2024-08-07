@@ -12,23 +12,14 @@ interface Game {
 }
 
 const MainPage: React.FC = () => {
-  const games: Game[] = [
-    { id: 1, name: 'Game A', difficulty: 3 },
-    { id: 2, name: 'Game B', difficulty: 1 },
-    { id: 3, name: 'Game C', difficulty: 2 },
-    { id: 4, name: 'Game D', difficulty: 4 },
-  ];
-
+ 
   return (
     <div>
       <NavBar />
       
       <div className="main-page-container">
       <Carousel3d />
-      {/* <div className="image-grid">
-        <SearchBar />
-        <SearchResult games={games} />
-      </div> */}
+  
       </div>
     </div>
   );

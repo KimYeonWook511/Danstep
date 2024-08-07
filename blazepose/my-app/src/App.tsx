@@ -15,8 +15,6 @@ const App: React.FC = () => {
         <Route path="/ranking" element={<Ranking />} />
         <Route path="/neon" element={<Neon />} />
         <Route path="/game" element={<GamePage />} />
-        {/* <Route path="/loading" element={<Loading />} /> */}
-
       </Routes>
     </Router>
   );

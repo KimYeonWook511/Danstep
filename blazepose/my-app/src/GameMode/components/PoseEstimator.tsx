@@ -326,7 +326,7 @@ const PoseEstimator: React.FC = () => {
 
   return (
     <div className="Neon">
-      <ThreeStars />
+      {/* <ThreeStars /> */}
       <div className="topBar">
         <div className="left">
           <NeonButton onClick={() => console.log('Go Back')}>Back</NeonButton>
