@@ -22,14 +22,14 @@ const MainPage: React.FC = () => {
   return (
     <div>
       <NavBar />
-      <Carousel3d />
-      {/* <div className="main-page-container">
       
-      <div className="image-grid">
+      <div className="main-page-container">
+      <Carousel3d />
+      {/* <div className="image-grid">
         <SearchBar />
         <SearchResult games={games} />
-      </div>
       </div> */}
+      </div>
     </div>
   );
 };
