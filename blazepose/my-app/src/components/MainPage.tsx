@@ -1,6 +1,6 @@
 import React from 'react';
 import './MainPage.css'; // 스타일 파일 불러오기
-import Example from './example';
+import Carousel3d from './Carousel3d';
 import SearchBar from './SearchBar';
 import SearchResult from './SearchResult';
 import NavBar from './NavBar';
@@ -24,7 +24,7 @@ const MainPage: React.FC = () => {
       <NavBar />
     <div className="main-page-container">
       <div className="image-grid">
-        <Example />
+        <Carousel3d />
         <SearchBar />
         <SearchResult games={games} />
       </div>
