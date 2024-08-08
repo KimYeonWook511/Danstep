@@ -7,6 +7,9 @@ import com.danstep.game.model.mapper.GameMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class GameServiceImpl implements GameService {
     private final S3Service s3Service;
@@ -19,10 +22,25 @@ public class GameServiceImpl implements GameService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<GameInfoDTO> getAllGames() {
+        List<Integer> gamesIdList = gameMapper.getGamesId();
+
+        if (gamesIdList == null || gamesIdList.isEmpty()) {
+            return null;
+        }
+
+        List<GameInfoDTO> gameInfoDTOList = new ArrayList<>();
+        for (Integer id : gamesIdList) {
+            gameInfoDTOList.add(getGameInfo(id));
+        }
+
+        return gameInfoDTOList;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public GameInfoDTO getGameInfo(Integer id) {
-        System.out.println("서비스까지 호출");
         GameInfoEntity gameInfoEntity = gameMapper.getGameInfoById(id);
-        System.out.println("통과");
 
         if (gameInfoEntity == null) { return null; }
 

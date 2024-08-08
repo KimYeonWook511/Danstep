@@ -6,6 +6,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/games")
 public class GameController {
@@ -15,9 +18,18 @@ public class GameController {
         this.gameService = gameService;
     }
 
+    @GetMapping
+    public ResponseEntity<List<GameInfoDTO>> getAllGames() {
+        System.out.println("getAllGames 호출");
+
+        List<GameInfoDTO> gameList = gameService.getAllGames();
+
+        return new ResponseEntity<>(gameList, HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<GameInfoDTO> getGame(@PathVariable Integer id) {
-        System.out.println("getGame 호출!");
+        System.out.println("getGame 호출");
 
         if (id == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
