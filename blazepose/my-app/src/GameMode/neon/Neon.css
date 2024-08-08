@@ -7,6 +7,14 @@ body {
   overflow: hidden;
 }
 
+.hidden {
+  display: none;
+}
+
+.visible {
+  display: block;
+}
+
 .BackgroundVideo {
   position: relative;
   width: 100vw;
@@ -36,23 +44,22 @@ body {
 }
 
 .score-container {
- /* margin-left : 50px; */
- margin-right:200px;
+  /* margin-left : 50px; */
+  margin-right: 200px;
 }
 
-
 .animated-text {
-  font-size: 70px; 
-  font-weight: bold; 
+  font-size: 70px;
+  font-weight: bold;
   animation: grow-shrink 0.3s infinite alternate; /* 0.3초 주기로 65px ~ 70px */
 }
 
 @keyframes grow-shrink {
   0% {
-    font-size: 65px; 
+    font-size: 65px;
   }
   100% {
-    font-size: 70px; 
+    font-size: 70px;
   }
 }
 
@@ -89,7 +96,7 @@ body {
 }
 
 /*글자가 너무 작아서 숫자는 따로 지정*/
-@keyframes grow-shrink-number { 
+@keyframes grow-shrink-number {
   0% {
     font-size: 75px; /* 처음 크기 */
   }

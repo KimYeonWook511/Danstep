@@ -4,12 +4,7 @@ import { createDetector, PoseDetector, SupportedModels, Keypoint } from '@tensor
 import '../../canvas.css';
 import '../neon/Neon.css';
 import '../neon/TopBar.css';
-import {
-  detectFirstFrame,
-  checkInitialZAlignment,
-  isArmsUp,
-  keypointsDetected,
-} from '../utils/Verification';
+import { detectFirstFrame, checkInitialZAlignment, isArmsUp, keypointsDetected } from '../utils/Verification';
 import { sendScores } from '../utils/Result';
 import { drawGreen, drawHandFoot, drawRed } from '../utils/DrawUtils';
 import { calculateScore } from '../utils/CalculateUtils';
@@ -82,7 +77,7 @@ const PoseEstimator: React.FC = () => {
       await detectFirstFrame(keypointsJson.current[0], firstFrameZ);
 
       // 시작 동작 검사 (만세)
-      console.log("동작 검사 시작");
+      console.log('동작 검사 시작');
       intervalRef.current = setInterval(async () => await checkDetect(), 50);
     }
   };
@@ -100,7 +95,7 @@ const PoseEstimator: React.FC = () => {
         setDetectedArmsUp(true);
 
         if (isZAligned.current) {
-          console.log("타이머 시작");
+          console.log('타이머 시작');
           clearInterval(intervalRef.current!);
           isCheckEnd.current = true;
           startTimer();
@@ -108,16 +103,16 @@ const PoseEstimator: React.FC = () => {
         }
 
         console.log('Initial Z alignment failed.');
-        console.log("동작 재 검사");
+        console.log('동작 재 검사');
         return;
       }
 
-      console.log("손을 들거나 더 뒤로 가 주세영");
+      console.log('손을 들거나 더 뒤로 가 주세영');
       return;
     }
 
-    console.log("인식이 안 되고 있는 거 같아요");
-  }
+    console.log('인식이 안 되고 있는 거 같아요');
+  };
 
   const startTimer = () => {
     let nowTime = 0;
@@ -125,11 +120,11 @@ const PoseEstimator: React.FC = () => {
     return new Promise<void>((resolve) => {
       const intervalTimer = setInterval(() => {
         nowTime += 100;
-  
+
         if (nowTime % 1000) {
-          console.log((nowTime / 1000) + "초");
+          console.log(nowTime / 1000 + '초');
         }
-  
+
         if (nowTime >= 3000) {
           clearInterval(intervalTimer);
           intervalRef.current = setInterval(async () => await camDetect(), 50);
@@ -142,7 +137,7 @@ const PoseEstimator: React.FC = () => {
   const camDetect = async () => {
     // console.log("camDetect: ", idx.current);
     if (idx.current >= len.current) {
-      console.log("끝!!!");
+      console.log('끝!!!');
       clearInterval(intervalRef.current);
       return;
     }
@@ -170,7 +165,7 @@ const PoseEstimator: React.FC = () => {
           // console.log("bad: ", bad, good, great, perfect, health);
 
           videoRef.current!.onended = () => {
-            console.log("끝났으니 결과 보내기!");
+            console.log('끝났으니 결과 보내기!');
             // sendScores({
             //   bad: bad.current,
             //   good: good.current,
@@ -224,12 +219,12 @@ const PoseEstimator: React.FC = () => {
       if (videoRef.current.paused || videoRef.current.ended) return;
 
       if (ctx) {
-          ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-          canvasRef.current.width = videoRef.current.videoWidth;
-          canvasRef.current.height = videoRef.current.videoHeight;
-        
-          if (keypoints) drawGreen(ctx, keypoints);
-          return keypoints;
+        ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+        canvasRef.current.width = videoRef.current.videoWidth;
+        canvasRef.current.height = videoRef.current.videoHeight;
+
+        if (keypoints) drawGreen(ctx, keypoints);
+        return keypoints;
       }
     }
   };
@@ -241,17 +236,17 @@ const PoseEstimator: React.FC = () => {
       if (videoRef.current.paused || videoRef.current.ended) return;
 
       if (ctx) {
-          ctx.clearRect(0, 0, camcanvasRef.current.width, camcanvasRef.current.height);
-          camcanvasRef.current.width = camRef.current.videoWidth;
-          camcanvasRef.current.height = camRef.current.videoHeight;
+        ctx.clearRect(0, 0, camcanvasRef.current.width, camcanvasRef.current.height);
+        camcanvasRef.current.width = camRef.current.videoWidth;
+        camcanvasRef.current.height = camRef.current.videoHeight;
 
-          const camposes = await detector.estimatePoses(camRef.current);
-          if (camposes.length > 0) {
-            camKeypoints.current.push(camposes[0].keypoints);
-            drawRed(ctx, camposes[0].keypoints);
-            drawHandFoot(ctx, camposes[0].keypoints);
-            return camposes[0].keypoints;
-          }
+        const camposes = await detector.estimatePoses(camRef.current);
+        if (camposes.length > 0) {
+          camKeypoints.current.push(camposes[0].keypoints);
+          drawRed(ctx, camposes[0].keypoints);
+          drawHandFoot(ctx, camposes[0].keypoints);
+          return camposes[0].keypoints;
+        }
       }
     }
   };
@@ -261,17 +256,17 @@ const PoseEstimator: React.FC = () => {
       const ctx = camcanvasRef.current.getContext('2d');
 
       if (ctx) {
-          ctx.clearRect(0, 0, camcanvasRef.current.width, camcanvasRef.current.height);
-          camcanvasRef.current.width = camRef.current.videoWidth;
-          camcanvasRef.current.height = camRef.current.videoHeight;
+        ctx.clearRect(0, 0, camcanvasRef.current.width, camcanvasRef.current.height);
+        camcanvasRef.current.width = camRef.current.videoWidth;
+        camcanvasRef.current.height = camRef.current.videoHeight;
 
-          const checkposes = await detector.estimatePoses(camRef.current);
+        const checkposes = await detector.estimatePoses(camRef.current);
 
-          if (checkposes[0]){
-            drawRed(ctx, checkposes[0].keypoints);
-            drawHandFoot(ctx, checkposes[0].keypoints);
-            return checkposes[0].keypoints;
-          }
+        if (checkposes[0]) {
+          drawRed(ctx, checkposes[0].keypoints);
+          drawHandFoot(ctx, checkposes[0].keypoints);
+          return checkposes[0].keypoints;
+        }
       }
     }
   };
@@ -297,19 +292,19 @@ const PoseEstimator: React.FC = () => {
 
   const fetchKeypoints = async () => {
     const jsonUrl = '/keypoints424.json'; // 로컬 JSON 파일의 상대 경로
-      try {
-          const response = await fetch(jsonUrl);
-          if (!response.ok) {
-              throw new Error('Network response was not ok');
-          }
-          const data = await response.json(); // JSON 데이터 파싱
-          keypointsJson.current = data;
-          len.current = keypointsJson.current.length;
-          console.log("Loaded keypoints:", keypointsJson.current); // 로드된 keypoints 출력
-          console.log("data length: ", len.current);
-      } catch (error) {
-          console.error("Error fetching JSON:", error); // 오류 처리
+    try {
+      const response = await fetch(jsonUrl);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
       }
+      const data = await response.json(); // JSON 데이터 파싱
+      keypointsJson.current = data;
+      len.current = keypointsJson.current.length;
+      console.log('Loaded keypoints:', keypointsJson.current); // 로드된 keypoints 출력
+      console.log('data length: ', len.current);
+    } catch (error) {
+      console.error('Error fetching JSON:', error); // 오류 처리
+    }
   };
 
   useEffect(() => {
@@ -325,16 +320,16 @@ const PoseEstimator: React.FC = () => {
   };
 
   return (
-    <div className="Neon">
+    <div className='Neon'>
       {/* <ThreeStars /> */}
-      <div className="topBar">
-        <div className="left">
+      <div className='topBar'>
+        <div className='left'>
           <NeonButton onClick={() => console.log('Go Back')}>Back</NeonButton>
         </div>
-        <div className="center">
+        <div className='center'>
           <ScoreDisplay score={health.current} />
         </div>
-        <div className="right">
+        <div className='right'>
           <NeonButton onClick={handleRestart}>Retry</NeonButton>
           <NeonButton onClick={() => console.log('Help')}>?</NeonButton>
         </div>
@@ -342,38 +337,69 @@ const PoseEstimator: React.FC = () => {
       <RainbowHealthBar health={health.current} />
       <NeonCircle />
       {/* <NeonRating /> */}
-      
-
 
       <div style={{ width: '100%', display: 'flex' }}>
-        <div
-          style={{
-            width: '50%',
-            height: '100%',
-            textAlign: 'center',
-            alignContent: 'center',
-            color: 'black',
-            fontFamily: 'neon-text',
-          }}
-        >
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <div>
-              <div
-                className='animated-text combo'
-                style={{ fontSize: '80px' }}
-              >
-                Combo
+        {detectedArmsUp ? (
+          <div
+            style={{
+              width: '50%',
+              height: '100%',
+              textAlign: 'center',
+              alignContent: 'center',
+              color: 'black',
+              fontFamily: 'neon-text',
+            }}
+          >
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <div>
+                <div
+                  className='animated-text combo'
+                  style={{ fontSize: '80px' }}
+                >
+                  Combo
+                </div>
+                <div
+                  className='animated-text neon-number'
+                  style={{ fontFamily: 'neon-number' }}
+                >
+                  128
+                </div>
               </div>
-              <div
-                className='animated-text neon-number'
-                style={{ fontFamily: 'neon-number' }}
-              >
-                128
-              </div>
+              <div className='animated-text perfect'>PERFECT</div>
             </div>
-            <div className='animated-text perfect'>PERFECT</div>
           </div>
-        </div>
+        ) : (
+          <div
+            style={{
+              width: '50%',
+              height: '100%',
+              textAlign: 'center',
+              alignContent: 'center',
+              color: 'black',
+              fontFamily: 'neon-text',
+              visibility: 'hidden',
+            }}
+          >
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <div>
+                <div
+                  className='animated-text combo'
+                  style={{ fontSize: '80px' }}
+                >
+                  Combo
+                </div>
+                <div
+                  className='animated-text neon-number'
+                  style={{ fontFamily: 'neon-number' }}
+                >
+                  128
+                </div>
+              </div>
+              <div className='animated-text perfect'>PERFECT</div>
+            </div>
+          </div>
+        )}
+        ;
         {detectedArmsUp ? (
           <div
             className='container'
@@ -450,26 +476,44 @@ const PoseEstimator: React.FC = () => {
             fontFamily: 'neon-text',
           }}
         >
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <div>
-              <div
-                className='animated-text red'
-                style={{ fontSize: '80px' }}
-              >
-                LIFE
-              </div>
-              <div
-                className='animated-text neon-number'
-                style={{ fontFamily: 'neon-number' }}
-              >
-                78%
+          {detectedArmsUp ? (
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <div>
+                <div
+                  className='animated-text red'
+                  style={{ fontSize: '80px' }}
+                >
+                  LIFE
+                </div>
+                <div
+                  className='animated-text neon-number'
+                  style={{ fontFamily: 'neon-number' }}
+                >
+                  78%
+                </div>
               </div>
             </div>
-          </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', visibility: 'hidden' }}>
+              <div>
+                <div
+                  className='animated-text red'
+                  style={{ fontSize: '80px' }}
+                >
+                  LIFE
+                </div>
+                <div
+                  className='animated-text neon-number'
+                  style={{ fontFamily: 'neon-number' }}
+                >
+                  78%
+                </div>
+              </div>
+            </div>
+          )}
+          ;
         </div>
       </div>
-
-
     </div>
   );
 };
