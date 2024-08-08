@@ -10,7 +10,7 @@ import java.util.Date;
 @Setter
 @Getter
 @Entity
-public class UserEntity {
+public class UserInfo {
 
     @Id
     private Integer id;
