@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.danstep.model.mapper.UserMapper">
+<mapper namespace="com.danstep.user.model.mapper.UserMapper">
 
     <select id="existsByUsername" parameterType="String" resultType="boolean">
         SELECT IF(COUNT(*) = 1, 1, 0)
@@ -8,13 +8,13 @@
         WHERE username = #{username}
     </select>
 
-    <insert id="insertUser" parameterType="userDTO" useGeneratedKeys="true" keyProperty="id">
-<!--    <insert id="insertUser" parameterType="com.danstep.model.dto.UserDTO" useGeneratedKeys="true" keyProperty="id">-->
+<!--    <insert id="insertUser" parameterType="userDTO" useGeneratedKeys="true" keyProperty="id">-->
+    <insert id="insertUser" parameterType="com.danstep.user.model.dto.UserDTO" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO user_info (username, password, nickname, profile)
         VALUES (#{username}, #{password}, #{nickname}, #{profile})
     </insert>
 
-    <select id="findByUsername" parameterType="String" resultType="userDTO">
+    <select id="findByUsername" parameterType="String" resultType="com.danstep.user.model.dto.UserDTO">
         SELECT *
         FROM user_info
         WHERE username = #{username}

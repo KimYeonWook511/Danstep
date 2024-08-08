@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.danstep.game.model.mapper.GameMapper">
+
+    <resultMap id="gameBasic" type="com.danstep.entity.GameInfoEntity">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="upload_date" property="uploadDate"/>
+        <result column="playtime" property="playtime"/>
+        <result column="thumbnail_filename" property="thumbnailFilename"/>
+        <result column="audio_filename" property="audioFilename"/>
+        <result column="pose_filename" property="poseFilename"/>
+        <result column="video_filename" property="videoFilename"/>
+        <result column="level" property="level"/>
+    </resultMap>
+
+    <select id="getGameInfoById" resultMap="gameBasic">
+        SELECT *
+          FROM game_info
+          WHERE id = #{id}
+    </select>
+
+</mapper>

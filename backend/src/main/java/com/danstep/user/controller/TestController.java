@@ -1,4 +1,4 @@
-package com.danstep.controller;
+package com.danstep.user.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

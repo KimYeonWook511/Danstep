@@ -1,4 +1,4 @@
-package com.danstep.model.dto;
+package com.danstep.user.model.dto;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

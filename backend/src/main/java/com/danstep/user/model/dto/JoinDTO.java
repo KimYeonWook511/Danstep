@@ -1,4 +1,4 @@
-package com.danstep.model.dto;
+package com.danstep.user.model.dto;
 
 import lombok.Getter;
 import lombok.Setter;

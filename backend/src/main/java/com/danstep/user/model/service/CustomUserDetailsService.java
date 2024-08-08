@@ -1,8 +1,8 @@
-package com.danstep.model.service;
+package com.danstep.user.model.service;
 
-import com.danstep.model.dto.CustomUserDetails;
-import com.danstep.model.dto.UserDTO;
-import com.danstep.model.mapper.UserMapper;
+import com.danstep.user.model.dto.CustomUserDetails;
+import com.danstep.user.model.dto.UserDTO;
+import com.danstep.user.model.mapper.UserMapper;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

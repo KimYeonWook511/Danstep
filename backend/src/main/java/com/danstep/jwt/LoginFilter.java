@@ -1,6 +1,6 @@
 package com.danstep.jwt;
 
-import com.danstep.model.mapper.RefreshMapper;
+import com.danstep.user.model.mapper.RefreshMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

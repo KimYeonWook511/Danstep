@@ -1,14 +1,10 @@
 package com.danstep.game.contoller;
 
-import com.danstep.game.model.dto.GameDTO;
+import com.danstep.game.model.dto.GameInfoDTO;
 import com.danstep.game.model.service.GameService;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/games")
@@ -19,22 +15,41 @@ public class GameController {
         this.gameService = gameService;
     }
 
-    @GetMapping("/{gameId}")
-    public ResponseEntity<GameDTO> getGame(@PathVariable Integer gameId) {
+    @GetMapping("/{id}")
+    public ResponseEntity<GameInfoDTO> getGame(@PathVariable Integer id) {
         System.out.println("getGame 호출!");
 
-        if (gameId == null) {
+        if (id == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        GameDTO gameDTO = gameService.getGame(gameId);
+        GameInfoDTO gameInfoDTO = gameService.getGameInfo(id);
 
-        if (gameDTO == null) {
+        if (gameInfoDTO == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        // HTTP 응답 반환
-//        return ResponseEntity.ok().body(gameDTO);
-        return new ResponseEntity<>(gameDTO, HttpStatus.OK);
+        return new ResponseEntity<>(gameInfoDTO, HttpStatus.OK);
     }
+
+    @GetMapping("/{id}/pose")
+    public ResponseEntity<Object> getGamePose(@PathVariable Integer id) {
+        if (id == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        Object poseData = gameService.getGamePose(id);
+
+        if (poseData == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(poseData, HttpStatus.OK);
+    }
+
+    // 우선순위 후순위
+//    @PostMapping
+//    public ResponseEntity<GameDTO> createGame(@RequestBody GameDTO gameDTO) {
+//        return new ResponseEntity<>(HttpStatus.CREATED);
+//    }
 }

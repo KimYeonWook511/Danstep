@@ -1,12 +1,10 @@
-package com.danstep.model.service;
+package com.danstep.user.model.service;
 
-import com.danstep.model.dto.UserDTO;
-import com.danstep.model.dto.JoinDTO;
-import com.danstep.model.mapper.UserMapper;
+import com.danstep.user.model.dto.UserDTO;
+import com.danstep.user.model.mapper.UserMapper;
+import com.danstep.user.model.dto.JoinDTO;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
 
 @Service
 public class JoinService {

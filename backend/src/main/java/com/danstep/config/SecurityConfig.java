@@ -4,7 +4,7 @@ import com.danstep.jwt.CustomLogoutFilter;
 import com.danstep.jwt.JWTFilter;
 import com.danstep.jwt.JWTUtil;
 import com.danstep.jwt.LoginFilter;
-import com.danstep.model.mapper.RefreshMapper;
+import com.danstep.user.model.mapper.RefreshMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

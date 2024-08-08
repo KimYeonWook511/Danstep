@@ -16,7 +16,8 @@ import javax.sql.DataSource;
 
 @Configuration
 // 패키지명
-@MapperScan(value = {"com.danstep.model.mapper", "com.danstep.aws.model.mapper"}, sqlSessionFactoryRef = "SqlSessionFactory")
+//@MapperScan(value = {"com.danstep.aws.model.mapper", "com.danstep.game.model.mapper", "com.danstep.user.model.mapper"}, sqlSessionFactoryRef = "SqlSessionFactory")
+@MapperScan(value = {"com.danstep.**.model.mapper"}, sqlSessionFactoryRef = "SqlSessionFactory")
 public class MyBatisConfig {
 
     @Value("${spring.datasource.hikari.mapper-locations}")
@@ -36,7 +37,7 @@ public class MyBatisConfig {
         sqlSessionFactoryBean.setMapperLocations(applicationContext.getResources(mPath));
 //        sqlSessionFactoryBean.setTypeAliasesPackage("com.danstep.aws.model.dto");
 //        sqlSessionFactoryBean.setTypeAliasesPackage("com.danstep.model.dto");
-        sqlSessionFactoryBean.setTypeAliasesPackage("com.danstep.model.dto, com.danstep.aws.model.dto");
+//        sqlSessionFactoryBean.setTypeAliasesPackage("com.danstep.model.dto, com.danstep.aws.model.dto");
         return sqlSessionFactoryBean.getObject();
     }
 
