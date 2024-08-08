@@ -25,15 +25,14 @@ public class UserInfoEntity {
     @Column(nullable = false, length = 20)
     private String nickname;
 
-    @Column(nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false, columnDefinition = "datetime default now()")
     private Date registDate;
 
     @Column(length = 200)
     private String refresh;
 
-    @Column(nullable = false, length = 20)
-    private String role = "ROLE_USER";
+    @Column(nullable = false, length = 20, columnDefinition = "varchar(20) default 'ROLE_USER'")
+    private String role;
 
     @Column(length = 200)
     private String profile;
