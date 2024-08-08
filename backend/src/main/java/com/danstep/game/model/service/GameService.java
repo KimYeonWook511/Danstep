@@ -1,7 +1,9 @@
 package com.danstep.game.model.service;
 
-import com.danstep.game.model.dto.GameDTO;
+import com.danstep.game.model.dto.GameInfoDTO;
 
 public interface GameService {
-    GameDTO getGame(Integer gameId);
+    GameInfoDTO getGameInfo(Integer id);
+
+    Object getGamePose(Integer id);
 }

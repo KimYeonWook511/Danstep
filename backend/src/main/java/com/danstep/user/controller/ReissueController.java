@@ -1,7 +1,7 @@
-package com.danstep.controller;
+package com.danstep.user.controller;
 
 import com.danstep.jwt.JWTUtil;
-import com.danstep.model.mapper.RefreshMapper;
+import com.danstep.user.model.mapper.RefreshMapper;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

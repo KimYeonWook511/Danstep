@@ -1,11 +1,7 @@
-package com.danstep.model.mapper;
+package com.danstep.user.model.mapper;
 
-import com.danstep.model.dto.UserDTO;
+import com.danstep.user.model.dto.UserDTO;
 import org.apache.ibatis.annotations.Mapper;
-import org.springframework.stereotype.Repository;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 @Mapper
 public interface UserMapper {

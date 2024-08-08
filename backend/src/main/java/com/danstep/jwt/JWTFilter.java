@@ -1,7 +1,7 @@
 package com.danstep.jwt;
 
-import com.danstep.model.dto.UserDTO;
-import com.danstep.model.dto.CustomUserDetails;
+import com.danstep.user.model.dto.UserDTO;
+import com.danstep.user.model.dto.CustomUserDetails;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

@@ -1,18 +1,21 @@
 package com.danstep.aws.model.service;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.*;
-import com.danstep.aws.model.mapper.S3Mapper;
+import com.amazonaws.services.s3.model.ListObjectsV2Request;
+import com.amazonaws.services.s3.model.ListObjectsV2Result;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.danstep.aws.model.dto.GameInfoDTOno;
 import com.danstep.aws.model.dto.TempDTO;
-import com.danstep.aws.model.dto.GameInfoDTO;
+import com.danstep.aws.model.mapper.S3Mapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -37,193 +40,138 @@ public class S3ServiceImpl implements S3Service {
     @Value("${cloud.aws.cloudfront.url}")
     private String cloudFrontUrl;
 
-    private final AmazonS3 amazonS3;
-    private final S3Mapper s3Mapper;
+    private final AmazonS3 amazonS3Admin;
+    private final AmazonS3 amazonS3User;
+    private final RestTemplate restTemplate;
 
-    public S3ServiceImpl(AmazonS3 amazonS3, S3Mapper s3Mapper) {
-        this.amazonS3 = amazonS3;
-        this.s3Mapper = s3Mapper;
+    private StringBuilder sb;
+
+    public S3ServiceImpl(@Qualifier("amazonS3Admin") AmazonS3 amazonS3Admin,
+                         @Qualifier("amazonS3User") AmazonS3 amazonS3User,
+                         RestTemplate restTemplate) {
+        this.amazonS3Admin = amazonS3Admin;
+        this.amazonS3User = amazonS3User;
+        this.restTemplate = restTemplate;
     }
 
-    @Override
-    public ObjectMetadata makeMetadata(MultipartFile uploadFile) throws IOException {
-        ObjectMetadata metadata = new ObjectMetadata();
-        //메타데이터 content type과 length를 설정하는 이유
-        //type = 올바른 MIME 타입을 제공받기 위함
-        //length = S3가 저장 공간을 효율적으로 관리하기 위함
-        metadata.setContentLength(uploadFile.getSize());
-        metadata.setContentType(uploadFile.getContentType());
-        return metadata;
-    }
-
-    @Override
-    public String uploadProfile(MultipartFile uploadProfile) throws IOException {
-
-        String originalProfile = uploadProfile.getOriginalFilename(); //profile의 원본 이름
-        int dot = originalProfile.lastIndexOf('.');
-        String extension = originalProfile.substring(dot);
-        String originalProfileName = originalProfile.substring(0,dot);
-
-        System.out.println("originalProfileName ==> " + originalProfileName);
-        System.out.println("extension ==> " + extension);
-
-        String folderId = String.valueOf(findNextIndex("profiles")); //S3의 profile 파일 내부의 ID(순서) 가져옴
-        String uuid = UUID.randomUUID() + extension;
-
-        //일단 DTO가 같으므로 GameInfoDto 사용 추후 변경 예정
-        s3Mapper.insertProfileUUID(new TempDTO(folderId,uuid));
-
-        String profilePath = createUUIDName("profiles",folderId,uuid);//경로 profiles/{id}/{uuid}
-        ObjectMetadata metadata = makeMetadata(uploadProfile);//metadata 생성
-
-        //버킷, 저장경로, 파일을 읽기 위한 inputstream, 메타데이터
-        amazonS3.putObject(bucket, profilePath, uploadProfile.getInputStream(), metadata);
-        return amazonS3.getUrl(bucket, originalProfileName).toString();
-    }
-
-    @Override
-    public String uploadVideoFile(GameInfoDTO uploadVideoFile) throws IOException {
-
-        //String originalFile = uploadVideoFile.getOriginalName() + uploadVideoFile.getExtension();
-
-        String folderId = String.valueOf(findNextIndex("games"));
-        String uuid = UUID.randomUUID() + uploadVideoFile.getExtension();
-        String originalFile = createUUIDName("games",folderId,uuid);
-
-        s3Mapper.insertGameUUID(new TempDTO(folderId,uuid));
-
-        ObjectMetadata metadata = makeMetadata(uploadVideoFile.getFile());
-
-        //System.out.println(originalFile);
-        amazonS3.putObject(bucket, originalFile, uploadVideoFile.getFile().getInputStream(), metadata);
-        return amazonS3.getUrl(bucket, originalFile).toString();
-
-    }
-
-    private String createUUIDName(String folder, String folderId,String uuid) {
-        return folder + "/" + folderId + "/" + uuid;
-    }
-
-    private int findNextIndex(String folder){
-        ListObjectsV2Request req = new ListObjectsV2Request()
-                .withBucketName(bucket)
-                .withPrefix(folder+"/")
-                .withDelimiter("/");
-
-        ListObjectsV2Result result = amazonS3.listObjectsV2(req);
-        int idx = 0;
-
-        for(String prefix : result.getCommonPrefixes()){
-            String folderName = prefix.replace(folder+"/","").replace("/","");
-            try{
-                int index = Integer.parseInt(folderName);
-                if(index > idx){
-                    idx = index;
-                }
-            }catch(NumberFormatException e) {continue;}
-        }
-
-        return idx+1;
-    }
-
-    @Override
-    public ResponseEntity<byte[]> download(String originalFilename) throws IOException {
-        String encodedFileName = URLEncoder.encode(originalFilename, "UTF-8").replaceAll("\\+", "%20");
-
-        String uuid = s3Mapper.getGameUUID(encodedFileName);
-
-        int dot = uuid.lastIndexOf('.');
-        String extension = uuid.substring(dot+1);
-        originalFilename = uuid.substring(0,dot);
-
-        String cloudFrontUrl = getCloudFront(encodedFileName,uuid);
-        System.out.println("cloudeFrontURL --> "+cloudFrontUrl);
-        ResponseEntity<byte[]> responseEntity = downloadUrl(cloudFrontUrl, originalFilename,extension);
-        return responseEntity;
-    }
-
-//    private ResponseEntity<byte[]> downloadUrl(String url, String originalFilename) throws IOException{
+//    private String createUUIDName(String folder, String folderId,String uuid) {
+//        return folder + "/" + folderId + "/" + uuid;
+//    }
+//
+//    private int findNextIndex(String folder){
+//        ListObjectsV2Request req = new ListObjectsV2Request()
+//                .withBucketName(bucket)
+//                .withPrefix(folder+"/")
+//                .withDelimiter("/");
+//
+//        ListObjectsV2Result result = amazonS3.listObjectsV2(req);
+//        int idx = 0;
+//
+//        for(String prefix : result.getCommonPrefixes()){
+//            String folderName = prefix.replace(folder+"/","").replace("/","");
+//            try{
+//                int index = Integer.parseInt(folderName);
+//                if(index > idx){
+//                    idx = index;
+//                }
+//            }catch(NumberFormatException e) {continue;}
+//        }
+//
+//        return idx+1;
+//    }
+//
+//    private String getCloudFront(String encodedFileName,String uuid) throws IOException {
+//        return String.format("https://%s/games/%s/%s", cloudFrontDomain, encodedFileName,uuid);
+//    }
+//
+//    @Override
+//    public byte[] getBytes(String f1, String pk, String fileUUID) throws IOException {
 //        try {
-//            // HTTP 요청을 통해 CloudFront에서 파일 다운로드 (예시로 HttpClient 사용)
+//            System.out.println(cloudFrontDomain);
+//            System.out.println(cloudFrontUrl + "/" + f1 + "/" + pk + "/" + fileUUID);
 //            HttpClient httpClient = HttpClient.newBuilder().build();
 //            HttpRequest request = HttpRequest.newBuilder()
-//                    .uri(URI.create(url))
+//                    .uri(URI.create(cloudFrontUrl + "/" + f1 + "/" + pk + "/" + fileUUID))
 //                    .build();
 //
+//            // 요청 보내고 응답 받기
 //            HttpResponse<byte[]> response = httpClient.send(request, HttpResponse.BodyHandlers.ofByteArray());
-//            byte[] bytes = response.body();
-//            String fileName = URLEncoder.encode(originalFilename, "UTF-8").replaceAll("\\+", "%20");
-//            HttpHeaders httpHeaders = new HttpHeaders();
-//            httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-//            httpHeaders.setContentLength(bytes.length);
-//            httpHeaders.setContentDispositionFormData("attachment", fileName);
-//            return new ResponseEntity<>(bytes, httpHeaders, HttpStatus.OK);
+//
+//            if (response.statusCode() == HttpStatus.OK.value()) {
+//                return response.body();
+//            } else {
+//                return null;
+//            }
+//
 //        } catch (InterruptedException e) {
-//            Thread.currentThread().interrupt(); // 스레드의 인터럽트 상태를 복원
-//            throw new IOException("다운로드 실패했어염", e);
+//            throw new RuntimeException(e);
 //        }
 //    }
+//
+//    private URL generatePresignedUrl(String objectKey) {
+//        GeneratePresignedUrlRequest generatePresignedUrlRequest =
+//                new GeneratePresignedUrlRequest(
+//                        amazonS3.getBucketName(), objectKey)
+//                        .withMethod(com.amazonaws.HttpMethod.GET)
+//                        .withExpiration(new Date(System.currentTimeMillis() + 3600 * 1000)); // 1시간 유효
+//
+//        return amazonS3.generatePresignedUrl(generatePresignedUrlRequest);
+//    }
 
-    private ResponseEntity<byte[]> downloadUrl(String url, String originalFilename,String extension) throws IOException {
+    @Override
+    public Object getPublicJson(String folder, String id, String filename) {
+        // 결국 나중엔 publicJson은 없음! (모든 포즈는 보호해야함)
+        // 임시 허용해주는 url생성해서 접근해야할 듯
+        // 다만 임시 허용해주는 부분동안은 접근이 가능하니 game pose같은 경우는 사실상 public같은 느낌이 들긴 함
+        
+        sb = new StringBuilder().append(cloudFrontUrl)
+                .append("/public/")
+                .append(folder)
+                .append("/")
+                .append(id)
+                .append("/")
+                .append(filename);
+
         try {
-            // HTTP 요청을 통해 CloudFront에서 파일 다운로드 (예시로 HttpClient 사용)
-            HttpClient httpClient = HttpClient.newBuilder().build();
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(url))
-                    .build();
-
-            HttpResponse<byte[]> response = httpClient.send(request, HttpResponse.BodyHandlers.ofByteArray());
-            byte[] bytes = response.body();
-            String contentType = "video/"+extension;
-            System.out.println("contentType=>>" +contentType );
-            HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.setContentType(MediaType.parseMediaType(contentType));
-            //httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-            httpHeaders.setContentLength(bytes.length);
-            httpHeaders.setContentDispositionFormData("attachment", originalFilename);
-
-            return new ResponseEntity<>(bytes, httpHeaders, HttpStatus.OK);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt(); // 스레드의 인터럽트 상태를 복원
-            throw new IOException("다운로드 실패했어염", e);
+            return restTemplate.getForObject(sb.toString(), Object.class);
+        } catch (HttpClientErrorException e) {
+            throw new RuntimeException("클라이언트 오류: " + e.getStatusCode() + " - " + e.getResponseBodyAsString(), e);
+        } catch (HttpServerErrorException e) {
+            throw new RuntimeException("서버 오류: " + e.getStatusCode() + " - " + e.getResponseBodyAsString(), e);
+        } catch (ResourceAccessException e) {
+            throw new RuntimeException("네트워크 오류: " + e.getMessage(), e);
+        } catch (RestClientException e) {
+            throw new RuntimeException("REST 클라이언트 오류: " + e.getMessage(), e);
         }
     }
 
-    private String getCloudFront(String encodedFileName,String uuid) throws IOException {
-        return String.format("https://%s/games/%s/%s", cloudFrontDomain, encodedFileName,uuid);
+    @Override
+    public Object getPrivateJson(String folder, String id, String filename) {
+        return null;
     }
 
     @Override
-    public String getUrl(String originalFileName) throws IOException {
-        String fileName = URLEncoder.encode(originalFileName, "UTF-8").replaceAll("\\+", "%20");
-        System.out.println("h2h2h2h2" + fileName);
-        String uuid = s3Mapper.getGameUUID(fileName);
-        String path = "games"+"/"+originalFileName+"/"+uuid;
-        System.out.println("경로입니다 ==>" + path);
-        return "https://"+cloudFrontDomain+"/"+path;
+    public String getPublicUrl(String folder, String id, String filename) {
+//        path = URLEncoder.encode(path, "UTF-8").replaceAll("\\+", "%20");
+        sb = new StringBuilder().append(cloudFrontUrl)
+                .append("/public/")
+                .append(folder)
+                .append("/")
+                .append(id)
+                .append("/")
+                .append(filename);
+
+        return sb.toString();
     }
 
     @Override
-    public byte[] getBytes(String f1, String pk, String fileUUID) throws IOException {
-        try {
-            System.out.println(cloudFrontDomain);
-            System.out.println(cloudFrontUrl + "/" + f1 + "/" + pk + "/" + fileUUID);
-            HttpClient httpClient = HttpClient.newBuilder().build();
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(cloudFrontUrl + "/" + f1 + "/" + pk + "/" + fileUUID))
-                    .build();
+    public String getPrivateUrl(String folder, String id, String filename) {
+        sb = new StringBuilder().append("현재 아직 구현 안 함");;
 
-            // 요청 보내고 응답 받기
-            HttpResponse<byte[]> response = httpClient.send(request, HttpResponse.BodyHandlers.ofByteArray());
+//        sb.append(cloudFrontUrl)
+//                .append("/private/")
+//                .append()
 
-            if (response.statusCode() == HttpStatus.OK.value()) {
-                return response.body();
-            } else {
-                return null;
-            }
-
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        return sb.toString();
     }
 }

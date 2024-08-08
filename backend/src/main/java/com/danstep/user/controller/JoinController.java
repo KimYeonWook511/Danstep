@@ -1,7 +1,7 @@
-package com.danstep.controller;
+package com.danstep.user.controller;
 
-import com.danstep.model.dto.JoinDTO;
-import com.danstep.model.service.JoinService;
+import com.danstep.user.model.dto.JoinDTO;
+import com.danstep.user.model.service.JoinService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
