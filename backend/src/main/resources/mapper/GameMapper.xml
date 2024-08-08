@@ -15,10 +15,15 @@
         <result column="level" property="level"/>
     </resultMap>
 
+    <select id="getGamesId">
+        SELECT id
+          FROM game_info
+    </select>
+
     <select id="getGameInfoById" resultMap="gameBasic">
         SELECT *
-          FROM game_info
-          WHERE id = #{id}
+        FROM game_info
+        WHERE id = #{id}
     </select>
 
 </mapper>
