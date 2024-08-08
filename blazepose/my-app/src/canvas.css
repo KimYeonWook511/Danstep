@@ -1,0 +1,77 @@
+.body {
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  background-color: #000;
+  color: #fff;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.container {
+  position: relative;
+  width: 80%;
+  height: 640px;
+  border-color: red;
+  border-style: solid;
+  border-radius: 5%;
+  border-width: 5px;
+  margin-left: 10px;
+  margin-right: 10px;
+  animation: neon-glow-red-border 0.3s infinite alternate; /* 보라색 네온 효과 */
+}
+
+@keyframes neon-glow-red-border {
+  0% {
+    box-shadow:
+      0 0 5px rgba(255, 0, 0, 0.5),
+      /* 붉은색 */ 0 0 10px rgba(255, 0, 0, 0.3),
+      /* 붉은색 */ 0 0 15px rgba(255, 0, 0, 0.1); /* 붉은색 */
+    opacity: 0.9; /* 초기 투명도 */
+  }
+  100% {
+    box-shadow:
+      0 0 10px rgba(255, 0, 0, 0.9),
+      /* 붉은색 */ 0 0 20px rgba(255, 0, 0, 0.7),
+      /* 붉은색 */ 0 0 30px rgba(255, 0, 0, 0.5); /* 붉은색 */
+    opacity: 1; /* 최대 투명도 */
+  }
+}
+
+
+.canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.bg-canvas {
+  z-index: 1;
+  background-color: black;
+}
+
+.cam-canvas {
+  z-index: 5;
+}
+
+.video-canvas {
+  z-index: 4;
+}
+
+.button {
+  z-index: 6;
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.cam-video,
+.game-video {
+  display: none;
+}
