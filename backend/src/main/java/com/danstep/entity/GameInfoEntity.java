@@ -19,8 +19,7 @@ public class GameInfoEntity {
     @Column(nullable = false, length = 200) // 필수 | 최대 길이 200
     private String title; // 게임 제목
 
-    @Column(name = "upload_date", nullable = false)
-    @Temporal(TemporalType.TIMESTAMP) // 날짜와 시간 저장
+    @Column(name = "upload_date", nullable = false, columnDefinition = "datetime default now()")
     private Date uploadDate; // 업로드 날짜
 
     @Column(nullable = false)
