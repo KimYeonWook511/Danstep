@@ -41,34 +41,34 @@ public class GameServiceImpl implements GameService {
     @Override
     @Transactional(readOnly = true)
     public GameInfoDTO getGameInfo(Integer id) {
-        GameInfoEntity gameInfoEntity = gameMapper.getGameInfoById(id);
+        GameInfoDTO gameInfo = gameMapper.getGameInfoById(id);
 
-        if (gameInfoEntity == null) { return null; }
+        if (gameInfo == null) { return null; }
 
         GameInfoDTO gameInfoDTO = GameInfoDTO.builder()
                 .id(id)
-                .title(gameInfoEntity.getTitle())
-                .uploadDate(gameInfoEntity.getUploadDate())
-                .playtime(gameInfoEntity.getPlaytime())
-                .level(gameInfoEntity.getLevel())
+                .title(gameInfo.getTitle())
+                .uploadDate(gameInfo.getUploadDate())
+                .playtime(gameInfo.getPlaytime())
+                .level(gameInfo.getLevel())
                 .build();
 
         // 썸네일 url 가져오기
-        gameInfoDTO.setThumbnailUrl(s3Service.getPublicUrl("games", Integer.toString(id), gameInfoEntity.getThumbnailFilename()));
+        gameInfoDTO.setThumbnailUrl(s3Service.getPublicUrl("games", Integer.toString(id), gameInfo.getThumbnailFilename()));
 
         // mp3파일 url 가져오기
-        gameInfoDTO.setAudioUrl(s3Service.getPublicUrl("games", Integer.toString(id), gameInfoEntity.getAudioFilename()));
+        gameInfoDTO.setAudioUrl(s3Service.getPublicUrl("games", Integer.toString(id), gameInfo.getAudioFilename()));
 
         return gameInfoDTO;
     }
 
     @Override
     public Object getGamePose(Integer id) {
-        GameInfoEntity gameInfoEntity = gameMapper.getGameInfoById(id);
+        GameInfoDTO gameInfo = gameMapper.getGameInfoById(id);
 
         try {
             // Json파일 가져오기
-            return s3Service.getPublicJson("games", Integer.toString(id), gameInfoEntity.getPoseFilename());
+            return s3Service.getPublicJson("games", Integer.toString(id), gameInfo.getPoseFilename());
 
         } catch (RuntimeException e) {
             // GET 요청 보내면서 문제 생김
