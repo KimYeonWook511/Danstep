@@ -1,14 +1,14 @@
 package com.danstep.game.model.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Date;
 
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class GameInfoDTO {
     private Integer id; // 게임 ID
     private String title; // 게임 제목
