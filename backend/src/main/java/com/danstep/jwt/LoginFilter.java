@@ -2,6 +2,7 @@ package com.danstep.jwt;
 
 import com.danstep.user.model.mapper.RefreshMapper;
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -27,7 +28,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final RefreshMapper refreshMapper;
 
     public LoginFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil, RefreshMapper refreshMapper) {
-
+        setFilterProcessesUrl("/api/v1/users/login"); // 로그인 경로 변경
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
         this.refreshMapper = refreshMapper;
@@ -112,7 +113,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         Cookie cookie = new Cookie(key, value);
         cookie.setMaxAge(24*60*60);
         //cookie.setSecure(true);
-        //cookie.setPath("/");
+        cookie.setPath("/");
         cookie.setHttpOnly(true);
 
         return cookie;

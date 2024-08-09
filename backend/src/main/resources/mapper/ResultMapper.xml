@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.danstep.game.model.mapper.ResultMapper">
+
+    <resultMap id="resultBasic" type="com.danstep.result.model.dto.ResultInfoDTO">
+        <id property="id" column="id" />
+        <result property="resultDate" column="result_date" />
+        <result property="score" column="score" />
+        <result property="perfect" column="perfect" />
+        <result property="great" column="great" />
+        <result property="good" column="good" />
+        <result property="bad" column="bad" />
+
+        <association property="userInfoDTO" javaType="com.danstep.user.model.dto.UserInfoDTO"
+                     resultMap="com.danstep.user.model.mapper.UserMapper.userBasic" />
+        <association property="gameInfoDTO" javaType="com.danstep.game.model.dto.GameInfoDTO"
+                     resultMap="com.danstep.game.model.mapper.GameMapper.gameBasic"/>
+
+<!--    아래와 같은 방법도 있지만 이것은 select를 또 호출하는 것과 같음 (효율을 생각하면 JOIN이 나을지도!)    -->
+<!--        <association property="userInfoDTO" column="user_info_id"-->
+<!--                     select="com.danstep.user.model.mapper.UserInfoMapper.getUserInfoById" />-->
+<!--        <association property="gameInfoDTO" column="game_info_id"-->
+<!--                     select="com.danstep.game.model.mapper.GameMapper.getGameInfoById" />-->
+    </resultMap>
+
+    <insert id="insertResultInfo" parameterType="com.danstep.result.model.dto.ResultInfoDTO" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO result_info (user_info_id, game_info_id, score, perfect, great, good, bad)
+        VALUES (#{userInfoDTO.id}, #{gameInfoDTO.id}, #{score}, #{perfect}, #{great}, #{good}, #{bad});
+    </insert>
+
+</mapper>

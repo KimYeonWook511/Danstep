@@ -2,12 +2,15 @@ package com.danstep.user.controller;
 
 import com.danstep.user.model.dto.JoinDTO;
 import com.danstep.user.model.service.JoinService;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
-@ResponseBody
+@RestController
+@RequestMapping("/api/v1/users")
 public class JoinController {
 
     private final JoinService joinService;
@@ -18,11 +21,12 @@ public class JoinController {
     }
 
     @PostMapping("/join")
-    public String joinProcess(JoinDTO joinDTO) {
+    public ResponseEntity<String> joinProcess(@RequestBody JoinDTO joinDTO) {
 
-//        System.out.println(joinDTO.getUsername());
+        // 값 검증 해야함!!
+        
         joinService.joinProcess(joinDTO);
 
-        return "ok";
+        return new ResponseEntity<>("ok", HttpStatus.OK);
     }
 }

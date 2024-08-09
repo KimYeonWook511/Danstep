@@ -1,6 +1,6 @@
 package com.danstep.user.model.service;
 
-import com.danstep.user.model.dto.UserDTO;
+import com.danstep.user.model.dto.UserInfoDTO;
 import com.danstep.user.model.mapper.UserMapper;
 import com.danstep.user.model.dto.JoinDTO;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,7 +23,6 @@ public class JoinService {
         String username = joinDTO.getUsername();
         String password = joinDTO.getPassword();
         String nickname = joinDTO.getNickname();
-        String profile = joinDTO.getProfile();
 
         Boolean isExist = userMapper.existsByUsername(username);
 
@@ -32,12 +31,11 @@ public class JoinService {
             return;
         }
 
-        UserDTO data = new UserDTO();
-
-        data.setUsername(username);
-        data.setPassword(bCryptPasswordEncoder.encode(password));
-        data.setNickname(nickname);
-        data.setProfile(profile);
+        UserInfoDTO data = UserInfoDTO.builder()
+                .username(username)
+                .password(bCryptPasswordEncoder.encode((password)))
+                .nickname(nickname)
+                .build();
 
         userMapper.insertUser(data);
     }

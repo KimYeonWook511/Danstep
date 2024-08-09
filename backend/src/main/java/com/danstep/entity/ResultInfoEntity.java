@@ -42,4 +42,7 @@ public class ResultInfoEntity {
 
     @Column(nullable = false)
     private Integer bad;
+
+    @Column(name = "max_combo", nullable = false)
+    private Integer maxCombo;
 }
