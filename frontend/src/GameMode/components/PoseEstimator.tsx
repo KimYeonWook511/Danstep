@@ -347,6 +347,14 @@ const PoseEstimator: React.FC = () => {
   };
 
   const moveMainpage = () => {
+    // 카메라 스트림을 정지시키는 로직 추가
+    if (camRef.current && camRef.current.srcObject) {
+      const stream = camRef.current.srcObject as MediaStream;
+      const tracks = stream.getTracks();
+      tracks.forEach((track) => track.stop()); // 모든 트랙을 정지
+      camRef.current.srcObject = null; // 참조를 제거하여 메모리 누수 방지
+    }
+  
     navigate('/');
   };
   const handleShowPoseEstimator = () => {

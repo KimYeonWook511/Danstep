@@ -48,7 +48,7 @@
   margin-right: 200px;
 }
 
-.animated-texte {
+.animated-text {
   font-size: 70px;
   font-weight: bold;
   animation: grow-shrink 0.3s infinite alternate; /* 0.3초 주기로 65px ~ 70px */
