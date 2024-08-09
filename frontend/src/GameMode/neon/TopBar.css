@@ -1,0 +1,14 @@
+.topBar {
+  position: absolute;
+  top: 10px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+
+.topBar .left,
+.topBar .right {
+  display: flex;
+  gap: 10px;
+}

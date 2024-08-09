@@ -1,43 +1,42 @@
-// import React, { useState } from 'react';
-// import PoseEstimator from './GameMode/components/PoseEstimator';
-// import ChartTest from './mypage/components/ChartTest';
-// import Guide from './components/Guide';
-
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import MainPage from './components/MainPage';
 import Ranking from './components/Ranking';
-import NavBar from './components/NavBar';
-import S3 from './S3Test/S3';
+import GamePage from './components/GamePage';
+import './fonts/font.css';
+import mainBgm from './assets/mainbgm.mp3';
+
+const MusicPlayer: React.FC = () => {
+  const location = useLocation();
+
+  const musicRoutes = ['/', '/ranking'];
+
+  const shouldPlayMusic = musicRoutes.includes(location.pathname);
+
+  return (
+    <>
+    {shouldPlayMusic && (
+      <audio autoPlay loop muted={true} style={{ display: 'none' }}>
+        <source src={mainBgm} type="audio/mp3" />
+      </audio>
+    )}
+    </>
+  );
+};
 
 const App: React.FC = () => {
-    // const [showPoseEstimator, setShowPoseEstimator] = useState(false);
 
-    // const handleShowPoseEstimator = () => {
-    //     setShowPoseEstimator(true);
-    // };
-
-    return (
-
-        <Router>
-            <NavBar />
-            <Routes>
-            <Route path="/" element={<MainPage />} />
-            <Route path="/ranking" element={<Ranking />} />
-            <Route path="/kyw/test" element={<S3/>}/>
-            </Routes>
-            <Routes>
-                <Route path="/api/*" element={<Navigate to="/" />} />
-            </Routes>
-      
-{/* 
-        <div>
-            {!showPoseEstimator && <Guide onShowPoseEstimator={handleShowPoseEstimator} />}
-            {showPoseEstimator && <PoseEstimator />}
-            <h1 className="text-3xl font-bold underline">BlazePose with TensorFlow.js</h1>
-            <ChartTest />
-        </div> */}
-        </Router>
-    );
+  return (
+    <Router>
+      <MusicPlayer />
+      <Routes>
+        <Route path="/" element={<MainPage />} />
+        <Route path="/ranking" element={<Ranking />} />
+        <Route path="/game" element={<GamePage />} />
+      </Routes>
+    </Router>
+  );
 };
+
 
 export default App;

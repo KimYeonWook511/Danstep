@@ -1,10 +1,42 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { signUp } from '../api/auth';
 
 interface SignUpModalProps {
   onClose: () => void;
 }
 
 const SignUpModal: React.FC<SignUpModalProps> = ({ onClose }) => {
+  const [nickname, setNickname] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+
+  const handleSignUp = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setError(null); // 에러 초기화
+    setSuccess(null); // 성공 메시지 초기화
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    try {
+      console.log("여기 왔니?")
+      const response = await signUp({ nickname, username, password });
+      console.log(response)
+      setSuccess(response.message);
+      setNickname('');
+      setUsername('');
+      setPassword('');
+      setConfirmPassword('');
+    } catch (err) {
+      setError('Sign Up failed. Please try again.');
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
       <div className="flex items-center justify-center min-h-screen">
@@ -21,29 +53,85 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ onClose }) => {
             </div>
             <div className="mt-3 text-center">
               <h3 className="text-lg leading-6 font-medium text-gray-900">Sign Up</h3>
-              <form>
+              <form onSubmit={handleSignUp}>
+              <div className="mt-2">
+                  <label htmlFor="nickname" className="block text-sm font-medium text-gray-700">Nickname</label>
+                  <input
+                    type="text"
+                    id="nickname"
+                    value={nickname}
+                    onChange={(e) => setNickname(e.target.value)}
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    required
+                  />
+                </div>
                 <div className="mt-2">
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
-                  <input type="email" id="email" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700">Username</label>
+                  <input
+                    type="text"
+                    id="username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    required
+                  />
                 </div>
                 <div className="mt-2">
                   <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
-                  <input type="password" id="password" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+                  <input
+                    type="password"
+                    id="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    required
+                  />
                 </div>
                 <div className="mt-2">
                   <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-700">Confirm Password</label>
-                  <input type="password" id="confirm-password" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+                  <input
+                    type="password"
+                    id="confirm-password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    required
+                  />
                 </div>
+                {error && <div className="mt-2 text-red-500 text-sm">{error}</div>}
+                {success && <div className="mt-2 text-green-500 text-sm">{success}</div>}
                 <div className="mt-4">
                   <button type="submit" className="w-full bg-indigo-600 text-white py-2 rounded-md">Sign Up</button>
                 </div>
               </form>
             </div>
           </div>
-        </div>
+          <div className="w-full mb-4">
+            <input
+              type="password"
+              id="password"
+              placeholder="Password"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            />
+          </div>
+          <div className="w-full mb-4">
+            <input
+              type="password"
+              id="confirm-password"
+              placeholder="Confirm Password"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            />
+          </div>
+          <div className="w-full">
+            <button type="submit" className="w-full bg-indigo-600 text-white py-2 rounded-md">
+              Sign Up
+            </button>
+          </div>
       </div>
     </div>
-  );
+  </div>
+);
 };
+
 
 export default SignUpModal;

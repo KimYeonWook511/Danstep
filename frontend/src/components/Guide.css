@@ -1,26 +1,48 @@
-/* Guide.css */
-
 .guide-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent dark background */
+    background-color: rgba(0, 0, 0, 0.7);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    transition: opacity 0.5s ease-out;
+}
+
+.guide-overlay.hidden {
+    opacity: 0;
+    pointer-events: none; /* Prevent interaction when hidden */
 }
 
 .guide-content {
-    background: rgba(255, 255, 255, 0.9); /* Semi-transparent white background for content */
+    background: rgba(255, 255, 255, 0.9);
     padding: 20px;
     border-radius: 8px;
     text-align: center;
-    position: relative;
+    position: absolute;
+    width: 80vw;
+    height: 60vh;
     width: 80%;
     max-width: 800px;
+    max-height: 600px;
+    transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+    top: 25%;
+    left: 25%;
+    transform: translate(-50%, -50%);
+    box-sizing: border-box;
+}
+
+.guide-content.fade-in {
+    transform: scale(1);
+    opacity: 1;
+}
+
+.guide-content.fade-out {
+    transform: scale(0.5);
+    opacity: 0;
 }
 
 .warning-message {
@@ -41,16 +63,16 @@
 
 .instruction img {
     width: 100%;
-    height: auto; /* 자동 높이 조절 */
-    max-height: 200px; /* 원하는 최대 높이 설정 */
+    height: auto;
+    max-height: 200px;
     border: 5px solid transparent;
     border-radius: 8px;
     margin-bottom: 10px;
-    object-fit: cover; /* 이미지 비율을 유지하면서 상하 크기 조절 */
+    object-fit: cover;
 }
 
 .instruction.left img {
-    border-color: green;
+    border-color: #0fa;
 }
 
 .instruction.right img {
@@ -59,7 +81,7 @@
 
 .play-button {
     padding: 10px 20px;
-    background-color: #007bff; /* Button background color */
+    background-color: #007bff;
     color: white;
     border: none;
     border-radius: 4px;
@@ -70,5 +92,5 @@
 }
 
 .play-button:hover {
-    background-color: #0056b3; /* Button hover color */
+    background-color: #0056b3;
 }

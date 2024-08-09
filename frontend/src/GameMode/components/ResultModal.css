@@ -1,0 +1,124 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+.result-modal-content {
+  background: white;
+  padding: 40px;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 800px;
+  height: 70%;
+  max-height: 600px;
+  text-align: center;
+  position: relative;
+  overflow: auto;
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.gameover {
+  font-size: 64px;
+  margin-bottom: 20px;
+}
+
+.score {
+  font-size: 48px;
+  font-weight: bold;
+  line-height: 0.5;
+  margin-bottom: 30px;
+}
+
+.result-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: 60px;
+}
+
+.grade {
+  font-size: 216px; /* 크기 조절 */
+  font-weight: bold;
+  line-height: 0.9; /* 줄 간격 조정 */
+  display: flex;
+  align-items: center;
+  margin-left: 15%;
+}
+
+.grade-container {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.grade-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: left;
+  margin: 5px 0;
+  line-height: 1;
+}
+
+.grade-text {
+  margin-right: 10px;
+  text-align: left; /* 텍스트 왼쪽 정렬 */
+  flex-grow: 1;
+  margin-left: 150px;
+}
+
+.grade-label {
+  color: black;
+  font-size: 18px;
+  font-weight: bold;
+  margin-right: 50px;
+}
+
+/* .button-group {
+    display: flex;
+    justify-content: space-around;
+    margin-top: auto; 
+    width: 100%;
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+  }
+  
+  .button-group button {
+    background: #f0f0f0;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-bottom: 10px;
+  }
+  
+  .button-group button:hover {
+    background: #ddd;
+  }
+  
+  .button-group button img {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+    vertical-align: middle;
+  } */
