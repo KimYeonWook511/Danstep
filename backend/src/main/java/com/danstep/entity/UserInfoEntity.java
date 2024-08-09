@@ -16,13 +16,13 @@ public class UserInfoEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 20, unique = true)
     private String username;
 
     @Column(nullable = false, length = 200)
     private String password;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 20, unique = true)
     private String nickname;
 
     @Column(nullable = false, columnDefinition = "datetime default now()")

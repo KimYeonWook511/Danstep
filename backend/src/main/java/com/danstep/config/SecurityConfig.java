@@ -89,7 +89,7 @@ public class SecurityConfig {
         http
                 .csrf((auth) -> auth.disable());
 
-        //From 로그인 방식 disable
+        //Form 로그인 방식 disable
         http
                 .formLogin((auth) -> auth.disable());
 
@@ -100,12 +100,15 @@ public class SecurityConfig {
         //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/login", "/", "/join").permitAll()
+                        .requestMatchers("/").permitAll()
+                        .requestMatchers("/api/v1/users/login").permitAll()
+                        .requestMatchers("/api/v1/users/join").permitAll()
+                        .requestMatchers("/api/v1/users/reissue").permitAll()
+//                        .requestMatchers("/api/v1/games/").permitAll()
                         .requestMatchers("/api/v1/test/**").permitAll() // 임시 테스트 부분 허용!
-                        .requestMatchers("/api/v1/s3/**").permitAll() // 임시 테스트 부분 허용!
+//                        .requestMatchers("/api/v1/s3/**").permitAll() // 임시 테스트 부분 허용!
                         .requestMatchers("/api/v1/games/**").permitAll() // 임시 테스트 부분 허용!
                         .requestMatchers("/admin").hasRole("ADMIN")
-                        .requestMatchers("/reissue").permitAll()
                         .anyRequest().authenticated());
 
         //JWTFilter 등록

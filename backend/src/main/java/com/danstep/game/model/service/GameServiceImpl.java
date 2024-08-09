@@ -26,6 +26,7 @@ public class GameServiceImpl implements GameService {
         List<Integer> gamesIdList = gameMapper.getGamesId();
 
         if (gamesIdList == null || gamesIdList.isEmpty()) {
+            System.out.println("게임 존재하지 않음!");
             return null;
         }
 

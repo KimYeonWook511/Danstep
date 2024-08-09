@@ -3,7 +3,7 @@
 
 <mapper namespace="com.danstep.game.model.mapper.GameMapper">
 
-    <resultMap id="gameBasic" type="com.danstep.entity.GameInfoEntity">
+    <resultMap id="gameBasic" type="com.danstep.game.model.dto.GameInfoDTO">
         <id column="id" property="id"/>
         <result column="title" property="title"/>
         <result column="upload_date" property="uploadDate"/>

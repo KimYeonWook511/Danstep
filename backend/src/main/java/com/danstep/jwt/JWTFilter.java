@@ -1,7 +1,7 @@
 package com.danstep.jwt;
 
-import com.danstep.user.model.dto.UserDTO;
 import com.danstep.user.model.dto.CustomUserDetails;
+import com.danstep.user.model.dto.UserInfoDTO;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -71,12 +71,15 @@ public class JWTFilter extends OncePerRequestFilter {
         String username = jwtUtil.getUsername(accessToken);
         String role = jwtUtil.getRole(accessToken);
 
-        UserDTO userDTO = new UserDTO();
-        userDTO.setUsername(username);
-        userDTO.setRole(role);
-        CustomUserDetails customUserDetails = new CustomUserDetails(userDTO);
+        UserInfoDTO userInfoDTO = UserInfoDTO.builder()
+                .username(username)
+                .role(role)
+                .build();
+        CustomUserDetails customUserDetails = new CustomUserDetails(userInfoDTO);
 
+        // 토큰으로 부터 인증 정보 추출
         Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
+        // 강제로 시큐리티의 세션에 접근하여 값 저장
         SecurityContextHolder.getContext().setAuthentication(authToken);
 
         filterChain.doFilter(request, response);
