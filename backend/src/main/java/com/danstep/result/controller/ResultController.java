@@ -41,7 +41,7 @@ public class ResultController {
         }
          */
 
-//        saveResultDTO.setUsername(customUserDetails.getUsername());
+        saveResultDTO.setUsername(customUserDetails.getUsername());
         resultService.saveResult(saveResultDTO);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
