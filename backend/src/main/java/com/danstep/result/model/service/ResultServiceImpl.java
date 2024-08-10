@@ -1,12 +1,17 @@
 package com.danstep.result.model.service;
 
 import com.danstep.aws.model.service.S3Service;
+import com.danstep.exception.UserNotFoundException;
+import com.danstep.result.model.dto.GetResultInfoDTO;
 import com.danstep.result.model.dto.ResultInfoDTO;
 import com.danstep.result.model.dto.SaveResultDTO;
 import com.danstep.result.model.dto.SaveResultPoseDTO;
 import com.danstep.result.model.mapper.ResultMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class ResultServiceImpl implements ResultService {
@@ -22,14 +27,10 @@ public class ResultServiceImpl implements ResultService {
     @Override
     @Transactional
     public void saveResult(SaveResultDTO saveResultDTO) {
-
-
-
-//        resultMapper.insertResultInfo(saveResultDTO);
+        resultMapper.insertResultInfo(saveResultDTO);
 
         if (saveResultDTO.getId() == null) {
-            System.out.println("유저 정보 없음!");
-            return;
+            throw new UserNotFoundException("User not found with username: " + saveResultDTO.getUsername());
         }
 
         if (saveResultDTO.getPoseData() == null) {
@@ -61,7 +62,20 @@ public class ResultServiceImpl implements ResultService {
     }
 
     @Override
-    public ResultInfoDTO getResultByUsername(String username) {
-        return null;
+    @Transactional(readOnly = true)
+    public List<GetResultInfoDTO> getUserResultsByUsername(String username) {
+        List<ResultInfoDTO> list = resultMapper.getUserResultsByUsername(username);
+
+        List<GetResultInfoDTO> results = new ArrayList<>();
+        for (ResultInfoDTO resultInfoDTO : list) {
+            GetResultInfoDTO getResultInfoDTO = new GetResultInfoDTO(resultInfoDTO);
+
+            String poseData = s3Service.getPrivateJson("users", username,
+                    resultInfoDTO.getGameInfoId() + "/" + resultInfoDTO.getPoseFilename());
+
+            getResultInfoDTO.setPoseData(poseData);
+        }
+
+        return results;
     }
 }

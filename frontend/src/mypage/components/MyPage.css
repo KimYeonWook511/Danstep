@@ -1,0 +1,117 @@
+.red-neon {
+  animation: neon-glow-red-border 5s infinite alternate; /* 보라색 네온 효과 */
+}
+
+@keyframes neon-glow-red-border {
+  0% {
+    box-shadow:
+      0 0 5px rgba(255, 0, 0, 0.5),
+      /* 붉은색 */ 0 0 10px rgba(255, 0, 0, 0.1),
+      /* 붉은색 */ 0 0 15px rgba(255, 0, 0, 0),
+      /* 붉은색 */ inset 0 0 5px rgba(255, 0, 0, 0.5),
+      /* 붉은색 */ inset 0 0 10px rgba(255, 0, 0, 0.1),
+      /* 붉은색 */ inset 0 0 15px rgba(255, 0, 0, 0);
+    opacity: 0.8; /* 초기 투명도 */
+  }
+  100% {
+    box-shadow:
+      0 0 10px rgba(255, 0, 0, 0.9),
+      /* 붉은색 */ 0 0 20px rgba(255, 0, 0, 0.7),
+      /* 붉은색 */ 0 0 30px rgba(255, 0, 0, 0.5),
+      inset 0 0 10px rgba(255, 0, 0, 0.9),
+      /* 붉은색 */ inset 0 0 20px rgba(255, 0, 0, 0.7),
+      /* 붉은색 */ inset 0 0 30px rgba(255, 0, 0, 0.5); /* 붉은색 */
+    opacity: 1; /* 최대 투명도 */
+  }
+}
+
+.white-neon {
+  animation: neon-glow-white-border 2s infinite alternate;
+}
+
+.white-neon::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes neon-glow-white-border {
+  0% {
+    box-shadow:
+      0 0 5px rgba(255, 255, 255, 0.5),
+      0 0 10px rgba(255, 255, 255, 0.1),
+      0 0 15px rgba(255, 255, 255, 255),
+      inset 0 0 5px rgba(255, 255, 255, 0.5),
+      inset 0 0 10px rgba(255, 255, 255, 0.1),
+      inset 0 0 15px rgba(255, 255, 255, 0);
+    opacity: 0.9;
+  }
+  100% {
+    box-shadow:
+      0 0 10px rgba(255, 255, 255, 0.9),
+      0 0 20px rgba(255, 255, 255, 0.7),
+      0 0 30px rgba(255, 255, 255, 0.5),
+      inset 0 0 10px rgba(255, 255, 255, 0.9),
+      inset 0 0 20px rgba(255, 255, 255, 0.7),
+      inset 0 0 30px rgba(255, 255, 255, 0.5);
+    opacity: 1;
+  }
+}
+
+/*
+.blue-neon {
+  animation: neon-glow-blue-border 2s infinite alternate; 
+}*/
+
+/*
+@keyframes neon-glow-blue-border {
+  0% {
+    box-shadow:
+      0 0 5px rgba(0, 0, 255, 0.5),
+      0 0 10px rgba(0, 0, 255, 0.1),
+      0 0 15px rgba(0, 0, 0, 255),
+      inset 0 0 5px rgba(0, 0, 255, 0.5),
+      inset 0 0 10px rgba(0, 0, 255, 0.1),
+      inset 0 0 15px rgba(0, 0, 255, 0);
+    opacity: 0.8;
+  }
+  100% {
+    box-shadow:
+      0 0 10px rgba(0, 0, 255, 0.9),
+      0 0 20px rgba(0, 0, 255, 0.7),
+      0 0 30px rgba(0, 0, 255, 0.5),
+      inset 0 0 10px rgba(0, 0, 0, 0.9),
+      inset 0 0 20px rgba(0, 0, 255, 0.7),
+      inset 0 0 30px rgba(0, 0, 255, 0.5); 
+    opacity: 1; 
+  }
+}
+*/
+
+.animated-text.red {
+  color: red;
+  animation: neon-glow-red 1s infinite alternate;
+}
+
+@keyframes neon-glow-red {
+  0% {
+    text-shadow:
+      0 0 5px rgba(255, 0, 0, 0.5),
+      /* 붉은색 */ 0 0 10px rgba(255, 0, 0, 0.3),
+      /* 붉은색 */ 0 0 15px rgba(255, 0, 0, 0.1); /* 붉은색 */
+    opacity: 0.9; /* 초기 투명도 */
+  }
+  100% {
+    text-shadow:
+      0 0 10px rgba(255, 0, 0, 0.9),
+      /* 붉은색 */ 0 0 20px rgba(255, 0, 0, 0.7),
+      /* 붉은색 */ 0 0 30px rgba(255, 0, 0, 0.5); /* 붉은색 */
+    opacity: 1; /* 최대 투명도 */
+  }
+}
+
+.record {
+  width: '30%';
+  height: '100%';
+  border-width: '2px';
+  border-color: 'black';
+  border-radius: '5%';
+}

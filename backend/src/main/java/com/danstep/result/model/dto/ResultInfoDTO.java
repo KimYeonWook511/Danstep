@@ -1,7 +1,5 @@
 package com.danstep.result.model.dto;
 
-import com.danstep.game.model.dto.GameInfoDTO;
-import com.danstep.user.model.dto.UserInfoDTO;
 import lombok.*;
 
 import java.util.Date;
@@ -14,8 +12,8 @@ import java.util.Date;
 @ToString
 public class ResultInfoDTO {
     private Integer id;
-    private UserInfoDTO userInfoDTO;
-    private GameInfoDTO gameInfoDTO;
+//    private Integer userInfoId;
+    private Integer gameInfoId;
     private Date resultDate;
     private Integer score;
     private Integer perfect;
@@ -24,6 +22,8 @@ public class ResultInfoDTO {
     private Integer bad;
     private Integer maxCombo;
 
-    // 내가 춤 춘거 저장한다고 할 경우
-    private String poseData; // 포즈 Keypoint Json 객체
+    private String username;
+
+    // 내가 춤 춘거 저장한게 있다면
+    private String poseFilename;
 }

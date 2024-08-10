@@ -20,8 +20,31 @@ import { useNavigate } from 'react-router-dom';
 import Guide from '../../components/Guide';
 import ComboEffect from './ComboEffect';
 import LifeEffect from './LifeEffect';
+import axios from 'axios';
+import Loader from '../../components/Loading'
 
-const PoseEstimator: React.FC = () => {
+interface Game {
+  id: number;
+  title : string;
+  uploadDate : string;
+  playtime : number;
+  thumbnailFilename : string;
+  auidoFilename : string;
+  poseFilename : string;
+  videoFilename : string;
+  backgroundFilenmae : string;
+  level : number;
+  thumbnailUrl: string;
+  audioUrl : string;
+  backgroundUrl : string;
+  poseData : object;
+}
+
+interface PoseEstimatorProps {
+  game: Game;
+}
+
+const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game }) => {
   const navigate = useNavigate();
   const camRef = useRef<HTMLVideoElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -55,6 +78,7 @@ const PoseEstimator: React.FC = () => {
   const [detectedArmsUp, setDetectedArmsUp] = useState<boolean>(false);
   const [scores, setScores] = useState<number[]>([]);
   const [isFinished, setIsFinished] = useState<boolean>(false);
+  const [state, setState] = useState<boolean>(false);
 
   const keypointsJson = useRef([]);
   const idx = useRef(-1);
@@ -69,11 +93,12 @@ const PoseEstimator: React.FC = () => {
     await tf.setBackend('webgl');
     await tf.ready();
 
-    await setupCamera();
+    const camera = await setupCamera();
     const video = await setupVideo();
 
     await fetchKeypoints();
 
+    
     if (video) {
       const modelConfig = {
         runtime: 'mediapipe',
@@ -81,11 +106,14 @@ const PoseEstimator: React.FC = () => {
         solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/pose/',
         render3D: true,
       };
-
+      
       detector.current = await createDetector(SupportedModels.BlazePose, modelConfig);
       camdetector.current = await createDetector(SupportedModels.BlazePose, modelConfig);
       checkdetector.current = await createDetector(SupportedModels.BlazePose, modelConfig);
 
+      // if(camera && video && detector.current && camdetector.current && checkdetector.current){
+      //   setState(true);
+      // }
       // 첫 프레임 가져오기
       await detectFirstFrame(keypointsJson.current[0], firstFrameY);
 
@@ -171,7 +199,7 @@ const PoseEstimator: React.FC = () => {
       return;
     }
 
-    if (idx.current == -1 && videoRef.current) {
+    if (idx.current === -1 && videoRef.current) {
       videoRef.current.currentTime = 0;
       videoRef.current.play();
     }
@@ -215,7 +243,7 @@ const PoseEstimator: React.FC = () => {
 
   const setupVideo = async () => {
     if (videoRef.current) {
-      videoRef.current.src = 'proto2.mp4'; // 비디오 파일 경로를 설정하세요.
+      videoRef.current.src = game.audioUrl; // 비디오 파일 경로를 설정하세요.
       return new Promise<HTMLVideoElement>((resolve) => {
         videoRef.current!.onloadedmetadata = () => {
           // videoRef.current!.play();
@@ -244,21 +272,22 @@ const PoseEstimator: React.FC = () => {
   };
 
   const drawJson = (keypoints: Keypoint[]) => {
-    if (videoRef.current && camRef.current && canvasRef.current) {
+    if (videoRef.current && camRef.current && canvasRef.current && camcanvasRef.current) {
       const ctx = canvasRef.current.getContext('2d');
 
       if (videoRef.current.paused || videoRef.current.ended) return;
 
       if (ctx) {
         ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-        canvasRef.current.width = videoRef.current.videoWidth;
-        canvasRef.current.height = videoRef.current.videoHeight;
-
+        canvasRef.current.width = 720;
+        canvasRef.current.height = 1280;
+        console.log(canvasRef.current)
         if (keypoints) drawGreen(ctx, keypoints);
         return keypoints;
       }
     }
   };
+
 
   const camdetectPose = async (detector: PoseDetector) => {
     if (videoRef.current && camRef.current && camcanvasRef.current) {
@@ -284,6 +313,7 @@ const PoseEstimator: React.FC = () => {
 
   const checkdetectPose = async (detector: PoseDetector) => {
     if (camRef.current && camcanvasRef.current) {
+      setState(true);
       const ctx = camcanvasRef.current.getContext('2d');
 
       if (ctx) {
@@ -322,15 +352,10 @@ const PoseEstimator: React.FC = () => {
   };
 
   const fetchKeypoints = async () => {
-    const jsonUrl = '/keypoints424.json'; // 로컬 JSON 파일의 상대 경로
     try {
-      const response = await fetch(jsonUrl);
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const data = await response.json(); // JSON 데이터 파싱
-      keypointsJson.current = data;
-      len.current = keypointsJson.current.length;
+      const response = await axios.get(`https://i11a406.p.ssafy.io/api/v1/games/${game.id}/pose`);
+      keypointsJson.current = response.data; // API로부터 가져온 JSON 데이터를 keypointsJson에 저장
+      len.current = keypointsJson.current.length; // JSON 데이터의 길이 설정
       console.log('Loaded keypoints:', keypointsJson.current); // 로드된 keypoints 출력
       console.log('data length: ', len.current);
     } catch (error) {
@@ -340,7 +365,7 @@ const PoseEstimator: React.FC = () => {
 
   useEffect(() => {
     init();
-  }, []);
+  },[game.id]);
 
   const handleRestart = async () => {
     window.location.reload();
@@ -354,7 +379,7 @@ const PoseEstimator: React.FC = () => {
       tracks.forEach((track) => track.stop()); // 모든 트랙을 정지
       camRef.current.srcObject = null; // 참조를 제거하여 메모리 누수 방지
     }
-  
+
     navigate('/');
   };
   const handleShowPoseEstimator = () => {
@@ -377,17 +402,86 @@ const PoseEstimator: React.FC = () => {
         </div>
       </div>
       {showPoseEstimator && <Guide onShowPoseEstimator={handleShowPoseEstimator} />}
+      {!state && <Loader/>}
       <RainbowHealthBar health={health.current} />
       <NeonCircle />
 
-      <div style={{ width: '100%', display: 'flex' }}>
-        <ComboEffect
-          combo={combo.current}
-          grade={grade.current}
-        />
+      <div style={{ width: '100%', height: '100%', display: 'flex', marginTop: '100px' }}>
         <div
           className={`container ${detectedArmsUp ? 'no-border' : isYAligned.current ? 'aligned' : 'not-aligned'}`}
-          style={{ width: '100%' }}
+          style={{ width: '100%', height: '90%' }}
+        >
+          {detectedArmsUp ? (
+            <>
+              <video
+                ref={videoRef}
+                className='game-video'
+                style={{ display: 'none' }}
+                autoPlay
+              />
+              <canvas
+                ref={canvasRef}
+                className='canvas video-canvas'
+              />
+
+              {/* {isFinished && (
+                <button
+                  className='button'
+                  onClick={handleRestart}
+                  style={{ marginTop: '20px', padding: '10px', fontSize: '16px' }}
+                >
+                  Restart
+                </button>
+              )} */}
+            </>
+          ) : (
+            <>
+              <video
+                ref={videoRef}
+                className='game-video'
+                style={{ display: 'none' }}
+                autoPlay
+                muted
+              />
+              <canvas
+                ref={canvasRef}
+                className='canvas video-canvas'
+              />
+            </>
+          )}
+        </div>
+        <div
+          style={{
+            width: '100%',
+            height: '90%',
+            display: 'flex',
+            flexDirection: 'column',
+            textAlign: 'center',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          {detectedArmsUp ? (
+            <>
+              <ComboEffect
+                combo={combo.current}
+                grade={grade.current}
+              />
+
+              <LifeEffect health={health.current} />
+            </>
+          ) : (
+            <div
+              className='animated-text combo'
+              style={{ fontFamily: 'neon-text' }}
+            >
+              Are You Ready
+            </div>
+          )}
+        </div>
+        <div
+          className={`container ${detectedArmsUp ? 'no-border' : isYAligned.current ? 'aligned' : 'not-aligned'}`}
+          style={{ width: '100%', height: '90%' }}
         >
           {detectedArmsUp ? (
             <>
@@ -398,21 +492,11 @@ const PoseEstimator: React.FC = () => {
                 autoPlay
                 muted
               />
-              <video
-                ref={videoRef}
-                className='game-video'
-                style={{ display: 'none' }}
-                autoPlay
-              />
 
               <canvas
                 ref={camcanvasRef}
                 className='canvas cam-canvas'
                 style={{ transform: 'scaleX(-1)' }}
-              />
-              <canvas
-                ref={canvasRef}
-                className='canvas video-canvas'
               />
 
               {/* {isFinished && (
@@ -434,26 +518,14 @@ const PoseEstimator: React.FC = () => {
                 autoPlay
                 muted
               />
-              <video
-                ref={videoRef}
-                className='game-video'
-                style={{ display: 'none' }}
-                autoPlay
-                muted
-              />
               <canvas
                 ref={camcanvasRef}
                 className='canvas cam-canvas'
                 style={{ transform: 'scaleX(-1)' }}
               />
-              <canvas
-                ref={canvasRef}
-                className='canvas video-canvas'
-              />
             </>
           )}
         </div>
-        <LifeEffect health={health.current} />
       </div>
       <ResultModal
         isOpen={isFinished}
@@ -463,7 +535,9 @@ const PoseEstimator: React.FC = () => {
         good={good.current}
         great={great.current}
         perfect={perfect.current}
-        combo={maxCombo.current}
+        maxCombo={maxCombo.current}
+        poseData={JSON.stringify(camKeypoints.current)}
+        gameInfoId={game.id}
       />
     </div>
   );

@@ -5,6 +5,7 @@ import Ranking from './components/Ranking';
 import GamePage from './components/GamePage';
 import './fonts/font.css';
 import mainBgm from './assets/mainbgm.mp3';
+import MyPage from './mypage/components/MyPage';
 
 const MusicPlayer: React.FC = () => {
   const location = useLocation();
@@ -15,28 +16,47 @@ const MusicPlayer: React.FC = () => {
 
   return (
     <>
-    {shouldPlayMusic && (
-      <audio autoPlay loop muted={true} style={{ display: 'none' }}>
-        <source src={mainBgm} type="audio/mp3" />
-      </audio>
-    )}
+      {shouldPlayMusic && (
+        <audio
+          autoPlay
+          loop
+          muted={true}
+          style={{ display: 'none' }}
+        >
+          <source
+            src={mainBgm}
+            type='audio/mp3'
+          />
+        </audio>
+      )}
     </>
   );
 };
 
 const App: React.FC = () => {
-
   return (
     <Router>
       <MusicPlayer />
       <Routes>
-        <Route path="/" element={<MainPage />} />
-        <Route path="/ranking" element={<Ranking />} />
-        <Route path="/game" element={<GamePage />} />
+        <Route
+          path='/'
+          element={<MainPage />}
+        />
+        <Route
+          path='/ranking'
+          element={<Ranking />}
+        />
+        <Route
+          path='/game/:id'
+          element={<GamePage />}
+        />
+        <Route
+          path='/mypage'
+          element={<MyPage />}
+        />
       </Routes>
     </Router>
   );
 };
-
 
 export default App;

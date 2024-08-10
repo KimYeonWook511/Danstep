@@ -1,5 +1,8 @@
 import React from 'react';
 import './ResultModal.css';
+import {resultGrade} from '../utils/ResultGrade'
+import api from '../../api/api';
+import axios from 'axios';
 
 interface ResultModalProps {
   isOpen: boolean;
@@ -9,13 +12,40 @@ interface ResultModalProps {
   good: number;
   great: number;
   perfect: number;
-  combo: number;
+  maxCombo: number;
+  poseData: string;
+  gameInfoId: number;
 }
 
-const ResultModal: React.FC<ResultModalProps> = ({ isOpen, onClose, score, bad, good, great, perfect, combo }) => {
+const ResultModal: React.FC<ResultModalProps> = ({ isOpen, onClose, score, bad, good, great, perfect, maxCombo,poseData, gameInfoId }) => {
   if (!isOpen) {
     return null;
   }
+
+  const handleSubmit = async () => {
+    const accessToken = localStorage.getItem('accessToken') || '';
+    try {
+      const data={
+        score,
+        perfect,
+        great,
+        good,
+        bad,
+        maxCombo,
+        gameInfoId,
+        poseData
+      };
+      const response = await axios.post("https://i11a406.p.ssafy.io/api/v1/results",data,{
+        headers:{
+          'Content-Type': 'application/json',
+          'Authorization' : accessToken,
+        }
+      });
+      console.log(response);
+    } catch (error) {
+      console.error('Failed to submit result:', error);
+    }
+  };
 
   return (
     <div className='modal-overlay'>
@@ -43,7 +73,7 @@ const ResultModal: React.FC<ResultModalProps> = ({ isOpen, onClose, score, bad, 
             className='grade'
             style={{ color: 'violet', fontFamily: 'neon-text' }}
           >
-            S
+            {resultGrade(score)}
           </div>
           <div className='grade-container'>
             <div className='grade-wrapper'>
@@ -89,7 +119,7 @@ const ResultModal: React.FC<ResultModalProps> = ({ isOpen, onClose, score, bad, 
               >
                 COMBO
               </div>
-              <span className='grade-label'>{combo}</span>
+              <span className='grade-label'>{maxCombo}</span>
             </div>
           </div>
         </div>
@@ -103,6 +133,21 @@ const ResultModal: React.FC<ResultModalProps> = ({ isOpen, onClose, score, bad, 
             
           </button>
         </div> */}
+        <button 
+          onClick={handleSubmit} 
+          style={{ 
+            marginTop: '20px', 
+            padding: '10px 20px', 
+            fontSize: '18px', 
+            fontFamily: 'neon-text', 
+            backgroundColor: 'violet', 
+            color: 'white', 
+            border: 'none', 
+            cursor: 'pointer' 
+          }}
+        >
+          저장하기
+        </button>
       </div>
     </div>
   );
