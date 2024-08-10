@@ -10,6 +10,8 @@ import org.springframework.web.client.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.net.URL;
+import java.util.Date;
 
 @Slf4j
 //@RequiredArgsConstructor
@@ -119,12 +121,16 @@ public class S3ServiceImpl implements S3Service {
 
         try {
             return restTemplate.getForObject(sb.toString(), String.class);
+
         } catch (HttpClientErrorException e) {
             throw new RuntimeException("클라이언트 오류: " + e.getStatusCode() + " - " + e.getResponseBodyAsString(), e);
+
         } catch (HttpServerErrorException e) {
             throw new RuntimeException("서버 오류: " + e.getStatusCode() + " - " + e.getResponseBodyAsString(), e);
+
         } catch (ResourceAccessException e) {
             throw new RuntimeException("네트워크 오류: " + e.getMessage(), e);
+
         } catch (RestClientException e) {
             throw new RuntimeException("REST 클라이언트 오류: " + e.getMessage(), e);
         }
@@ -132,7 +138,41 @@ public class S3ServiceImpl implements S3Service {
 
     @Override
     public String getPrivateJson(String folder, String id, String filename) {
-        return null;
+        sb = new StringBuilder().append("private/")
+                .append(folder)
+                .append("/")
+                .append(id)
+                .append("/")
+                .append(filename);
+
+        Date expiration = new Date();
+        long expTimeMillis = expiration.getTime();
+        expTimeMillis += 1000 * 60 * 3; // 3분
+        expiration.setTime(expTimeMillis);
+
+        GeneratePresignedUrlRequest generatePresignedUrlRequest =
+                new GeneratePresignedUrlRequest(bucket, sb.toString())
+                        .withMethod(com.amazonaws.HttpMethod.GET)
+                        .withExpiration(expiration);
+
+        URL presignedUrl = amazonS3Admin.generatePresignedUrl(generatePresignedUrlRequest);
+
+        try {
+            // RestTemplate을 사용하여 JSON 데이터 가져오기
+            return restTemplate.getForObject(presignedUrl.toString(), String.class);
+
+        } catch (HttpClientErrorException e) {
+            throw new RuntimeException("클라이언트 오류: " + e.getStatusCode() + " - " + e.getResponseBodyAsString(), e);
+
+        } catch (HttpServerErrorException e) {
+            throw new RuntimeException("서버 오류: " + e.getStatusCode() + " - " + e.getResponseBodyAsString(), e);
+
+        } catch (ResourceAccessException e) {
+            throw new RuntimeException("네트워크 오류: " + e.getMessage(), e);
+
+        } catch (RestClientException e) {
+            throw new RuntimeException("REST 클라이언트 오류: " + e.getMessage(), e);
+        }
     }
 
     @Override

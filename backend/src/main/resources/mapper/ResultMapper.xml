@@ -3,8 +3,9 @@
 
 <mapper namespace="com.danstep.game.model.mapper.ResultMapper">
 
-    <resultMap id="resultBasic" type="com.danstep.result.model.dto.ResultInfoDTO">
+    <resultMap id="resultInfoBasic" type="com.danstep.result.model.dto.ResultInfoDTO">
         <id property="id" column="id" />
+        <result property="gameInfoId" column="game_info_id" />
         <result property="resultDate" column="result_date" />
         <result property="score" column="score" />
         <result property="perfect" column="perfect" />
@@ -12,17 +13,7 @@
         <result property="good" column="good" />
         <result property="bad" column="bad" />
         <result property="maxCombo" column="max_combo" />
-
-        <association property="userInfoDTO" javaType="com.danstep.user.model.dto.UserInfoDTO"
-                     resultMap="com.danstep.user.model.mapper.UserMapper.userBasic" />
-        <association property="gameInfoDTO" javaType="com.danstep.game.model.dto.GameInfoDTO"
-                     resultMap="com.danstep.game.model.mapper.GameMapper.gameBasic"/>
-
-<!--    아래와 같은 방법도 있지만 이것은 select를 또 호출하는 것과 같음 (효율을 생각하면 JOIN이 나을지도!)    -->
-<!--        <association property="userInfoDTO" column="user_info_id"-->
-<!--                     select="com.danstep.user.model.mapper.UserInfoMapper.getUserInfoById" />-->
-<!--        <association property="gameInfoDTO" column="game_info_id"-->
-<!--                     select="com.danstep.game.model.mapper.GameMapper.getGameInfoById" />-->
+        <result property="poseFilename" column="pose_filename" />
     </resultMap>
 
     <insert id="insertResultInfo" parameterType="com.danstep.result.model.dto.SaveResultDTO" useGeneratedKeys="true" keyProperty="id">
@@ -36,5 +27,14 @@
         INSERT INTO result_pose (result_info_id, pose_filename)
         VALUES (#{resultInfoId}, #{poseFilename});
     </insert>
+
+    <select id="getUserResultsByUsername" resultMap="resultInfoBasic">
+        SELECT ri.id, ri.game_info_id, ri.result_date, ri.score, ri.perfect,
+               ri.great, ri.good, ri.bad, ri.max_combo, rp.pose_filename
+        FROM result_info AS ri
+        LEFT JOIN result_pose AS rp
+        ON ri.id = rp.result_info_id
+        WHERE ri.user_info_id = (SELECT id FROM user_info WHERE username = #{username});
+    </select>
 
 </mapper>

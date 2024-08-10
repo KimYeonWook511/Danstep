@@ -10,23 +10,23 @@ const LifeEffect: React.FC<LifeEffectProps> = ({ health }) => {
       style={{
         width: '50%',
         height: '100%',
-        textAlign: 'center',
+        justifyContent: 'center',
         alignContent: 'center',
         color: 'black',
         fontFamily: 'neon-text',
       }}
     >
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <div>
           <div
-            className='animated-text red'
-            style={{ fontSize: '80px' }}
+            className='animated-text'
+            style={{ fontSize: '80px', textAlign: 'center' }}
           >
             LIFE
           </div>
           <div
             className='animated-text neon-number'
-            style={{ fontFamily: 'neon-number' }}
+            style={{ fontFamily: 'neon-number', textAlign: 'center' }}
           >
             {health.toFixed(1)}
           </div>

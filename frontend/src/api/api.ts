@@ -5,7 +5,7 @@ let accessToken: string = localStorage.getItem('accessToken') || '';
 
 // axios 인스턴스 생성
 const api = axios.create({
-  baseURL: 'http://localhost:8080/', // 백엔드 API 주소
+  baseURL: 'https://i11a406.p.ssafy.io/', // 백엔드 API 주소
   headers: {
     'Content-Type': 'application/json', // 기본 Content-Type 설정
   },
