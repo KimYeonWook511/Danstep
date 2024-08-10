@@ -1,27 +1,44 @@
 package com.danstep.result.controller;
 
-import com.danstep.result.model.dto.ResultInfoDTO;
+import com.danstep.jwt.JWTUtil;
+import com.danstep.result.model.dto.SaveResultDTO;
 import com.danstep.result.model.service.ResultService;
+import com.danstep.user.model.dto.CustomUserDetails;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/results")
 public class ResultController {
 
     private final ResultService resultService;
+    private final JWTUtil jwtUtil;
 
-    public ResultController(ResultService resultService) {
+    public ResultController(ResultService resultService, JWTUtil jwtUtil) {
         this.resultService = resultService;
+        this.jwtUtil = jwtUtil;
     }
 
     @PostMapping
-    public ResponseEntity<?> saveResult(@RequestBody ResultInfoDTO resultInfoDTO) {
-        resultService.saveResult(resultInfoDTO);
+    public ResponseEntity<?> saveResult(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestBody SaveResultDTO saveResultDTO) {
+        /*
+        // SecurityContext에서 Authentication 객체 가져오기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
+            CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+            UserInfoDTO userInfo = customUserDetails.getUserInfoDTO();
+            return ResponseEntity.ok(userInfo);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+         */
+
+        saveResultDTO.setUsername(customUserDetails.getUsername());
+        resultService.saveResult(saveResultDTO);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

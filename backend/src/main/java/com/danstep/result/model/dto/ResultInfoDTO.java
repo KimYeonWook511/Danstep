@@ -11,6 +11,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class ResultInfoDTO {
     private Integer id;
     private UserInfoDTO userInfoDTO;

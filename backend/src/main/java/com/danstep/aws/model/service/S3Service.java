@@ -1,10 +1,5 @@
 package com.danstep.aws.model.service;
 
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.danstep.aws.model.dto.GameInfoDTOno;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 
 public interface S3Service {
@@ -26,4 +21,6 @@ public interface S3Service {
     String getPublicUrl(String folder, String id, String filename);
 
     String getPrivateUrl(String folder, String id, String filename);
+
+    void uploadUserJson(String folder, String username, String gameInfoId, String filename, String poseData);
 }

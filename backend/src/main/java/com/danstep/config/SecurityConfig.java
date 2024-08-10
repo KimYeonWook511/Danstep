@@ -34,8 +34,6 @@ public class SecurityConfig {
 
     private final RefreshMapper refreshMapper;
 
-
-
     public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil, RefreshMapper refreshMapper) {
 
         this.authenticationConfiguration = authenticationConfiguration;
@@ -108,6 +106,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/test/**").permitAll() // 임시 테스트 부분 허용!
 //                        .requestMatchers("/api/v1/s3/**").permitAll() // 임시 테스트 부분 허용!
                         .requestMatchers("/api/v1/games/**").permitAll() // 임시 테스트 부분 허용!
+//                        .requestMatchers("/api/v1/results/**").permitAll() // 임시 테스트 부분 허용!
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .anyRequest().authenticated());
 
