@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.danstep.game.model.mapper.ResultMapper">
+<mapper namespace="com.danstep.result.model.mapper.ResultMapper">
 
     <resultMap id="resultInfoBasic" type="com.danstep.result.model.dto.ResultInfoDTO">
         <id property="id" column="id" />
@@ -18,7 +18,7 @@
 
     <insert id="insertResultInfo" parameterType="com.danstep.result.model.dto.SaveResultDTO" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO result_info (user_info_id, game_info_id, score, perfect, great, good, bad, max_combo)
-        SELECT id, #{gameInfoDTO.id}, #{score}, #{perfect}, #{great}, #{good}, #{bad}, #{maxCombo}
+        SELECT id, #{gameInfoId}, #{score}, #{perfect}, #{great}, #{good}, #{bad}, #{maxCombo}
         FROM user_info
         WHERE username = #{username};
     </insert>
