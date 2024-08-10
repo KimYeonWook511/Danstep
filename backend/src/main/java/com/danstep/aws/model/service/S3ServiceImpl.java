@@ -119,7 +119,7 @@ public class S3ServiceImpl implements S3Service {
 //    }
 
     @Override
-    public Object getPublicJson(String folder, String id, String filename) {
+    public String getPublicJson(String folder, String id, String filename) {
         // 결국 나중엔 publicJson은 없음! (모든 포즈는 보호해야함)
         // 임시 허용해주는 url생성해서 접근해야할 듯
         // 다만 임시 허용해주는 부분동안은 접근이 가능하니 game pose같은 경우는 사실상 public같은 느낌이 들긴 함
@@ -133,7 +133,7 @@ public class S3ServiceImpl implements S3Service {
                 .append(filename);
 
         try {
-            return restTemplate.getForObject(sb.toString(), Object.class);
+            return restTemplate.getForObject(sb.toString(), String.class);
         } catch (HttpClientErrorException e) {
             throw new RuntimeException("클라이언트 오류: " + e.getStatusCode() + " - " + e.getResponseBodyAsString(), e);
         } catch (HttpServerErrorException e) {
@@ -146,7 +146,7 @@ public class S3ServiceImpl implements S3Service {
     }
 
     @Override
-    public Object getPrivateJson(String folder, String id, String filename) {
+    public String getPrivateJson(String folder, String id, String filename) {
         return null;
     }
 

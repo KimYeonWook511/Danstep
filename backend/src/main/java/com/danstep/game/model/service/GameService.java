@@ -9,5 +9,5 @@ public interface GameService {
 
     GameInfoDTO getGameInfo(Integer id);
 
-    Object getGamePose(Integer id);
+    String getGamePose(Integer id);
 }

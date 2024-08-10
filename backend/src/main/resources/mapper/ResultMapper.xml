@@ -11,6 +11,7 @@
         <result property="great" column="great" />
         <result property="good" column="good" />
         <result property="bad" column="bad" />
+        <result property="maxCombo" column="max_combo" />
 
         <association property="userInfoDTO" javaType="com.danstep.user.model.dto.UserInfoDTO"
                      resultMap="com.danstep.user.model.mapper.UserMapper.userBasic" />
@@ -25,8 +26,8 @@
     </resultMap>
 
     <insert id="insertResultInfo" parameterType="com.danstep.result.model.dto.ResultInfoDTO" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO result_info (user_info_id, game_info_id, score, perfect, great, good, bad)
-        VALUES (#{userInfoDTO.id}, #{gameInfoDTO.id}, #{score}, #{perfect}, #{great}, #{good}, #{bad});
+        INSERT INTO result_info (user_info_id, game_info_id, score, perfect, great, good, bad, max_combo)
+        VALUES (#{userInfoDTO.id}, #{gameInfoDTO.id}, #{score}, #{perfect}, #{great}, #{good}, #{bad}, #{maxCombo});
     </insert>
 
 </mapper>

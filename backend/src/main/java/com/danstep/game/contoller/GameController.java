@@ -45,12 +45,12 @@ public class GameController {
     }
 
     @GetMapping("/{id}/pose")
-    public ResponseEntity<Object> getGamePose(@PathVariable Integer id) {
+    public ResponseEntity<String> getGamePose(@PathVariable Integer id) {
         if (id == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        Object poseData = gameService.getGamePose(id);
+        String poseData = gameService.getGamePose(id);
 
         if (poseData == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

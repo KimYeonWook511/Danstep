@@ -63,7 +63,7 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public Object getGamePose(Integer id) {
+    public String getGamePose(Integer id) {
         GameInfoDTO gameInfo = gameMapper.getGameInfoById(id);
 
         try {
