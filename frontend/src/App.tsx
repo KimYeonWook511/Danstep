@@ -38,7 +38,7 @@ const App: React.FC = () => {
     <Router>
       <MusicPlayer />
       <Routes>
-        <Route
+        {/* <Route
           path='/'
           element={<MainPage />}
         />
@@ -53,7 +53,7 @@ const App: React.FC = () => {
         <Route
           path='/mypage'
           element={<MyPage />}
-        />
+        /> */}
       </Routes>
     </Router>
   );
