@@ -19,9 +19,9 @@ public interface S3Service {
 //
 //    byte[] getBytes(String f1, String pk, String fileUUID) throws IOException;
 
-    Object getPublicJson(String folder, String id, String filename);
+    String getPublicJson(String folder, String id, String filename);
 
-    Object getPrivateJson(String folder, String id, String filename);
+    String getPrivateJson(String folder, String id, String filename);
 
     String getPublicUrl(String folder, String id, String filename);
 

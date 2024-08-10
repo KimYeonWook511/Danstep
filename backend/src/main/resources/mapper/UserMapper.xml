@@ -28,7 +28,7 @@
     </insert>
 
     <select id="findByUsername" parameterType="String" resultType="com.danstep.user.model.dto.UserInfoDTO">
-        SELECT id, username, nickname, regist_date, role, profile, refresh
+        SELECT id, username, nickname, regist_date, role, profile, refresh, password
         FROM user_info
         WHERE username = #{username}
     </select>

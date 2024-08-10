@@ -37,6 +37,9 @@ public class GameInfoEntity {
     @Column(name = "video_filename", nullable = false, length = 200)
     private String videoFilename; // 비디오 파일 이름
 
+    @Column(name = "background_filename", nullable = false, length = 200)
+    private String backgroundFilename; // 배경 파일 이름
+
     @Column(nullable = false)
     private Integer level; // 게임 레벨
 }
