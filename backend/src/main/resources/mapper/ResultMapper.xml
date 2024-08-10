@@ -25,9 +25,16 @@
 <!--                     select="com.danstep.game.model.mapper.GameMapper.getGameInfoById" />-->
     </resultMap>
 
-    <insert id="insertResultInfo" parameterType="com.danstep.result.model.dto.ResultInfoDTO" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertResultInfo" parameterType="com.danstep.result.model.dto.SaveResultDTO" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO result_info (user_info_id, game_info_id, score, perfect, great, good, bad, max_combo)
-        VALUES (#{userInfoDTO.id}, #{gameInfoDTO.id}, #{score}, #{perfect}, #{great}, #{good}, #{bad}, #{maxCombo});
+        SELECT id, #{gameInfoDTO.id}, #{score}, #{perfect}, #{great}, #{good}, #{bad}, #{maxCombo}
+        FROM user_info
+        WHERE username = #{username};
+    </insert>
+
+    <insert id="insertResultPose" parameterType="com.danstep.result.model.dto.SaveResultPoseDTO" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO result_pose (result_info_id, pose_filename)
+        VALUES (#{resultInfoId}, #{poseFilename});
     </insert>
 
 </mapper>

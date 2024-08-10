@@ -1,30 +1,15 @@
 package com.danstep.aws.model.service;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.ListObjectsV2Request;
-import com.amazonaws.services.s3.model.ListObjectsV2Result;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.danstep.aws.model.dto.GameInfoDTOno;
-import com.danstep.aws.model.dto.TempDTO;
-import com.danstep.aws.model.mapper.S3Mapper;
+import com.amazonaws.services.s3.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.*;
-import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URLEncoder;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.util.UUID;
 
 @Slf4j
 //@RequiredArgsConstructor
@@ -173,5 +158,35 @@ public class S3ServiceImpl implements S3Service {
 //                .append()
 
         return sb.toString();
+    }
+
+    @Override
+    public void uploadUserJson(String folder, String username, String gameInfoId, String filename, String poseData) {
+        try {
+            // 파일 경로 및 파일 명
+            sb = new StringBuilder().append("private/")
+                    .append(folder)
+                    .append("/")
+                    .append(username)
+                    .append("/")
+                    .append(gameInfoId)
+                    .append("/")
+                    .append(filename);
+
+            // S3에 업로드할 InputStream 생성
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(poseData.getBytes());
+
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentLength(poseData.length());
+            metadata.setContentType("application/json");
+
+            // S3에 업로드
+            amazonS3Admin.putObject(new PutObjectRequest(bucket, sb.toString(), inputStream, metadata));
+
+        } catch (AmazonS3Exception s3Exception) {
+            // S3 관련 예외 처리
+            s3Exception.printStackTrace();
+            throw new RuntimeException();
+        }
     }
 }
