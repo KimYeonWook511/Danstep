@@ -72,8 +72,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         //응답 설정
         response.setHeader("Authorization", "Bearer " + access);
-//        response.addCookie(createCookie("refresh", refresh));
-        response.addHeader("Set-Cookie", createCookie("refresh", refresh));
+        response.addCookie(createCookie("refresh", refresh));
+//        response.addHeader("Set-Cookie", createCookie("refresh", refresh));
         response.setStatus(HttpStatus.OK.value());
     }
 
@@ -110,26 +110,26 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 //        refreshMapper.InsertRefresh(refreshEntity);
 //    }
 
-//    private Cookie createCookie(String key, String value) {
-//
-//        Cookie cookie = new Cookie(key, value);
-//        cookie.setMaxAge(24*60*60);
-//        //cookie.setSecure(true);
-//        cookie.setPath("/");
-//        cookie.setHttpOnly(true);
-//
-//        return cookie;
-//    }
+    private Cookie createCookie(String key, String value) {
 
-    private String createCookie(String key, String value) {
+        Cookie cookie = new Cookie(key, value);
+        cookie.setMaxAge(24*60*60);
+        //cookie.setSecure(true);
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
 
-        ResponseCookie cookie = ResponseCookie.from(key, value)
-                .path("/")
-                .sameSite("None")
-                .httpOnly(true)
-                .maxAge(24 * 60 * 60)
-                .build();
-
-        return cookie.toString();
+        return cookie;
     }
+
+//    private String createCookie(String key, String value) {
+//
+//        ResponseCookie cookie = ResponseCookie.from(key, value)
+//                .path("/")
+//                .sameSite("None")
+//                .httpOnly(true)
+//                .maxAge(24 * 60 * 60)
+//                .build();
+//
+//        return cookie.toString();
+//    }
 }
