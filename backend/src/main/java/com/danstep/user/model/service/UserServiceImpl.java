@@ -75,6 +75,11 @@ public class UserServiceImpl implements UserService {
             updateUserDTO.setProfile(UUIDFilename);
         }
 
+        // 암호화
+        if (updateUserDTO.getNewPassword() != null) {
+            updateUserDTO.setNewPassword(bCryptPasswordEncoder.encode(updateUserDTO.getNewPassword()));
+        }
+
         // 정보 수정
         userMapper.updateUserByUsername(updateUserDTO);
 
