@@ -15,4 +15,6 @@ public interface UserMapper {
     UserInfoDTO findByUsername(String username);
 
     void updateUserByUsername(UpdateUserDTO updateUserDTO);
+
+    Boolean existsByNicknameExcludingUsername(UpdateUserDTO updateUserDTO);
 }

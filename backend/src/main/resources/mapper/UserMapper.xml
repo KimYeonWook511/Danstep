@@ -21,6 +21,19 @@
         WHERE username = #{username}
     </select>
 
+    <select id="existsByNickname" parameterType="String" resultType="boolean">
+        SELECT IF(COUNT(*) = 1, 1, 0)
+        FROM user_info
+        WHERE nickname = #{nickname}
+    </select>
+
+    <select id="existsByNicknameExcludingUsername" resultType="boolean">
+        SELECT IF(COUNT(*) = 1, 1, 0)
+        FROM user_info
+        WHERE nickname = #{nickname}
+        AND username != #{username}
+    </select>
+
 <!--    <insert id="insertUser" parameterType="userDTO" useGeneratedKeys="true" keyProperty="id">-->
     <insert id="insertUser" parameterType="com.danstep.user.model.dto.UserInfoDTO" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO user_info (username, password, nickname)

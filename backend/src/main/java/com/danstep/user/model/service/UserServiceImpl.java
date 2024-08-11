@@ -57,15 +57,13 @@ public class UserServiceImpl implements UserService {
         }
 
         // 비밀번호 불일치!!
-        if (!dto.getPassword().equals(bCryptPasswordEncoder.encode(updateUserDTO.getCurrentPassword()))) {
+        if (!bCryptPasswordEncoder.matches(updateUserDTO.getCurrentPassword(), dto.getPassword())) {
             throw new PasswordMismatchException("Password does not match");
         }
 
         // 이름 중복!!
-        if (!dto.getNickname().equals(updateUserDTO.getNickname())) {
-            if (userMapper.existsByUsername(updateUserDTO.getUsername())) {
-                throw new NicknameAlreadyExistsException("Nickname already exists");
-            }
+        if (userMapper.existsByNicknameExcludingUsername(updateUserDTO)) {
+            throw new NicknameAlreadyExistsException("Nickname already exists");
         }
 
         // 프로필 사진 변경 시 UUID 생성
