@@ -47,7 +47,7 @@ public class ResultController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping("/user")
+    @GetMapping("/{username}")
     public ResponseEntity<List<GetResultInfoDTO>> getUserResults(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         return new ResponseEntity<>(resultService.getUserResultsByUsername(customUserDetails.getUsername()), HttpStatus.OK);
     }
