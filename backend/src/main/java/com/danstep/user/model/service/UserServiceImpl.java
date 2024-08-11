@@ -1,10 +1,14 @@
 package com.danstep.user.model.service;
 
+import com.danstep.exception.NicknameAlreadyExistsException;
+import com.danstep.exception.PasswordMismatchException;
+import com.danstep.exception.UserNotFoundException;
 import com.danstep.user.model.dto.GetUserInfoDTO;
 import com.danstep.user.model.dto.UpdateUserDTO;
 import com.danstep.user.model.dto.UserInfoDTO;
 import com.danstep.user.model.mapper.UserMapper;
 import com.danstep.util.S3Util;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,19 +18,21 @@ public class UserServiceImpl implements UserService {
 
     private final UserMapper userMapper;
     private final S3Util s3Util;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public UserServiceImpl(UserMapper userMapper, S3Util s3Util) {
+    public UserServiceImpl(UserMapper userMapper, S3Util s3Util, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userMapper = userMapper;
         this.s3Util = s3Util;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public GetUserInfoDTO getUserInfoByUsername(String Username) {
-        UserInfoDTO dto = userMapper.findByUsername(Username);
+    public GetUserInfoDTO getUserInfoByUsername(String username) {
+        UserInfoDTO dto = userMapper.findByUsername(username);
 
         if (dto == null) {
-            return null;
+            throw new UserNotFoundException("User not found with username: " + username);
         }
 
         GetUserInfoDTO result = GetUserInfoDTO.builder()
@@ -43,16 +49,38 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void updateUserByUsername(UpdateUserDTO updateUserDTO, MultipartFile profile) {
 
-        if (!profile.isEmpty()) { // empty로 해도 되는가!?
-            // UUID 생성
+        UserInfoDTO dto = userMapper.findByUsername(updateUserDTO.getUsername());
+
+        // 회원 정보 찾을 수 없음!!
+        if (dto == null) {
+            throw new UserNotFoundException("User not found with username: " + updateUserDTO.getUsername());
+        }
+
+        // 비밀번호 불일치!!
+        if (!dto.getPassword().equals(bCryptPasswordEncoder.encode(updateUserDTO.getCurrentPassword()))) {
+            throw new PasswordMismatchException("Password does not match");
+        }
+
+        // 이름 중복!!
+        if (!dto.getNickname().equals(updateUserDTO.getNickname())) {
+            if (userMapper.existsByUsername(updateUserDTO.getUsername())) {
+                throw new NicknameAlreadyExistsException("Nickname already exists");
+            }
+        }
+
+        // 프로필 사진 변경 시 UUID 생성
+        if (profile != null && profile.getOriginalFilename() != null) {
+            // profile에 null 이 들어 오는가?
+            // isEmpty는 언제 되는가?
+            // 등.. 여러 테스트를 해 봐야함
             String UUIDFilename = s3Util.getUUIDFilename(profile.getOriginalFilename());
             updateUserDTO.setProfile(UUIDFilename);
         }
 
         // 정보 수정
-        userMapper.updateUser(updateUserDTO);
+        userMapper.updateUserByUsername(updateUserDTO);
 
-        if (profile.isEmpty()) return;
+        if (profile == null) return;
 
         // 새로운 profile 업로드
 //        String temp = s3Util.uploadProfile(profile, updateUserDTO.getUsername(), updateUserDTO.getProfile());

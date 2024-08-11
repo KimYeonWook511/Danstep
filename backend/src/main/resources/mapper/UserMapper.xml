@@ -40,10 +40,10 @@
                 password = #{newPassword},
             </if>
             <if test="nickname != null and nickname != ''">
-                nickname = {nickname},
+                nickname = #{nickname},
             </if>
             <if test="profile != null and profile != ''">
-                profile = {profile},
+                profile = #{profile},
             </if>
         </set>
         WHERE username = #{username}

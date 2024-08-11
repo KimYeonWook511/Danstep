@@ -6,7 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface UserService {
 
-    GetUserInfoDTO getUserInfoByUsername(String Username);
+    GetUserInfoDTO getUserInfoByUsername(String username);
 
     void updateUserByUsername(UpdateUserDTO updateUserDTO, MultipartFile profile);
 }
