@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import MainPage from './components/MainPage';
 import Ranking from './components/Ranking';
@@ -9,25 +9,148 @@ import MyPage from './mypage/components/MyPage';
 
 const MusicPlayer: React.FC = () => {
   const location = useLocation();
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [isMuted, setIsMuted] = useState(false);
+  const [volume, setVolume] = useState(0.5);
+  const [showVolumeControl, setShowVolumeControl] = useState(false);
 
   const musicRoutes = ['/', '/ranking'];
-
   const shouldPlayMusic = musicRoutes.includes(location.pathname);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      if (shouldPlayMusic) {
+        audioRef.current.play();
+      } else {
+        audioRef.current.pause();
+      }
+    }
+  }, [location.pathname, shouldPlayMusic]);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = volume;
+      audioRef.current.muted = isMuted;
+    }
+  }, [volume, isMuted]);
+
+  const volumeUpIcon = (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="feather feather-volume-2"
+    >
+      <polygon points="3 9 9 9 13 5 13 19 9 15 3 15"></polygon>
+      <path d="M16.5 12c0 1.3-.5 2.5-1.4 3.5"></path>
+      <path d="M19.5 12c0 2-1 3.8-2.5 4.7"></path>
+      <path d="M22.5 12c0 2.9-1.5 5.4-3.5 6.9"></path>
+    </svg>
+  );
+
+  const volumeMuteIcon = (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="feather feather-volume-x"
+    >
+      <polygon points="3 9 9 9 13 5 13 19 9 15 3 15"></polygon>
+      <line x1="18" y1="9" x2="22" y2="13"></line>
+      <line x1="22" y1="9" x2="18" y2="13"></line>
+    </svg>
+  );
 
   return (
     <>
+      <audio ref={audioRef} loop style={{ display: 'none' }}>
+        <source src={mainBgm} type="audio/mp3" />
+      </audio>
+
       {shouldPlayMusic && (
-        <audio
-          autoPlay
-          loop
-          muted={true}
-          style={{ display: 'none' }}
+        <div
+          style={{
+            position: 'fixed',
+            bottom: '20px',
+            right: '20px',
+            display: 'flex',
+            flexDirection: 'column-reverse',
+            alignItems: 'center',
+            zIndex: 1000
+          }}
+          onMouseEnter={() => setShowVolumeControl(true)}
+          onMouseLeave={() => setShowVolumeControl(false)}
         >
-          <source
-            src={mainBgm}
-            type='audio/mp3'
-          />
-        </audio>
+          {/* {showVolumeControl && (
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              value={volume}
+              onChange={(e) => setVolume(parseFloat(e.target.value))}
+              style={{
+                transform: 'rotate(-90deg)',
+                width: '100px',
+                marginBottom: '10px',
+              }}
+            />
+          )}
+          <div 
+            style={{ 
+              backgroundColor: 'white', 
+              padding: '10px', 
+              borderRadius: '50%', 
+              boxShadow: '0px 0px 5px rgba(0, 0, 0, 0.2)', 
+              cursor: 'pointer' 
+            }}
+            onClick={() => setIsMuted(!isMuted)}
+          >
+            {isMuted ? volumeMuteIcon : volumeUpIcon}
+          </div> */}
+          {showVolumeControl && (
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              value={volume}
+              onChange={(e) => setVolume(parseFloat(e.target.value))}
+              style={{
+                position: 'absolute',
+                bottom: '86px',  // 아이콘 위에 볼륨 바 위치
+                transform: 'rotate(-90deg)',
+                width: '100px',
+              }}
+            />
+          )}
+          <div
+            style={{
+              backgroundColor: 'white',
+              padding: '10px',
+              borderRadius: '50%',
+              boxShadow: '0px 0px 5px rgba(0, 0, 0, 0.2)',
+              cursor: 'pointer',
+              position: 'relative',
+            }}
+            onClick={() => setIsMuted(!isMuted)}
+          >
+            {isMuted ? volumeMuteIcon : volumeUpIcon}
+          </div>
+
+        </div>
       )}
     </>
   );
@@ -38,22 +161,10 @@ const App: React.FC = () => {
     <Router>
       <MusicPlayer />
       <Routes>
-        {/* <Route
-          path='/'
-          element={<MainPage />}
-        />
-        <Route
-          path='/ranking'
-          element={<Ranking />}
-        />
-        <Route
-          path='/game/:id'
-          element={<GamePage />}
-        />
-        <Route
-          path='/mypage'
-          element={<MyPage />}
-        /> */}
+        <Route path="/" element={<MainPage />} />
+        <Route path="/ranking" element={<Ranking />} />
+        <Route path="/game/:id" element={<GamePage />} />
+        <Route path="/mypage" element={<MyPage />} />
       </Routes>
     </Router>
   );
