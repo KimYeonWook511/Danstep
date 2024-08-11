@@ -9,10 +9,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
+import java.util.UUID;
 
 @Component
 public class S3Util {
@@ -40,65 +43,42 @@ public class S3Util {
         this.restTemplate = restTemplate;
     }
 
-//    private String createUUIDName(String folder, String folderId,String uuid) {
-//        return folder + "/" + folderId + "/" + uuid;
-//    }
-//
-//    private int findNextIndex(String folder){
-//        ListObjectsV2Request req = new ListObjectsV2Request()
-//                .withBucketName(bucket)
-//                .withPrefix(folder+"/")
-//                .withDelimiter("/");
-//
-//        ListObjectsV2Result result = amazonS3.listObjectsV2(req);
-//        int idx = 0;
-//
-//        for(String prefix : result.getCommonPrefixes()){
-//            String folderName = prefix.replace(folder+"/","").replace("/","");
-//            try{
-//                int index = Integer.parseInt(folderName);
-//                if(index > idx){
-//                    idx = index;
-//                }
-//            }catch(NumberFormatException e) {continue;}
-//        }
-//
-//        return idx+1;
-//    }
-//
-//    @Override
-//    public byte[] getBytes(String f1, String pk, String fileUUID) throws IOException {
-//        try {
-//            System.out.println(cloudFrontDomain);
-//            System.out.println(cloudFrontUrl + "/" + f1 + "/" + pk + "/" + fileUUID);
-//            HttpClient httpClient = HttpClient.newBuilder().build();
-//            HttpRequest request = HttpRequest.newBuilder()
-//                    .uri(URI.create(cloudFrontUrl + "/" + f1 + "/" + pk + "/" + fileUUID))
-//                    .build();
-//
-//            // 요청 보내고 응답 받기
-//            HttpResponse<byte[]> response = httpClient.send(request, HttpResponse.BodyHandlers.ofByteArray());
-//
-//            if (response.statusCode() == HttpStatus.OK.value()) {
-//                return response.body();
-//            } else {
-//                return null;
-//            }
-//
-//        } catch (InterruptedException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
+    public String getUUIDFilename(String filename) {
+        int dotIdx = filename.lastIndexOf('.');
+        String extension = filename.substring(dotIdx);
 
-//    private URL generatePresignedUrl(String objectKey) {
-//        GeneratePresignedUrlRequest generatePresignedUrlRequest =
-//                new GeneratePresignedUrlRequest(
-//                        amazonS3.getBucketName(), objectKey)
-//                        .withMethod(com.amazonaws.HttpMethod.GET)
-//                        .withExpiration(new Date(System.currentTimeMillis() + 3600 * 1000)); // 1시간 유효
-//
-//        return amazonS3.generatePresignedUrl(generatePresignedUrlRequest);
-//    }
+        return UUID.randomUUID() + extension;
+    }
+
+    public String uploadProfile(MultipartFile profile, String username, String UUIDFilename) {
+        // 파일 경로 및 파일 명
+        sb = new StringBuilder().append("private/users/")
+                .append(username)
+                .append("/")
+                .append(UUIDFilename);
+
+        try {
+            //메타데이터 content type과 length를 설정하는 이유
+            //type = 올바른 MIME 타입을 제공받기 위함
+            //length = S3가 저장 공간을 효율적으로 관리하기 위함
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentLength(profile.getSize());
+            metadata.setContentType(profile.getContentType());
+
+            // S3에 업로드
+            amazonS3Admin.putObject(new PutObjectRequest(bucket, sb.toString(), profile.getInputStream(), metadata));
+
+            return sb.toString();
+
+        } catch (AmazonS3Exception s3Exception) {
+            // S3 관련 예외 처리
+            s3Exception.printStackTrace();
+            throw new RuntimeException();
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+            throw new RuntimeException();
+        }
+    }
 
     public String getPublicJson(String folder, String id, String filename) {
         // 결국 나중엔 publicJson은 없음! (모든 포즈는 보호해야함)
