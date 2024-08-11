@@ -1,8 +1,12 @@
 package com.danstep.user.model.service;
 
+import com.danstep.user.model.dto.GetUserInfoDTO;
 import com.danstep.user.model.dto.UpdateUserDTO;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface UserService {
 
-    void updateUserByUsername(UpdateUserDTO updateUserDTO);
+    GetUserInfoDTO getUserInfoByUsername(String Username);
+
+    void updateUserByUsername(UpdateUserDTO updateUserDTO, MultipartFile profile);
 }

@@ -23,8 +23,12 @@ public class UserController {
     public ResponseEntity<?> getUser(@PathVariable String username,
                                      @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 
+        // 생각할 거리
+        // 1. username과 customUserDetails의 username이 다르면 무슨 처리르 할 것인가!?
+        // 2. customUserDetails는 null이 될 수 없는가?
+        // 3. getUsername이 null이면 어떻게 되는가?
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(userService.getUserInfoByUsername(customUserDetails.getUsername()), HttpStatus.OK);
     }
 
     @PatchMapping("/{username}")
@@ -32,17 +36,19 @@ public class UserController {
                                                   @ModelAttribute UpdateUserDTO updateUserDTO,
                                                   @RequestPart(name = "profile", required = false) MultipartFile profile) {
 
+        if (!profile.isEmpty()) {
+            // 확장자 검증 해야함!!
+
+        }
+
         System.out.println(customUserDetails.getUsername());
         System.out.println(customUserDetails.getPassword());
-//        updateUserDTO.setUsername(customUserDetails.getUsername());
         System.out.println(updateUserDTO.toString());
         System.out.println(profile);
 
-//        String originalProfile = profile.getOriginalFilename(); //profile의 원본 이름
-//        int dotIdx = originalProfile.lastIndexOf('.');
-//        String extension = originalProfile.substring(dotIdx);
-//        String originalProfileName = originalProfile.substring(0, dotIdx);
 
+        updateUserDTO.setUsername(customUserDetails.getUsername());
+        userService.updateUserByUsername(updateUserDTO, profile);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
