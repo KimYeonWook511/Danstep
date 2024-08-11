@@ -36,7 +36,7 @@ public class UserController {
                                                   @ModelAttribute UpdateUserDTO updateUserDTO,
                                                   @RequestPart(name = "profile", required = false) MultipartFile profile) {
 
-        if (!profile.isEmpty()) {
+        if (profile == null) {
             // 확장자 검증 해야함!!
 
         }

@@ -33,7 +33,7 @@ public class JoinService {
 
         UserInfoDTO data = UserInfoDTO.builder()
                 .username(username)
-                .password(bCryptPasswordEncoder.encode((password)))
+                .password(bCryptPasswordEncoder.encode(password))
                 .nickname(nickname)
                 .build();
 
