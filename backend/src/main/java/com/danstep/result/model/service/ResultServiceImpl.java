@@ -1,6 +1,5 @@
 package com.danstep.result.model.service;
 
-import com.danstep.aws.model.service.S3Service;
 import com.danstep.exception.UserNotFoundException;
 import com.danstep.result.model.dto.GetResultInfoDTO;
 import com.danstep.result.model.dto.ResultInfoDTO;
