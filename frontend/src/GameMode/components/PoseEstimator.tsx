@@ -536,7 +536,7 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game }) => {
         great={great.current}
         perfect={perfect.current}
         maxCombo={maxCombo.current}
-        poseData={JSON.stringify(camKeypoints.current)}
+        poseData={JSON.stringify(camKeypoints.current, null, 2)}
         gameInfoId={game.id}
       />
     </div>

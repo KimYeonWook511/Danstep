@@ -35,6 +35,7 @@ const ResultModal: React.FC<ResultModalProps> = ({ isOpen, onClose, score, bad, 
         gameInfoId,
         poseData
       };
+      console.log(accessToken)
       const response = await axios.post("https://i11a406.p.ssafy.io/api/v1/results",data,{
         headers:{
           'Content-Type': 'application/json',
@@ -136,11 +137,11 @@ const ResultModal: React.FC<ResultModalProps> = ({ isOpen, onClose, score, bad, 
         <button 
           onClick={handleSubmit} 
           style={{ 
-            marginTop: '20px', 
+            marginTop: '15px', 
             padding: '10px 20px', 
             fontSize: '18px', 
             fontFamily: 'neon-text', 
-            backgroundColor: 'violet', 
+            backgroundColor: 'black', 
             color: 'white', 
             border: 'none', 
             cursor: 'pointer' 
