@@ -7,6 +7,7 @@ import com.danstep.result.model.dto.ResultInfoDTO;
 import com.danstep.result.model.dto.SaveResultDTO;
 import com.danstep.result.model.dto.SaveResultPoseDTO;
 import com.danstep.result.model.mapper.ResultMapper;
+import com.danstep.util.S3Util;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,11 +18,11 @@ import java.util.List;
 public class ResultServiceImpl implements ResultService {
 
     private final ResultMapper resultMapper;
-    private final S3Service s3Service;
+    private final S3Util s3Util;
 
-    public ResultServiceImpl(ResultMapper resultMapper, S3Service s3Service) {
+    public ResultServiceImpl(ResultMapper resultMapper, S3Util s3Util) {
         this.resultMapper = resultMapper;
-        this.s3Service = s3Service;
+        this.s3Util = s3Util;
     }
 
     @Override
@@ -39,10 +40,11 @@ public class ResultServiceImpl implements ResultService {
         }
 
         // UUID json 파일명
+//        String uuid = UUID.randomUUID() + extension;
         String poseFilename = "UUID.json";
 
         // s3에 업로드
-        s3Service.uploadUserJson("/users",
+        s3Util.uploadUserJson("/users",
                 saveResultDTO.getUsername(),
                 Integer.toString(saveResultDTO.getGameInfoId()),
                 poseFilename,
@@ -70,7 +72,7 @@ public class ResultServiceImpl implements ResultService {
         for (ResultInfoDTO resultInfoDTO : list) {
             GetResultInfoDTO getResultInfoDTO = new GetResultInfoDTO(resultInfoDTO);
 
-            String poseData = s3Service.getPrivateJson("users", username,
+            String poseData = s3Util.getPrivateJson("users", username,
                     resultInfoDTO.getGameInfoId() + "/" + resultInfoDTO.getPoseFilename());
 
             getResultInfoDTO.setPoseData(poseData);

@@ -33,5 +33,20 @@
         WHERE username = #{username}
     </select>
 
+    <update id="updateUserByUsername" parameterType="com.danstep.user.model.dto.UpdateUserDTO">
+        UPDATE user_info
+        <set>
+            <if test="newPassword != null and newPassword != ''">
+                password = #{newPassword},
+            </if>
+            <if test="nickname != null and nickname != ''">
+                nickname = {nickname},
+            </if>
+            <if test="profile != null and profile != ''">
+                profile = {profile},
+            </if>
+        </set>
+        WHERE username = #{username}
+    </update>
 
 </mapper>

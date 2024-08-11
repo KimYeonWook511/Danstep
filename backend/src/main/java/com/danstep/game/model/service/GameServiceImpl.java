@@ -1,8 +1,8 @@
 package com.danstep.game.model.service;
 
-import com.danstep.aws.model.service.S3Service;
 import com.danstep.game.model.dto.GameInfoDTO;
 import com.danstep.game.model.mapper.GameMapper;
+import com.danstep.util.S3Util;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,11 +12,11 @@ import java.util.List;
 @Service
 public class GameServiceImpl implements GameService {
 
-    private final S3Service s3Service;
     private final GameMapper gameMapper;
+    private final S3Util s3Util;
 
-    public GameServiceImpl(S3Service s3Service, GameMapper gameMapper) {
-        this.s3Service = s3Service;
+    public GameServiceImpl(S3Util s3Util, GameMapper gameMapper) {
+        this.s3Util = s3Util;
         this.gameMapper = gameMapper;
     }
 
@@ -54,10 +54,10 @@ public class GameServiceImpl implements GameService {
                 .build();
 
         // 썸네일 url 가져오기
-        gameInfoDTO.setThumbnailUrl(s3Service.getPublicUrl("games", Integer.toString(id), gameInfo.getThumbnailFilename()));
+        gameInfoDTO.setThumbnailUrl(s3Util.getPublicUrl("games", Integer.toString(id), gameInfo.getThumbnailFilename()));
 
         // mp3파일 url 가져오기
-        gameInfoDTO.setAudioUrl(s3Service.getPublicUrl("games", Integer.toString(id), gameInfo.getAudioFilename()));
+        gameInfoDTO.setAudioUrl(s3Util.getPublicUrl("games", Integer.toString(id), gameInfo.getAudioFilename()));
 
         return gameInfoDTO;
     }
@@ -68,7 +68,7 @@ public class GameServiceImpl implements GameService {
 
         try {
             // Json파일 가져오기
-            return s3Service.getPublicJson("games", Integer.toString(id), gameInfo.getPoseFilename());
+            return s3Util.getPublicJson("games", Integer.toString(id), gameInfo.getPoseFilename());
 
         } catch (RuntimeException e) {
             // GET 요청 보내면서 문제 생김

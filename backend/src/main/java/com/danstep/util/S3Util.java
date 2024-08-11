@@ -1,22 +1,21 @@
-package com.danstep.aws.model.service;
+package com.danstep.util;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.*;
-import lombok.extern.slf4j.Slf4j;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
+import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.*;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
 
-@Slf4j
-//@RequiredArgsConstructor
-@Service
-public class S3ServiceImpl implements S3Service {
+@Component
+public class S3Util {
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
@@ -33,9 +32,9 @@ public class S3ServiceImpl implements S3Service {
 
     private StringBuilder sb;
 
-    public S3ServiceImpl(@Qualifier("amazonS3Admin") AmazonS3 amazonS3Admin,
-                         @Qualifier("amazonS3User") AmazonS3 amazonS3User,
-                         RestTemplate restTemplate) {
+    public S3Util(@Qualifier("amazonS3Admin") AmazonS3 amazonS3Admin,
+                  @Qualifier("amazonS3User") AmazonS3 amazonS3User,
+                  RestTemplate restTemplate) {
         this.amazonS3Admin = amazonS3Admin;
         this.amazonS3User = amazonS3User;
         this.restTemplate = restTemplate;
@@ -67,10 +66,6 @@ public class S3ServiceImpl implements S3Service {
 //        return idx+1;
 //    }
 //
-//    private String getCloudFront(String encodedFileName,String uuid) throws IOException {
-//        return String.format("https://%s/games/%s/%s", cloudFrontDomain, encodedFileName,uuid);
-//    }
-//
 //    @Override
 //    public byte[] getBytes(String f1, String pk, String fileUUID) throws IOException {
 //        try {
@@ -94,7 +89,7 @@ public class S3ServiceImpl implements S3Service {
 //            throw new RuntimeException(e);
 //        }
 //    }
-//
+
 //    private URL generatePresignedUrl(String objectKey) {
 //        GeneratePresignedUrlRequest generatePresignedUrlRequest =
 //                new GeneratePresignedUrlRequest(
@@ -105,7 +100,6 @@ public class S3ServiceImpl implements S3Service {
 //        return amazonS3.generatePresignedUrl(generatePresignedUrlRequest);
 //    }
 
-    @Override
     public String getPublicJson(String folder, String id, String filename) {
         // 결국 나중엔 publicJson은 없음! (모든 포즈는 보호해야함)
         // 임시 허용해주는 url생성해서 접근해야할 듯
@@ -136,7 +130,6 @@ public class S3ServiceImpl implements S3Service {
         }
     }
 
-    @Override
     public String getPrivateJson(String folder, String id, String filename) {
         sb = new StringBuilder().append("private/")
                 .append(folder)
@@ -175,7 +168,6 @@ public class S3ServiceImpl implements S3Service {
         }
     }
 
-    @Override
     public String getPublicUrl(String folder, String id, String filename) {
 //        path = URLEncoder.encode(path, "UTF-8").replaceAll("\\+", "%20");
         sb = new StringBuilder().append(cloudFrontUrl)
@@ -189,7 +181,6 @@ public class S3ServiceImpl implements S3Service {
         return sb.toString();
     }
 
-    @Override
     public String getPrivateUrl(String folder, String id, String filename) {
         sb = new StringBuilder().append("현재 아직 구현 안 함");;
 
@@ -200,7 +191,6 @@ public class S3ServiceImpl implements S3Service {
         return sb.toString();
     }
 
-    @Override
     public void uploadUserJson(String folder, String username, String gameInfoId, String filename, String poseData) {
         try {
             // 파일 경로 및 파일 명
