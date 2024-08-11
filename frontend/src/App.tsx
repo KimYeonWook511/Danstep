@@ -161,10 +161,10 @@ const App: React.FC = () => {
     <Router>
       <MusicPlayer />
       <Routes>
-        <Route path="/" element={<MainPage />} />
+        {/* <Route path="/" element={<MainPage />} />
         <Route path="/ranking" element={<Ranking />} />
         <Route path="/game/:id" element={<GamePage />} />
-        <Route path="/mypage" element={<MyPage />} />
+        <Route path="/mypage" element={<MyPage />} /> */}
       </Routes>
     </Router>
   );
