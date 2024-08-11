@@ -9,6 +9,7 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.ResponseCookie;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
@@ -105,11 +106,19 @@ public class CustomLogoutFilter extends GenericFilterBean {
         refreshMapper.deleteByRefresh(refresh);
 
         //Refresh 토큰 Cookie 값 0
-        Cookie cookie = new Cookie("refresh", null);
-        cookie.setMaxAge(0);
-        cookie.setPath("/");
+//        Cookie cookie = new Cookie("refresh", null);
+//        cookie.setMaxAge(0);
+//        cookie.setPath("/");
+//        response.addCookie(cookie);
 
-        response.addCookie(cookie);
+        ResponseCookie cookie = ResponseCookie.from("refresh", null)
+                .path("/")
+                .sameSite("None")
+                .httpOnly(true)
+                .maxAge(0)
+                .build();
+
+        response.addHeader("Set-Cookie", cookie.toString());
         response.setStatus(HttpServletResponse.SC_OK);
     }
 

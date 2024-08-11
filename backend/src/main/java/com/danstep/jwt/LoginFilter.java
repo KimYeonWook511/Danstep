@@ -7,6 +7,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -71,7 +72,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         //응답 설정
         response.setHeader("Authorization", "Bearer " + access);
-        response.addCookie(createCookie("refresh", refresh));
+//        response.addCookie(createCookie("refresh", refresh));
+        response.addHeader("Set-Cookie", createCookie("refresh", refresh));
         response.setStatus(HttpStatus.OK.value());
     }
 
@@ -108,14 +110,26 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 //        refreshMapper.InsertRefresh(refreshEntity);
 //    }
 
-    private Cookie createCookie(String key, String value) {
+//    private Cookie createCookie(String key, String value) {
+//
+//        Cookie cookie = new Cookie(key, value);
+//        cookie.setMaxAge(24*60*60);
+//        //cookie.setSecure(true);
+//        cookie.setPath("/");
+//        cookie.setHttpOnly(true);
+//
+//        return cookie;
+//    }
 
-        Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(24*60*60);
-        //cookie.setSecure(true);
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
+    private String createCookie(String key, String value) {
 
-        return cookie;
+        ResponseCookie cookie = ResponseCookie.from(key, value)
+                .path("/")
+                .sameSite("None")
+                .httpOnly(true)
+                .maxAge(24 * 60 * 60)
+                .build();
+
+        return cookie.toString();
     }
 }
