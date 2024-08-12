@@ -129,13 +129,16 @@ public class S3Util {
 
         URL presignedUrl = amazonS3Admin.generatePresignedUrl(generatePresignedUrlRequest);
 
-        System.out.println("presignedUrl: " + presignedUrl.toString());
+        System.out.println("presignedUrl: " + presignedUrl);
 
         try {
-            System.out.println("encoding: " + URLEncoder.encode(presignedUrl.toString(), "UTF-8"));
+            System.out.println("URI: " + presignedUrl.toURI());
+            System.out.println("path: " + presignedUrl.getPath());
+            System.out.println("host: " + presignedUrl.getHost());
+            System.out.println("query: " + presignedUrl.getQuery());
+            System.out.println("full: " + presignedUrl.getPath() + (presignedUrl.getQuery() != null ? "?" + presignedUrl.getQuery() : ""));
             // RestTemplate을 사용하여 JSON 데이터 가져오기
-//            return restTemplate.getForObject(presignedUrl.toString(), String.class);
-            return restTemplate.getForObject(URLEncoder.encode(presignedUrl.toString(), "UTF-8"), String.class);
+            return restTemplate.getForObject(presignedUrl.toString(), String.class);
 
         } catch (HttpClientErrorException e) {
             throw new RuntimeException("클라이언트 오류: " + e.getStatusCode() + " - " + e.getResponseBodyAsString(), e);
