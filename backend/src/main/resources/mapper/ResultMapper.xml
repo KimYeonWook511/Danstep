@@ -66,7 +66,7 @@
         WHERE ri.user_info_id = (SELECT id FROM user_info WHERE username = #{username});
     </select>
 
-    <select id="getUserReplay">
+    <select id="getUserReplay" resultMap="replayBasic">
         SELECT ri.game_info_id, gi.audio_filename, gi.background_filename,
                gi.pose_filename AS game_pose_filename,
                rp.pose_filename AS my_pose_filename
