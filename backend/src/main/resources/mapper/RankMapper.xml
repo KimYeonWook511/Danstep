@@ -9,7 +9,7 @@
         WHERE user_info_id = (SELECT id
                               FROM user_info
                               WHERE username = #{username})
-        AND game_info_id = #{gameInfoId})
+        AND game_info_id = #{gameInfoId}
     </select>
 
     <insert id="insertRankInfo" parameterType="String" useGeneratedKeys="true" keyProperty="id">
