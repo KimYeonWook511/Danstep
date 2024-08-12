@@ -43,7 +43,7 @@ public class ResultServiceImpl implements ResultService {
         Integer highScore = rankMapper.getUserHighScore(saveResultDTO);
         System.out.println("최대 점수: " + highScore);
 
-        if (highScore == null) {
+        if (highScore == -1) {
             // 게임 최대 값 저장
             rankMapper.insertRankInfo(saveResultDTO.getId());
 
