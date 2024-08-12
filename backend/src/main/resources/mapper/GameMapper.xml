@@ -12,6 +12,7 @@
         <result column="audio_filename" property="audioFilename"/>
         <result column="pose_filename" property="poseFilename"/>
         <result column="video_filename" property="videoFilename"/>
+        <result column="background_filename" property="backgroundFilename"/>
         <result column="level" property="level"/>
     </resultMap>
 

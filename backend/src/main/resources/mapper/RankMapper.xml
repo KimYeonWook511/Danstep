@@ -44,6 +44,9 @@
         FROM result_info AS ri
         LEFT JOIN user_info AS ui
         ON ri.user_info_id = ui.id
+        WHERE game_info_id = #{gameInfoId}
+        ORDER BY id ASC
+        LIMIT 3;
     </select>
 
 </mapper>
