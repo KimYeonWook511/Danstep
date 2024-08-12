@@ -41,6 +41,7 @@ public class ResultServiceImpl implements ResultService {
 
         // 유저 최대 값 가져오기
         Integer highScore = rankMapper.getUserHighScore(saveResultDTO);
+        System.out.println("최대 점수: " + highScore);
 
         if (highScore == null) {
             // 게임 최대 값 저장
