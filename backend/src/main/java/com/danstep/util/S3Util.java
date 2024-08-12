@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.UUID;
 
@@ -131,8 +132,10 @@ public class S3Util {
         System.out.println("presignedUrl: " + presignedUrl.toString());
 
         try {
+            System.out.println("encoding: " + URLEncoder.encode(presignedUrl.toString(), "UTF-8"));
             // RestTemplate을 사용하여 JSON 데이터 가져오기
-            return restTemplate.getForObject(presignedUrl.toString(), String.class);
+//            return restTemplate.getForObject(presignedUrl.toString(), String.class);
+            return restTemplate.getForObject(URLEncoder.encode(presignedUrl.toString(), "UTF-8"), String.class);
 
         } catch (HttpClientErrorException e) {
             throw new RuntimeException("클라이언트 오류: " + e.getStatusCode() + " - " + e.getResponseBodyAsString(), e);
