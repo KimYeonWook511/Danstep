@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.danstep.rank.model.mapper.RankMapper">
+
+    <resultMap id="gameRankTop3Basic" type="com.danstep.game.model.dto.GameRankTop3DTO">
+        <result property="gameInfoId" column="game_info_id" />
+        <result property="username" column="username" />
+        <result property="nickname" column="nickname" />
+        <result property="score" column="score" />
+        <result property="rank" column="rank" />
+    </resultMap>
+
+    <select id="getUserHighScore">
+        SELECT COALESCE(MAX(score), -1)
+        FROM result_info
+        WHERE user_info_id = (SELECT id
+                              FROM user_info
+                              WHERE username = #{username})
+        AND game_info_id = #{gameInfoId})
+    </select>
+
+    <insert id="insertRankInfo" parameterType="String" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO rank_info (result_info_id)
+        VALUES (#{resultInfoId});
+    </insert>
+
+    <update id="updateRankInfo">
+        UPDATE rank_info
+        SET result_info_id = #{resultInfoId}
+        WHERE result_info_id = (SELECT id
+                                FROM result_info
+                                WHERE user_info_id = (SELECT id
+                                                      FROM user_info
+                                                      WHERE username = #{username})
+                                AND game_info_id = #{gameInfoId}
+                                AND score = #{oldScore}
+                                ORDER BY id ASC
+                                LIMIT 1)
+    </update>
+
+    <select id="getGameRankTop3" resultMap="gameRankTop3Basic">
+        SELECT ui.username, ui.nickname, ri.score, rank
+        FROM result_info AS ri
+        LEFT JOIN user_info AS ui
+        ON ri.user_info_id = ui.id
+    </select>
+
+</mapper>

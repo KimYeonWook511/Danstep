@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface ResultMapper {
 
-    Integer insertResultInfo(SaveResultDTO saveResultDTO);
+    void insertResultInfo(SaveResultDTO saveResultDTO);
 
-    Integer insertResultPose(SaveResultPoseDTO saveResultPoseDTO);
+    void insertResultPose(SaveResultPoseDTO saveResultPoseDTO);
 
     List<ResultInfoDTO> getUserResultsByUsername(String username);
 }

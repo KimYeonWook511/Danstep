@@ -1,5 +1,6 @@
 package com.danstep.exception.handler;
 
+import com.danstep.exception.GameNotFoundException;
 import com.danstep.exception.NicknameAlreadyExistsException;
 import com.danstep.exception.PasswordMismatchException;
 import com.danstep.exception.UserNotFoundException;
@@ -19,6 +20,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<String> handleUserNotFoundException(UserNotFoundException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND); // 404 Not Found
+    }
+
+    @ExceptionHandler(GameNotFoundException.class)
+    public ResponseEntity<String> handleGameNotFoundException(GameNotFoundException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND); // 404
     }
 
     @ExceptionHandler(NicknameAlreadyExistsException.class)
