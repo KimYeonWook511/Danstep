@@ -1,7 +1,9 @@
 package com.danstep.result.controller;
 
 import com.danstep.jwt.JWTUtil;
+import com.danstep.result.model.dto.GetReplayDTO;
 import com.danstep.result.model.dto.GetResultInfoDTO;
+import com.danstep.result.model.dto.ReplayDTO;
 import com.danstep.result.model.dto.SaveResultDTO;
 import com.danstep.result.model.service.ResultService;
 import com.danstep.user.model.dto.CustomUserDetails;
@@ -42,16 +44,44 @@ public class ResultController {
          */
 
         saveResultDTO.setUsername(customUserDetails.getUsername());
-        System.out.println("게임 결과 저장 dto: " + saveResultDTO.toString());
         resultService.saveResult(saveResultDTO);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping("/{username}")
-    public ResponseEntity<List<GetResultInfoDTO>> getUserResults(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        return new ResponseEntity<>(resultService.getUserResultsByUsername(customUserDetails.getUsername()), HttpStatus.OK);
+    @GetMapping("/{username}/{gameInfoId}")
+    public ResponseEntity<List<GetResultInfoDTO>> getUserResultsByGameInfoId(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                                                             @PathVariable String username,
+                                                                             @PathVariable Integer gameInfoId) {
+
+        System.out.println("pathvariable : " + username + " | " + gameInfoId);
+
+        GetResultInfoDTO getResultInfoDTO = GetResultInfoDTO.builder()
+                .username(customUserDetails.getUsername())
+                .gameInfoId(gameInfoId)
+                .build();
+        getResultInfoDTO.setUsername(customUserDetails.getUsername());
+        getResultInfoDTO.setGameInfoId(gameInfoId);
+
+        return new ResponseEntity<>(resultService.getUserResultsByGameInfoId(getResultInfoDTO), HttpStatus.OK);
     }
 
+//  audiourl backgroundurl poseData myPoseData
 
+    @GetMapping("/{username}/replay/{resultInfoId}")
+    public ResponseEntity<GetReplayDTO> getUserReplay(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                                      @PathVariable String username,
+                                                      @PathVariable Integer resultInfoId) {
+
+        System.out.println("getUserResultPoseByResultInfoId: " + customUserDetails.getUsername());
+        System.out.println("getUserResultPoseByResultInfoId: " + username);
+        System.out.println("getUserResultPoseByResultInfoId: " + resultInfoId);
+
+        ReplayDTO replayDTO = ReplayDTO.builder()
+                .username(username)
+                .resultInfoId(resultInfoId)
+                .build();
+
+        return new ResponseEntity<>(resultService.getUserReplay(replayDTO), HttpStatus.OK);
+    }
 }

@@ -1,10 +1,7 @@
 package com.danstep.exception.handler;
 
 import com.amazonaws.services.s3.model.AmazonS3Exception;
-import com.danstep.exception.GameNotFoundException;
-import com.danstep.exception.NicknameAlreadyExistsException;
-import com.danstep.exception.PasswordMismatchException;
-import com.danstep.exception.UserNotFoundException;
+import com.danstep.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -31,6 +28,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(GameNotFoundException.class)
     public ResponseEntity<String> handleGameNotFoundException(GameNotFoundException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND); // 404
+    }
+
+    @ExceptionHandler(ReplayNotFoundException.class)
+    public ResponseEntity<String> handleReplayNotFoundException(ReplayNotFoundException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND); // 404
     }
 
