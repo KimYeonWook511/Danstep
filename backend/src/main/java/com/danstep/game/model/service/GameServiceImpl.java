@@ -36,9 +36,10 @@ public class GameServiceImpl implements GameService {
             GameInfoDTO gameInfoDTO = this.getGameInfo(id);
             GameRankTop3DTO gameRankTop3DTO = this.getGameRankTop3ById(id);
 
+            System.out.println("리스트에 더하기: " + id);
             gameInfoDTOList.add(getGameInfo(id));
         }
-
+        System.out.println(gameInfoDTOList.size());
         return gameInfoDTOList;
     }
 
@@ -60,12 +61,15 @@ public class GameServiceImpl implements GameService {
                 .build();
 
         // 썸네일 url 가져오기
+        System.out.println("썸네일: " + id);
         gameInfoDTO.setThumbnailUrl(s3Util.getPublicUrl("games", Integer.toString(id), gameInfo.getThumbnailFilename()));
 
         // mp3파일 url 가져오기
+        System.out.println("mp3: " + id);
         gameInfoDTO.setAudioUrl(s3Util.getPublicUrl("games", Integer.toString(id), gameInfo.getAudioFilename()));
 
         // background mp4 url 가져오기
+        System.out.println("background: " + id);
         gameInfoDTO.setBackgroundUrl(s3Util.getPublicUrl("games", Integer.toString(id), gameInfo.getBackgroundFilename()));
 
         return gameInfoDTO;
