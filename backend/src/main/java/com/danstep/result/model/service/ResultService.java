@@ -8,5 +8,7 @@ import java.util.List;
 public interface ResultService {
 
     void saveResult(SaveResultDTO saveResultDTO);
+
     List<GetResultInfoDTO> getUserResultsByUsername(String username);
+
 }

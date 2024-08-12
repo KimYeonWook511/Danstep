@@ -41,6 +41,9 @@ public class ResultController {
         }
          */
 
+        System.out.println("게임 결과 저장 username: " + customUserDetails.getUsername());
+
+
         saveResultDTO.setUsername(customUserDetails.getUsername());
         resultService.saveResult(saveResultDTO);
 

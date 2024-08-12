@@ -58,18 +58,18 @@ public class ResultServiceImpl implements ResultService {
             rankMapper.updateRankInfo(saveRankDTO);
         }
 
-
-        if (saveResultDTO.getPoseData() == null) {
-            // 포즈 저장은 하지 않음
-            return;
+        if (saveResultDTO.getPoseData() != null) {
+            // 포즈 저장
+            saveResultPose(saveResultDTO);
         }
+    }
 
+    private void saveResultPose(SaveResultDTO saveResultDTO) {
         // UUID json 파일명
-//        String uuid = UUID.randomUUID() + extension;
-        String poseFilename = "UUID.json";
+        String poseFilename = s3Util.getUUIDFilename("a.json");
 
         // s3에 업로드
-        s3Util.uploadUserJson("/users",
+        s3Util.uploadUserJson("users",
                 saveResultDTO.getUsername(),
                 Integer.toString(saveResultDTO.getGameInfoId()),
                 poseFilename,
@@ -80,12 +80,8 @@ public class ResultServiceImpl implements ResultService {
                 .resultInfoId(saveResultDTO.getId())
                 .poseFilename(poseFilename)
                 .build();
-        resultMapper.insertResultPose(saveResultPoseDTO);
 
-        if (saveResultPoseDTO.getId() == null) {
-            // 트랜잭션 처리
-            throw new RuntimeException();
-        }
+        resultMapper.insertResultPose(saveResultPoseDTO);
     }
 
     @Override
