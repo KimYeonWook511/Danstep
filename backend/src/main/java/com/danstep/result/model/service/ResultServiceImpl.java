@@ -121,6 +121,8 @@ public class ResultServiceImpl implements ResultService {
         // my poseData json 가져오기
         getReplayDTO.setMyPoseData(s3Util.getPrivateJson("users", dto.getUsername(), dto.getMyPoseFilename()));
 
+        System.out.println("getUserReplay Service: " + getReplayDTO.toString());
+
         return getReplayDTO;
     }
 
