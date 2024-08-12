@@ -9,6 +9,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class GameInfoDTO {
     private Integer id; // 게임 ID
     private String title; // 게임 제목
