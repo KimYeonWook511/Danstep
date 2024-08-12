@@ -11,4 +11,6 @@ public interface ResultService {
 
     List<GetResultInfoDTO> getUserResultsByUsername(String username);
 
+//    List<>
+
 }
