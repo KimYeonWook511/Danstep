@@ -1,7 +1,6 @@
 package com.danstep.util;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
@@ -146,6 +145,9 @@ public class S3Util {
 
         } catch (RestClientException e) {
             throw new RuntimeException("REST 클라이언트 오류: " + e.getMessage(), e);
+
+        } catch (Exception e) {
+            throw new RuntimeException("S3Util getPrivateJson error: " + e.getMessage(), e);
         }
     }
 
