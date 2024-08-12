@@ -34,7 +34,7 @@ public class GameServiceImpl implements GameService {
         List<GameInfoDTO> gameInfoDTOList = new ArrayList<>();
         for (Integer id : gamesIdList) {
             GameInfoDTO gameInfoDTO = this.getGameInfo(id);
-            GameRankTop3DTO gameRankTop3DTO = this.getGameRankTop3ById(id);
+            List<GameRankTop3DTO> gameRankTop3List = this.getGameRankTop3ById(id);
 
             System.out.println("리스트에 더하기: " + id);
             gameInfoDTOList.add(getGameInfo(id));
@@ -77,10 +77,10 @@ public class GameServiceImpl implements GameService {
 
     @Override
     @Transactional(readOnly = true)
-    public GameRankTop3DTO getGameRankTop3ById(Integer id) {
-        GameRankTop3DTO gameRankTop3DTO = gameMapper.getGameRankTop3ById(id);
+    public List<GameRankTop3DTO> getGameRankTop3ById(Integer id) {
+        List<GameRankTop3DTO> gameRankTop3List = gameMapper.getGameRankTop3ById(id);
 
-        return gameRankTop3DTO;
+        return gameRankTop3List;
     }
 
     @Override

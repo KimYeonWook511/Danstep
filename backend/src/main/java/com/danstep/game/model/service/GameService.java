@@ -10,7 +10,7 @@ public interface GameService {
 
     GameInfoDTO getGameInfo(Integer id);
 
-    GameRankTop3DTO getGameRankTop3ById(Integer id);
+    List<GameRankTop3DTO> getGameRankTop3ById(Integer id);
 
     String getGamePose(Integer id);
 }
