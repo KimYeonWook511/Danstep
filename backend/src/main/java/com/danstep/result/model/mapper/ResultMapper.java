@@ -1,6 +1,7 @@
 package com.danstep.result.model.mapper;
 
-import com.danstep.result.model.dto.ResultInfoDTO;
+import com.danstep.result.model.dto.GetResultInfoDTO;
+import com.danstep.result.model.dto.ReplayDTO;
 import com.danstep.result.model.dto.SaveResultDTO;
 import com.danstep.result.model.dto.SaveResultPoseDTO;
 
@@ -12,5 +13,7 @@ public interface ResultMapper {
 
     void insertResultPose(SaveResultPoseDTO saveResultPoseDTO);
 
-    List<ResultInfoDTO> getUserResultsByUsername(String username);
+    List<GetResultInfoDTO> getUserResultsByGameInfoId(GetResultInfoDTO getResultInfoDTO);
+
+    ReplayDTO getUserReplay(ReplayDTO replayDTO);
 }

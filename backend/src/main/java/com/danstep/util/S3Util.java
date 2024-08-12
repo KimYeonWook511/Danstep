@@ -168,7 +168,7 @@ public class S3Util {
 
     public void uploadUserJson(String folder, String username, String gameInfoId, String filename, String poseData) {
         // 파일 경로 및 파일 명
-        sb = new StringBuilder().append("/private/")
+        sb = new StringBuilder().append("private/")
                 .append(folder)
                 .append("/")
                 .append(username)

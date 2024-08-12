@@ -11,6 +11,8 @@ import java.util.Date;
 @NoArgsConstructor
 @ToString
 public class GetResultInfoDTO {
+    private Integer resultInfoId;
+
     private Integer gameInfoId;
     private Date resultDate;
     private Integer score;
@@ -20,20 +22,12 @@ public class GetResultInfoDTO {
     private Integer bad;
     private Integer maxCombo;
 
+    // user_info join
     private String username;
+    private String nickname;
 
-    // 내가 춤 춘거 저장한게 있다면
-    private String poseData; // 포즈 Keypoint Json 객체
-
-    public GetResultInfoDTO(ResultInfoDTO resultInfoDTO) {
-        this.gameInfoId = resultInfoDTO.getGameInfoId();
-        this.resultDate = resultInfoDTO.getResultDate();
-        this.score = resultInfoDTO.getScore();
-        this.perfect = resultInfoDTO.getPerfect();
-        this.great = resultInfoDTO.getGreat();
-        this.good = resultInfoDTO.getGood();
-        this.bad = resultInfoDTO.getBad();
-        this.maxCombo = resultInfoDTO.getMaxCombo();
-        this.username = resultInfoDTO.getUsername();
-    }
+    // game_info join
+    private String title;
+    private Integer playtime;
+    private Integer level;
 }

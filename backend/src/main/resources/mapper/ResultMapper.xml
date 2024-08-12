@@ -3,8 +3,8 @@
 
 <mapper namespace="com.danstep.result.model.mapper.ResultMapper">
 
-    <resultMap id="resultInfoBasic" type="com.danstep.result.model.dto.ResultInfoDTO">
-        <id property="id" column="id" />
+    <resultMap id="getResultInfoBasic" type="com.danstep.result.model.dto.GetResultInfoDTO">
+        <result property="id" column="result_info_id" />
         <result property="gameInfoId" column="game_info_id" />
         <result property="resultDate" column="result_date" />
         <result property="score" column="score" />
@@ -13,7 +13,22 @@
         <result property="good" column="good" />
         <result property="bad" column="bad" />
         <result property="maxCombo" column="max_combo" />
-        <result property="poseFilename" column="pose_filename" />
+
+        <!-- user_info join -->
+        <result property="nickname" column="nickname" />
+
+        <!-- game_info join -->
+        <result property="title" column="title" />
+        <result property="playtime" column="playtime" />
+        <result property="level" column="level" />
+    </resultMap>
+
+    <resultMap id="replayBasic" type="com.danstep.result.model.dto.ReplayDTO">
+        <result column="game_info_id" property="gameInfoId"/>
+        <result column="audio_filename" property="audioFilename"/>
+        <result column="game_pose_filename" property="gamePoseFilename"/>
+        <result column="background_filename" property="backgroundFilename"/>
+        <result column="my_pose_filename" property="myPoseFilename"/>
     </resultMap>
 
     <insert id="insertResultInfo" parameterType="com.danstep.result.model.dto.SaveResultDTO" useGeneratedKeys="true" keyProperty="id">
@@ -28,13 +43,41 @@
         VALUES (#{resultInfoId}, #{poseFilename});
     </insert>
 
-    <select id="getUserResultsByUsername" resultMap="resultInfoBasic">
+<!--    <select id="getUserResultsByUsername" resultMap="resultInfoBasic">-->
+<!--        SELECT ri.id, ri.game_info_id, ri.result_date, ri.score, ri.perfect,-->
+<!--               ri.great, ri.good, ri.bad, ri.max_combo, rp.pose_filename-->
+<!--        FROM result_info AS ri-->
+<!--        LEFT JOIN result_pose AS rp-->
+<!--        ON ri.id = rp.result_info_id-->
+<!--        WHERE ri.user_info_id = (SELECT id FROM user_info WHERE username = #{username});-->
+<!--    </select>-->
+
+    <select id="getUserResultsByGameInfoId" resultMap="getResultInfoBasic">
         SELECT ri.id, ri.game_info_id, ri.result_date, ri.score, ri.perfect,
-               ri.great, ri.good, ri.bad, ri.max_combo, rp.pose_filename
+               ri.great, ri.good, ri.bad, ri.max_combo, ui.username, ui.nickname,
+               gi.title, gi.playtime, gi.level
+        FROM result_info AS ri
+        LEFT JOIN user_info AS ui
+          ON ui.username = #{username}
+          AND ri.user_info_id = ui.id
+        LEFT JOIN game_info AS gi
+          ON ri.game_info_id = #{gameInfoId}
+          AND ri.game_info_id = gi.id
+        WHERE ri.user_info_id = (SELECT id FROM user_info WHERE username = #{username});
+    </select>
+
+    <select id="getUserReplay">
+        SELECT ri.game_info_id, gi.audio_filename, gi.background_filename,
+               gi.pose_filename AS game_pose_filename,
+               rp.pose_filename AS my_pose_filename
         FROM result_info AS ri
         LEFT JOIN result_pose AS rp
-        ON ri.id = rp.result_info_id
-        WHERE ri.user_info_id = (SELECT id FROM user_info WHERE username = #{username});
+          ON rp.result_info_id = #{resultInfoId}
+          AND ri.id = rp.result_info_id
+        LEFT JOIN game_info AS gi
+          ON ri.game_info_id = gi.id
+        WHERE ri.id = #{resultInfoId}
+        AND ri.user_info_id = (SELECT id FROM user_info WHERE username = #{username});
     </select>
 
 </mapper>

@@ -24,6 +24,5 @@ public class ResultInfoDTO {
 
     private String username;
 
-    // 내가 춤 춘거 저장한게 있다면
-    private String poseFilename;
+
 }
