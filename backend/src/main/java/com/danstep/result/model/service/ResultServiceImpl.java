@@ -31,21 +31,23 @@ public class ResultServiceImpl implements ResultService {
     @Override
     @Transactional
     public void saveResult(SaveResultDTO saveResultDTO) {
-        
+        System.out.println("saveResult Service 시작");
         // 게임 결과 저장
         resultMapper.insertResultInfo(saveResultDTO);
-
+        System.out.println("게임 결과 저장");
         if (saveResultDTO.getId() == null) {
             throw new UserNotFoundException("User not found with username: " + saveResultDTO.getUsername());
         }
-
+        System.out.println("최대 값 가져오기");
         // 유저 최대 값 가져오기
         Integer highScore = rankMapper.getUserHighScore(saveResultDTO);
         System.out.println("최대 점수: " + highScore);
 
         if (highScore == -1) {
             // 게임 최대 값 저장
+            System.out.println("insertRankInfo 실행");
             rankMapper.insertRankInfo(saveResultDTO.getId());
+            System.out.println("insertRankInfo 완료");
 
         } else if (saveResultDTO.getScore() > highScore) {
             // 게임 최대 값 수정
@@ -56,11 +58,14 @@ public class ResultServiceImpl implements ResultService {
                     .gameInfoId(saveResultDTO.getGameInfoId())
                     .build();
 
+            System.out.println("updateRankInfo 실행");
             rankMapper.updateRankInfo(saveRankDTO);
+            System.out.println("updateRankInfo 완료");
         }
 
         if (saveResultDTO.getPoseData() != null) {
             // 포즈 저장
+            System.out.println(saveResultDTO.getPoseData());
             saveResultPose(saveResultDTO);
         }
     }
