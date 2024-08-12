@@ -13,6 +13,6 @@ public interface GameMapper {
 
     GameInfoDTO getGameInfoById(Integer id);
 
-    GameRankTop3DTO getGameRankTop3ById(Integer id);
+    List<GameRankTop3DTO> getGameRankTop3ById(Integer id);
 
 }
