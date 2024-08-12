@@ -114,15 +114,19 @@ public class ResultServiceImpl implements ResultService {
 
         // mp3파일 url 가져오기
         getReplayDTO.setAudioUrl(s3Util.getPublicUrl("games", Integer.toString(dto.getGameInfoId()), dto.getAudioFilename()));
+        System.out.println(getReplayDTO.getAudioUrl());
 
         // background mp4 url 가져오기
         getReplayDTO.setBackgroundUrl(s3Util.getPublicUrl("games", Integer.toString(dto.getGameInfoId()), dto.getBackgroundFilename()));
+        System.out.println(getReplayDTO.getBackgroundUrl());
 
         // game poseData json 가져오기
-        getReplayDTO.setGamePoseData(gameService.getGamePose(dto.getGameInfoId()));
+        getReplayDTO.setGamePoseData(s3Util.getPublicJson("games", Integer.toString(dto.getGameInfoId()), dto.getGamePoseFilename()));
+        System.out.println("통과1");
 
         // my poseData json 가져오기
         getReplayDTO.setMyPoseData(s3Util.getPrivateJson("users", dto.getUsername(), dto.getMyPoseFilename()));
+        System.out.println("통과2");
 
         return getReplayDTO;
     }
