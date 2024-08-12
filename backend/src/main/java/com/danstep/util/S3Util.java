@@ -70,13 +70,8 @@ public class S3Util {
 
             return sb.toString();
 
-        } catch (AmazonS3Exception s3Exception) {
-            // S3 관련 예외 처리
-            s3Exception.printStackTrace();
-            throw new RuntimeException();
         } catch (IOException ioException) {
-            ioException.printStackTrace();
-            throw new RuntimeException();
+            throw new RuntimeException("Error obtaining input stream for file: " + profile.getOriginalFilename());
         }
     }
 
@@ -172,31 +167,24 @@ public class S3Util {
     }
 
     public void uploadUserJson(String folder, String username, String gameInfoId, String filename, String poseData) {
-        try {
-            // 파일 경로 및 파일 명
-            sb = new StringBuilder().append("private/")
-                    .append(folder)
-                    .append("/")
-                    .append(username)
-                    .append("/")
-                    .append(gameInfoId)
-                    .append("/")
-                    .append(filename);
+        // 파일 경로 및 파일 명
+        sb = new StringBuilder().append("/private/")
+                .append(folder)
+                .append("/")
+                .append(username)
+                .append("/")
+                .append(gameInfoId)
+                .append("/")
+                .append(filename);
 
-            // S3에 업로드할 InputStream 생성
-            ByteArrayInputStream inputStream = new ByteArrayInputStream(poseData.getBytes());
+        // S3에 업로드할 InputStream 생성
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(poseData.getBytes());
 
-            ObjectMetadata metadata = new ObjectMetadata();
-            metadata.setContentLength(poseData.length());
-            metadata.setContentType("application/json");
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentLength(poseData.length());
+        metadata.setContentType("application/json");
 
-            // S3에 업로드
-            amazonS3Admin.putObject(new PutObjectRequest(bucket, sb.toString(), inputStream, metadata));
-
-        } catch (AmazonS3Exception s3Exception) {
-            // S3 관련 예외 처리
-            s3Exception.printStackTrace();
-            throw new RuntimeException();
-        }
+        // S3에 업로드
+        amazonS3Admin.putObject(new PutObjectRequest(bucket, sb.toString(), inputStream, metadata));
     }
 }

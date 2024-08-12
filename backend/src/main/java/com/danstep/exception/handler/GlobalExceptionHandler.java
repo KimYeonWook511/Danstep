@@ -1,5 +1,6 @@
 package com.danstep.exception.handler;
 
+import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.danstep.exception.GameNotFoundException;
 import com.danstep.exception.NicknameAlreadyExistsException;
 import com.danstep.exception.PasswordMismatchException;
@@ -11,6 +12,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(AmazonS3Exception.class)
+    public ResponseEntity<String> handleAmazonS3Exception(AmazonS3Exception ex) {
+        // S3 관련 예외 처리
+        return new ResponseEntity<>("S3 Error: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR); // 500
+    }
 
     @ExceptionHandler(PasswordMismatchException.class)
     public ResponseEntity<String> handlePasswordMismatchException(PasswordMismatchException e) {
