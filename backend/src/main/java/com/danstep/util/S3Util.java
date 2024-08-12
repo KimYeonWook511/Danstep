@@ -113,6 +113,8 @@ public class S3Util {
                 .append("/")
                 .append(filename);
 
+        System.out.println("getPrivateJson: " + sb.toString());
+
         Date expiration = new Date();
         long expTimeMillis = expiration.getTime();
         expTimeMillis += 1000 * 60 * 3; // 3분
@@ -123,7 +125,11 @@ public class S3Util {
                         .withMethod(com.amazonaws.HttpMethod.GET)
                         .withExpiration(expiration);
 
+        System.out.println("GeneratePresignedUrlRequest 성공적");
+
         URL presignedUrl = amazonS3Admin.generatePresignedUrl(generatePresignedUrlRequest);
+
+        System.out.println("presignedUrl: " + presignedUrl.toString());
 
         try {
             // RestTemplate을 사용하여 JSON 데이터 가져오기
