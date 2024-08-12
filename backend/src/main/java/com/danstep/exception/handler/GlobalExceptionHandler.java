@@ -43,7 +43,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGeneralException(Exception e) {
-        return new ResponseEntity<>("An error occurred", HttpStatus.INTERNAL_SERVER_ERROR); // 500 Internal Server Error
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR); // 500 Internal Server Error
     }
 
 }
