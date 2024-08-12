@@ -3,14 +3,6 @@
 
 <mapper namespace="com.danstep.rank.model.mapper.RankMapper">
 
-    <resultMap id="gameRankTop3Basic" type="com.danstep.game.model.dto.GameRankTop3DTO">
-        <result property="gameInfoId" column="game_info_id" />
-        <result property="username" column="username" />
-        <result property="nickname" column="nickname" />
-        <result property="score" column="score" />
-        <result property="rank" column="rank" />
-    </resultMap>
-
     <select id="getUserHighScore">
         SELECT COALESCE(MAX(score), -1)
         FROM result_info
@@ -38,15 +30,5 @@
                                 ORDER BY id ASC
                                 LIMIT 1)
     </update>
-
-    <select id="getGameRankTop3" resultMap="gameRankTop3Basic">
-        SELECT ui.username, ui.nickname, ri.score, rank
-        FROM result_info AS ri
-        LEFT JOIN user_info AS ui
-        ON ri.user_info_id = ui.id
-        WHERE game_info_id = #{gameInfoId}
-        ORDER BY id ASC
-        LIMIT 3;
-    </select>
 
 </mapper>
