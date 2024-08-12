@@ -34,7 +34,7 @@ public class GameServiceImpl implements GameService {
         List<GameInfoDTO> gameInfoDTOList = new ArrayList<>();
         for (Integer id : gamesIdList) {
             GameInfoDTO gameInfoDTO = this.getGameInfo(id);
-            GameRankTop3DTO gameRankTop3DTO = new GameRankTop3DTO();
+            GameRankTop3DTO gameRankTop3DTO = this.getGameRankTop3ById(id);
 
             gameInfoDTOList.add(getGameInfo(id));
         }
