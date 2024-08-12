@@ -103,6 +103,9 @@ public class ResultServiceImpl implements ResultService {
     public GetReplayDTO getUserReplay(ReplayDTO replayDTO) {
         ReplayDTO dto = resultMapper.getUserReplay(replayDTO);
 
+        System.out.println(replayDTO.toString());
+        System.out.println(dto != null ? dto.toString() : "비어있음!");
+
         if (dto == null) {
             throw new ReplayNotFoundException("Replay not found with resultInfoId " + replayDTO.getResultInfoId());
         }
@@ -120,8 +123,6 @@ public class ResultServiceImpl implements ResultService {
 
         // my poseData json 가져오기
         getReplayDTO.setMyPoseData(s3Util.getPrivateJson("users", dto.getUsername(), dto.getMyPoseFilename()));
-
-        System.out.println("getUserReplay Service: " + getReplayDTO.toString());
 
         return getReplayDTO;
     }
