@@ -16,6 +16,14 @@
         <result column="level" property="level"/>
     </resultMap>
 
+    <resultMap id="gameRankTop3Basic" type="com.danstep.game.model.dto.GameRankTop3DTO">
+        <result property="gameInfoId" column="game_info_id" />
+        <result property="username" column="username" />
+        <result property="nickname" column="nickname" />
+        <result property="score" column="score" />
+        <result property="rank" column="rank" />
+    </resultMap>
+
     <select id="getGamesId">
         SELECT id
           FROM game_info
@@ -25,6 +33,16 @@
         SELECT *
         FROM game_info
         WHERE id = #{id}
+    </select>
+
+    <select id="getGameRankTop3ById" resultMap="gameRankTop3Basic">
+        SELECT ui.username, ui.nickname, ri.score
+        FROM result_info AS ri
+        LEFT JOIN user_info AS ui
+        ON ri.user_info_id = ui.id
+        WHERE game_info_id = #{id}
+        ORDER BY ri.id ASC
+        LIMIT 3;
     </select>
 
 </mapper>
