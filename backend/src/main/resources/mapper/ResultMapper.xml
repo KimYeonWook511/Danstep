@@ -4,7 +4,7 @@
 <mapper namespace="com.danstep.result.model.mapper.ResultMapper">
 
     <resultMap id="getUserResultBasic" type="com.danstep.result.model.dto.GetUserResultDTO">
-        <result property="id" column="result_info_id" />
+        <result property="resultInfoId" column="result_info_id" />
         <result property="gameInfoId" column="game_info_id" />
         <result property="resultDate" column="result_date" />
         <result property="score" column="score" />
@@ -54,7 +54,7 @@
 <!--    </select>-->
 
         <select id="getUserResults" resultMap="getUserResultBasic">
-            SELECT ri.id, ri.game_info_id, ri.result_date, ri.score, ri.perfect,
+            SELECT ri.id AS result_info_id, ri.game_info_id, ri.result_date, ri.score, ri.perfect,
                    ri.great, ri.good, ri.bad, ri.max_combo, ui.username, ui.nickname,
                    gi.title, gi.playtime, gi.level
             FROM result_info AS ri
