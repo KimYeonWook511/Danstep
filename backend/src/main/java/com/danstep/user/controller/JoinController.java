@@ -24,7 +24,8 @@ public class JoinController {
     public ResponseEntity<String> joinProcess(@RequestBody JoinDTO joinDTO) {
 
         // 값 검증 해야함!!
-        
+//        if (joinDTO.getUsername() == null || joinDTO.getPassword() == null || joinDTO.getNickname()) {}
+
         joinService.joinProcess(joinDTO);
 
         return new ResponseEntity<>("ok", HttpStatus.OK);

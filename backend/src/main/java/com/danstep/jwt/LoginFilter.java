@@ -48,7 +48,17 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password, null);
 
         //token에 담은 검증을 위한 AuthenticationManager로 전달
-        return authenticationManager.authenticate(authToken);
+//        return authenticationManager.authenticate(authToken);
+        try {
+            // token에 담은 검증을 위한 AuthenticationManager로 전달
+            return authenticationManager.authenticate(authToken);
+        } catch (AuthenticationException e) {
+            // 실패 처리 메소드 호출
+            System.out.println("Authentication failed for user: " + username);
+            this.unsuccessfulAuthentication(request, response, e);
+
+            return null;
+        }
     }
 
     //로그인 성공시 실행하는 메소드 (여기서 JWT를 발급하면 됨)
@@ -59,7 +69,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal(); // CustomUserDetails로 캐스팅
         String username = authentication.getName();
 //        String username = userDetails.getUsername();
-        String nickname = userDetails.getUsername();
+        String nickname = userDetails.getNickname();
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
@@ -73,12 +83,9 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         //Refresh 토큰 저장
         addRefresh(username, refresh);
 
-//        addRefreshEntity(username, refresh, 86400000L);
-
         //응답 설정
         response.setHeader("Authorization", "Bearer " + access);
         response.addCookie(createCookie("refresh", refresh));
-//        response.addHeader("Set-Cookie", createCookie("refresh", refresh));
         response.setStatus(HttpStatus.OK.value());
     }
 
