@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { signUp } from '../api/auth';
+import './SignUpModal.css'
 
 interface SignUpModalProps {
   onClose: () => void;
@@ -13,6 +14,12 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ onClose }) => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
+  const handleBackgroundClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      onClose(); 
+    }
+  }
+
   const handleSignUp = async (event: React.FormEvent) => {
     event.preventDefault();
     setError(null); // 에러 초기화
@@ -24,114 +31,104 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ onClose }) => {
     }
 
     try {
-      console.log("여기 왔니?")
       const response = await signUp({ nickname, username, password });
-      console.log(response)
       setSuccess(response.message);
       setNickname('');
       setUsername('');
       setPassword('');
       setConfirmPassword('');
+      onClose();
     } catch (err) {
       setError('Sign Up failed. Please try again.');
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-75"></div>
-        <div className="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
-          <div className="bg-white p-4">
-            <div className="flex justify-end">
-              <button onClick={onClose} className="text-gray-400 hover:text-gray-500 focus:outline-none">
-                <span className="sr-only">Close</span>
-                <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                  <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                </svg>
-              </button>
-            </div>
-            <div className="mt-3 text-center">
-              <h3 className="text-lg leading-6 font-medium text-gray-900">Sign Up</h3>
-              <form onSubmit={handleSignUp}>
-              <div className="mt-2">
-                  <label htmlFor="nickname" className="block text-sm font-medium text-gray-700">Nickname</label>
-                  <input
-                    type="text"
-                    id="nickname"
-                    value={nickname}
-                    onChange={(e) => setNickname(e.target.value)}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    required
-                  />
-                </div>
-                <div className="mt-2">
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700">Username</label>
-                  <input
-                    type="text"
-                    id="username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    required
-                  />
-                </div>
-                <div className="mt-2">
-                  <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
-                  <input
-                    type="password"
-                    id="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    required
-                  />
-                </div>
-                <div className="mt-2">
-                  <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-700">Confirm Password</label>
-                  <input
-                    type="password"
-                    id="confirm-password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    required
-                  />
-                </div>
-                {error && <div className="mt-2 text-red-500 text-sm">{error}</div>}
-                {success && <div className="mt-2 text-green-500 text-sm">{success}</div>}
-                <div className="mt-4">
-                  <button type="submit" className="w-full bg-indigo-600 text-white py-2 rounded-md">Sign Up</button>
-                </div>
-              </form>
-            </div>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+      onClick={handleBackgroundClick}
+    >
+      <div className='signup-box'>
+        <button
+          onClick={onClose}
+          className="absolute top-7 right-7 text-white hover:text-cyan-400 focus:outline-none"
+        >
+          <svg
+            className="h-6 w-6"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fillRule="evenodd"
+              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+              clipRule="evenodd"
+            />
+          </svg>
+        </button>
+
+        <form className="flex flex-col items-center w-full" onSubmit={handleSignUp}>
+          <h2 className="text-xl font-semibold mb-4">회원가입</h2>
+          <div className="user-box w-full">
+            <input
+              type="text"
+              id="nickname"
+              placeholder="Nickname"
+              value={nickname}
+              onChange={(e) => setNickname(e.target.value)}
+              className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              required
+            />
           </div>
-          <div className="w-full mb-4">
+
+          <div className="user-box w-full">
+            <input
+              type="text"
+              id="username"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              required
+            />
+          </div>
+
+          <div className="user-box w-full">
             <input
               type="password"
               id="password"
               placeholder="Password"
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              required
             />
           </div>
-          <div className="w-full mb-4">
+
+          <div className="user-box w-full">
             <input
               type="password"
               id="confirm-password"
               placeholder="Confirm Password"
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              required
             />
           </div>
-          <div className="w-full">
-            <button type="submit" className="w-full bg-indigo-600 text-white py-2 rounded-md">
+
+          {error && <div className="mt-2 text-red-500 text-sm">{error}</div>}
+          {success && <div className="mt-2 text-green-500 text-sm">{success}</div>}
+
+          <div className="submit-button w-full">
+            <button type="submit" className="w-full py-2 rounded-md border border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-black">
               Sign Up
             </button>
           </div>
+        </form>
       </div>
     </div>
-  </div>
-);
+  );
 };
-
 
 export default SignUpModal;

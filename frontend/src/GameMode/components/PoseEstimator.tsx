@@ -21,30 +21,32 @@ import Guide from '../../components/Guide';
 import ComboEffect from './ComboEffect';
 import LifeEffect from './LifeEffect';
 import axios from 'axios';
-import Loader from '../../components/Loading'
+import Loader from '../../components/Loading';
 
 interface Game {
   id: number;
-  title : string;
-  uploadDate : string;
-  playtime : number;
-  thumbnailFilename : string;
-  auidoFilename : string;
-  poseFilename : string;
-  videoFilename : string;
-  backgroundFilenmae : string;
-  level : number;
+  title: string;
+  uploadDate: string;
+  playtime: number;
+  thumbnailFilename: string;
+  auidoFilename: string;
+  poseFilename: string;
+  videoFilename: string;
+  backgroundFilename: string;
+  level: number;
   thumbnailUrl: string;
-  audioUrl : string;
-  backgroundUrl : string;
-  poseData : object;
+  audioUrl: string;
+  backgroundUrl: string;
+  poseData: object;
 }
 
 interface PoseEstimatorProps {
   game: Game;
+  pauseAudio: () => void;
+  resumeAudio: () => void;
 }
 
-const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game }) => {
+const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeAudio }) => {
   const navigate = useNavigate();
   const camRef = useRef<HTMLVideoElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -58,12 +60,13 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game }) => {
 
   const firstFrameY = useRef<number[]>([]);
 
-  const requiredKeypointsIndices = [11, 12, 13, 14, 15, 16, 23, 24, 25, 26, 27, 28];
+  // const requiredKeypointsIndices = [11, 12, 13, 14, 15, 16, 23, 24, 25, 26, 27, 28];
+  const requiredKeypointsIndices = [11, 12];
 
   const yAligned = useRef(0);
   const isYAligned = useRef(false);
   const isCheckEnd = useRef(false);
-  let iskeypoint = false;
+  const iskeypoint = useRef(false);
 
   const bad = useRef(0);
   const good = useRef(0);
@@ -79,6 +82,10 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game }) => {
   const [scores, setScores] = useState<number[]>([]);
   const [isFinished, setIsFinished] = useState<boolean>(false);
   const [state, setState] = useState<boolean>(false);
+  const [alignmentMessage, setAlignmentMessage] = useState<string>('');
+  const [countdown, setCountdown] = useState<number | null>(null);
+  const [showComboEffect, setShowComboEffect] = useState<boolean>(false);
+  const beepSoundRef = useRef<HTMLAudioElement | null>(null);
 
   const keypointsJson = useRef([]);
   const idx = useRef(-1);
@@ -89,6 +96,82 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game }) => {
 
   const camKeypoints = useRef<Object[]>([]);
 
+  useEffect(() => {
+    if (detectedArmsUp) {
+      pauseAudio(); // detectedArmsUp이 true일 때 오디오 멈추기
+    }
+  }, [detectedArmsUp, pauseAudio]);
+
+  const stopDetection = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+  };
+
+  const resetState = () => {
+    setAlignmentMessage('');
+    setShowComboEffect(false);
+    setDetectedArmsUp(false);
+    setScores([]);
+    setCountdown(null);
+    setState(false);
+
+    // Refs 초기화
+    isYAligned.current = false;
+    isCheckEnd.current = false;
+    firstFrameY.current = [];
+    idx.current = -1;
+    health.current = 100;
+    bad.current = 0;
+    good.current = 0;
+    great.current = 0;
+    perfect.current = 0;
+    combo.current = 0;
+    maxCombo.current = 0;
+    grade.current = '';
+
+    // Clear intervals
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+
+    // Clear canvas
+    if (canvasRef.current) {
+      const ctx = canvasRef.current.getContext('2d');
+      if (ctx) {
+        ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+      }
+    }
+
+    if (camcanvasRef.current) {
+      const ctx = camcanvasRef.current.getContext('2d');
+      if (ctx) {
+        ctx.clearRect(0, 0, camcanvasRef.current.width, camcanvasRef.current.height);
+      }
+    }
+  };
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        setState(false);
+        stopDetection();
+      } else {
+        resetState();
+        init();
+      }
+    };
+
+    
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, []);
+
   const init = async () => {
     await tf.setBackend('webgl');
     await tf.ready();
@@ -98,7 +181,8 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game }) => {
 
     await fetchKeypoints();
 
-    
+    beepSoundRef.current = new Audio('/countdown.mp3');
+
     if (video) {
       const modelConfig = {
         runtime: 'mediapipe',
@@ -106,7 +190,7 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game }) => {
         solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/pose/',
         render3D: true,
       };
-      
+
       detector.current = await createDetector(SupportedModels.BlazePose, modelConfig);
       camdetector.current = await createDetector(SupportedModels.BlazePose, modelConfig);
       checkdetector.current = await createDetector(SupportedModels.BlazePose, modelConfig);
@@ -127,23 +211,30 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game }) => {
     if (isCheckEnd.current) return;
 
     isYAligned.current = false;
-    setYAlignedState(isYAligned.current);
+    // setYAlignedState(false);
 
     const checkKeypoints = await checkdetectPose(checkdetector.current!);
     yAligned.current = await checkInitialYAlignment(camdetector.current!, camRef, firstFrameY);
 
     if (checkKeypoints && checkKeypoints.length > 0) {
-      iskeypoint = keypointsDetected(checkKeypoints!, requiredKeypointsIndices);
+      iskeypoint.current = keypointsDetected(checkKeypoints!, requiredKeypointsIndices);
 
-      if (iskeypoint) {
+      if (iskeypoint.current) {
         // 프레임 안에 모든 키포인트가 다 들어가 있는지 체크
         if (yAligned.current > -0.5 && yAligned.current < 0.5) {
-          console.log('키포인트 인식이 완료되었습니다!!!!');
+          // console.log('프레임이 초록색일 때 머리 위로 동그라미를 만들면 게임이 시작됩니다.');
           isYAligned.current = true;
-          setYAlignedState(isYAligned.current);
+          // setYAlignedState(true);
+          setAlignmentMessage('Hands Up');
         } else {
-          if (yAligned.current < -0.5) console.log('카메라에서 멀어지세요');
-          if (yAligned.current > 0.5) console.log('카메라로 가까이 오세요');
+          if (yAligned.current < -0.5) {
+            setAlignmentMessage('Go Back');
+            // console.log('카메라에서 멀어지세요');
+          }
+          if (yAligned.current > 0.5) {
+            setAlignmentMessage('Go front');
+            // console.log('카메라로 가까이 오세요');
+          }
         }
 
         if (isYAligned.current) {
@@ -153,42 +244,87 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game }) => {
             // 손 들었는지 체크
             setDetectedArmsUp(true);
             console.log('타이머 시작');
-            // clearInterval(intervalRef.current!);
+            clearInterval(intervalRef.current!);
             isCheckEnd.current = true;
             startTimer();
             return;
           }
 
-          console.log('프레임이 초록색일 때 머리 위로 동그라미를 만들면 게임이 시작됩니다.');
           return;
         }
 
         return;
       }
-
-      console.log('몸 전체가 프레임 안에 들어오도록 해주세요');
+      setAlignmentMessage('inside Frame');
+      // console.log('몸 전체가 프레임 안에 들어오도록 해주세요');
       return;
     }
 
-    console.log('인식이 안 되고 있는 거 같아요');
+    // console.log('인식이 안 되고 있는 거 같아요');
   };
 
   const startTimer = () => {
-    let nowTime = 0;
+    let startTime = Date.now();
+    setCountdown(3);
 
+    // return new Promise<void>((resolve) => {
+    //   const tick = () => {
+    //     const nowTime = Date.now();
+    //     const elapsedTime = nowTime - startTime;
+    //     const secondsLeft = 4 - Math.floor(elapsedTime / 1000);
+
+    //     if (secondsLeft > 0) {
+    //       setCountdown(secondsLeft);
+    //       console.log('\n' + countdown + '\n');
+    //       // 포즈 감지 수행
+    //       camdetectPose(detector.current!);
+
+    //       // 다음 프레임 요청
+    //       requestAnimationFrame(tick);
+    //     } else {
+    //       setCountdown(null);
+    //       setShowComboEffect(true);
+    //       intervalRef.current = setInterval(async () => await camDetect(), 50);
+    //       resolve();
+    //     }
+    //   };
+
+    //   tick(); // 첫 프레임 시작
+    // });
     return new Promise<void>((resolve) => {
-      const intervalTimer = setInterval(() => {
-        nowTime += 100;
+      const tick = () => {
+        const nowTime = Date.now();
+        const elapsedTime = nowTime - startTime;
+        const secondsLeft = 3 - Math.floor(elapsedTime / 1000);
 
-        console.log(nowTime / 1000 + '초');
+        if (secondsLeft > 0) {
+          setCountdown(secondsLeft);
+          console.log('\n' + countdown + '\n');
+          // 포즈 감지 수행 (빨강이)
+          camdetectPose(detector.current!);
 
-        if (nowTime >= 3000) {
-          clearInterval(intervalTimer);
+          // 초록이
+          drawJson(keypointsJson.current[0], 0);
+
+          // 다음 프레임 요청
+          requestAnimationFrame(tick);
+          console.log('requestAnimationFrame');
+        } else {
+          setCountdown(null);
+          setShowComboEffect(true);
           intervalRef.current = setInterval(async () => await camDetect(), 50);
           resolve();
         }
-      }, 100);
+      };
+
+      tick(); // 첫 프레임 시작
     });
+  };
+
+  const playBeep = () => {
+    if (beepSoundRef.current) {
+      beepSoundRef.current.play();
+    }
   };
 
   const camDetect = async () => {
@@ -204,7 +340,7 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game }) => {
       videoRef.current.play();
     }
 
-    const posesKeypoints = drawJson(keypointsJson.current[idx.current++]);
+    const posesKeypoints = drawJson(keypointsJson.current[++idx.current], 1);
     const camKeypoints = await camdetectPose(camdetector.current!);
 
     setScores((prevScores) => {
@@ -214,8 +350,8 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game }) => {
         const sum = calculateScore(posesKeypoints, camKeypoints);
         newScores.push(sum);
 
-        if (newScores.length === 16) {
-          const averageScore = newScores.reduce((a, b) => a + b, 0) / 16;
+        if (newScores.length === 8) {
+          const averageScore = newScores.reduce((a, b) => a + b, 0) / 8;
           console.log('Average Score:', averageScore);
 
           updateScores(averageScore, bad, good, great, perfect, health, combo, maxCombo, grade);
@@ -271,29 +407,28 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game }) => {
     return null;
   };
 
-  const drawJson = (keypoints: Keypoint[]) => {
+  const drawJson = (keypoints: Keypoint[], status: number) => {
     if (videoRef.current && camRef.current && canvasRef.current && camcanvasRef.current) {
       const ctx = canvasRef.current.getContext('2d');
 
-      if (videoRef.current.paused || videoRef.current.ended) return;
+      if (status === 1 && (videoRef.current.paused || videoRef.current.ended)) return;
 
       if (ctx) {
         ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
         canvasRef.current.width = 720;
         canvasRef.current.height = 1280;
-        console.log(canvasRef.current)
+        // console.log(canvasRef.current);
         if (keypoints) drawGreen(ctx, keypoints);
         return keypoints;
       }
     }
   };
 
-
   const camdetectPose = async (detector: PoseDetector) => {
     if (videoRef.current && camRef.current && camcanvasRef.current) {
       const ctx = camcanvasRef.current.getContext('2d');
 
-      if (videoRef.current.paused || videoRef.current.ended) return;
+      //if (videoRef.current.paused || videoRef.current.ended) return;
 
       if (ctx) {
         ctx.clearRect(0, 0, camcanvasRef.current.width, camcanvasRef.current.height);
@@ -365,13 +500,40 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game }) => {
 
   useEffect(() => {
     init();
-  },[game.id]);
+  }, [game.id]);
 
-  const handleRestart = async () => {
-    window.location.reload();
-  };
+  useEffect(() => {
+    if (countdown === 0) {
+      setCountdown(null);
+    } else {
+      playBeep();
+    }
+  }, [countdown]);
 
-  const moveMainpage = () => {
+  useEffect(() => {
+    if (detectedArmsUp) {
+      pauseAudio(); // detectedArmsUp이 true일 때 오디오 멈추기
+    }
+  }, [detectedArmsUp, pauseAudio]);
+
+  // const handleRestart = () => {
+  const resetResource = (status: number) => {
+    // 초록색 스켈레톤이 그려져 있는 캔버스를 초기화합니다.
+    if (canvasRef.current) {
+      const ctx = canvasRef.current.getContext('2d');
+      if (ctx) {
+        ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height); // 캔버스 초기화
+      }
+    }
+
+    // 빨간색 스켈레톤이 그려져 있는 캔버스를 초기화합니다.
+    if (camcanvasRef.current) {
+      const ctx = camcanvasRef.current.getContext('2d');
+      if (ctx) {
+        ctx.clearRect(0, 0, camcanvasRef.current.width, camcanvasRef.current.height); // 캔버스 초기화
+      }
+    }
+    
     // 카메라 스트림을 정지시키는 로직 추가
     if (camRef.current && camRef.current.srcObject) {
       const stream = camRef.current.srcObject as MediaStream;
@@ -379,34 +541,192 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game }) => {
       tracks.forEach((track) => track.stop()); // 모든 트랙을 정지
       camRef.current.srcObject = null; // 참조를 제거하여 메모리 누수 방지
     }
+    
+    // 카메라 스트림을 정지시키는 로직 추가
+    if (videoRef.current && videoRef.current.srcObject) {
+      const stream = videoRef.current.srcObject as MediaStream;
+      const tracks = stream.getTracks();
+      tracks.forEach((track) => track.stop()); // 모든 트랙을 정지
+      videoRef.current.srcObject = null; // 참조를 제거하여 메모리 누수 방지
+    }
 
-    navigate('/');
+    // MediaPipe 리소스를 정리합니다.
+    if (detector.current) {
+      detector.current = undefined; // close 메서드를 호출하여 리소스를 해제합니다.
+    }
+    if (camdetector.current) {
+      camdetector.current = undefined;
+    }
+    if (checkdetector.current) {
+      checkdetector.current = undefined;
+    }
+  
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current); // setInterval로 반복 작업이 실행된 경우 정지
+      intervalRef.current = null;
+    }
+    
+    // 상태를 초기화합니다.
+    // setYAlignedState(false);
+    setCountdown(null);
+    setShowPoseEstimator(false)
+    setAlignmentMessage('');
+    setShowComboEffect(false);
+    setState(false);
+    setDetectedArmsUp(false);
+    setIsFinished(false);
+    setScores([]);
+    yAligned.current = 0;
+    isYAligned.current = false;
+    isCheckEnd.current = false;
+    iskeypoint.current = false;
+    firstFrameY.current = [];
+    idx.current = -1;
+    len.current = 0;
+    health.current = 100;
+    bad.current = 0;
+    good.current = 0;
+    great.current = 0;
+    perfect.current = 0;
+    combo.current = 0;
+    maxCombo.current = 0;
+    grade.current = '';
+    beepSoundRef.current = null;
+    keypointsJson.current = [];
+    camKeypoints.current = [];
+    pauseAudio();
+
+    if (status === 1) { // handleRestart
+      resumeAudio();
+      init();
+    }
+    if (status === 2) navigate('/'); // moveMainpage
   };
+
+  // const moveMainpage = () => {
+  //   // 초록색 스켈레톤이 그려져 있는 캔버스를 초기화합니다.
+  //   if (canvasRef.current) {
+  //     const ctx = canvasRef.current.getContext('2d');
+  //     if (ctx) {
+  //       ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height); // 캔버스 초기화
+  //     }
+  //   }
+
+  //   // 빨간색 스켈레톤이 그려져 있는 캔버스를 초기화합니다.
+  //   if (camcanvasRef.current) {
+  //     const ctx = camcanvasRef.current.getContext('2d');
+  //     if (ctx) {
+  //       ctx.clearRect(0, 0, camcanvasRef.current.width, camcanvasRef.current.height); // 캔버스 초기화
+  //     }
+  //   }
+    
+  //   // 카메라 스트림을 정지시키는 로직 추가
+  //   if (camRef.current && camRef.current.srcObject) {
+  //     const stream = camRef.current.srcObject as MediaStream;
+  //     const tracks = stream.getTracks();
+  //     tracks.forEach((track) => track.stop()); // 모든 트랙을 정지
+  //     camRef.current.srcObject = null; // 참조를 제거하여 메모리 누수 방지
+  //   }
+    
+  //   // 카메라 스트림을 정지시키는 로직 추가
+  //   if (videoRef.current && videoRef.current.srcObject) {
+  //     const stream = videoRef.current.srcObject as MediaStream;
+  //     const tracks = stream.getTracks();
+  //     tracks.forEach((track) => track.stop()); // 모든 트랙을 정지
+  //     videoRef.current.srcObject = null; // 참조를 제거하여 메모리 누수 방지
+  //   }
+
+  //   // MediaPipe 리소스를 정리합니다.
+  //   if (detector.current) {
+  //     detector.current = undefined; // close 메서드를 호출하여 리소스를 해제합니다.
+  //   }
+  //   if (camdetector.current) {
+  //     camdetector.current = undefined;
+  //   }
+  //   if (checkdetector.current) {
+  //     checkdetector.current = undefined;
+  //   }
+  
+  //   if (intervalRef.current) {
+  //     clearInterval(intervalRef.current); // setInterval로 반복 작업이 실행된 경우 정지
+  //     intervalRef.current = null;
+  //   }
+    
+  //   // 상태를 초기화합니다.
+  //   // setYAlignedState(false);
+  //   setCountdown(null);
+  //   setShowPoseEstimator(false)
+  //   setAlignmentMessage('');
+  //   setShowComboEffect(false);
+  //   setState(false);
+  //   setDetectedArmsUp(false);
+  //   setIsFinished(false);
+  //   setScores([]);
+  //   yAligned.current = 0;
+  //   isYAligned.current = false;
+  //   isCheckEnd.current = false;
+  //   iskeypoint.current = false;
+  //   firstFrameY.current = [];
+  //   idx.current = -1;
+  //   len.current = 0;
+  //   health.current = 100;
+  //   bad.current = 0;
+  //   good.current = 0;
+  //   great.current = 0;
+  //   perfect.current = 0;
+  //   combo.current = 0;
+  //   maxCombo.current = 0;
+  //   grade.current = '';
+  //   beepSoundRef.current = null;
+  //   keypointsJson.current = [];
+  //   camKeypoints.current = [];
+
+  //   navigate('/');
+  // };
+
   const handleShowPoseEstimator = () => {
     setShowPoseEstimator((prev) => !prev);
   };
 
   return (
     <div className='Neon'>
-      {/* <ThreeStars /> */}
-      <div className='topBar'>
-        <div className='left'>
-          <NeonButton onClick={moveMainpage}>Back</NeonButton>
+      {(state || isFinished) && ( // 로딩이 완료된 후에만 TopNav를 렌더링
+        <div className='topBar'>
+          <div className='left'>
+            <NeonButton onClick={() => resetResource(2)}>Back</NeonButton>
+          </div>
+          <div className='right'>
+            <NeonButton
+              onClick={() => resetResource(1)}
+              isRetry
+            >
+              Retry
+            </NeonButton>
+            <NeonButton onClick={handleShowPoseEstimator}>?</NeonButton>
+          </div>
         </div>
-        {/* <div className="center">
-          <ScoreDisplay score={health.current} />
-        </div> */}
-        <div className='right'>
-          <NeonButton onClick={handleRestart}>Retry</NeonButton>
-          <NeonButton onClick={handleShowPoseEstimator}>?</NeonButton>
-        </div>
-      </div>
+      )}
       {showPoseEstimator && <Guide onShowPoseEstimator={handleShowPoseEstimator} />}
-      {!state && <Loader/>}
-      <RainbowHealthBar health={health.current} />
+      {!state && <Loader />}
+
       <NeonCircle />
 
       <div style={{ width: '100%', height: '100%', display: 'flex', marginTop: '100px' }}>
+        <div
+          style={{
+            right: '10px',
+            bottom: '10px',
+            width: '5%',
+            height: '90%',
+            background: 'none' /* Remove the background */,
+            overflow: 'hidden',
+            display: 'hidden',
+            alignItems: 'flex-end',
+            marginRight: '10px',
+            marginLeft: '10px',
+          }}
+        ></div>
+
         <div
           className={`container ${detectedArmsUp ? 'no-border' : isYAligned.current ? 'aligned' : 'not-aligned'}`}
           style={{ width: '100%', height: '90%' }}
@@ -462,20 +782,25 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game }) => {
           }}
         >
           {detectedArmsUp ? (
-            <>
+            showComboEffect ? (
               <ComboEffect
                 combo={combo.current}
                 grade={grade.current}
               />
-
-              <LifeEffect health={health.current} />
-            </>
+            ) : (
+              <div
+                className='animated-text combo'
+                style={{ fontFamily: 'neon-number', fontSize: '100px' }}
+              >
+                {countdown}
+              </div>
+            )
           ) : (
             <div
               className='animated-text combo'
-              style={{ fontFamily: 'neon-text' }}
+              style={{ fontFamily: 'neon-text', fontSize: '100px' }}
             >
-              Are You Ready
+              {alignmentMessage}
             </div>
           )}
         </div>
@@ -526,10 +851,11 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game }) => {
             </>
           )}
         </div>
+        <RainbowHealthBar health={health.current} />
       </div>
       <ResultModal
         isOpen={isFinished}
-        onClose={handleRestart}
+        onClose={() => resetResource(2)}
         score={health.current}
         bad={bad.current}
         good={good.current}
