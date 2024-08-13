@@ -3,6 +3,7 @@ package com.danstep.game.model.service;
 import com.danstep.exception.GameNotFoundException;
 import com.danstep.game.model.dto.GameInfoDTO;
 import com.danstep.game.model.dto.GameRankTop3DTO;
+import com.danstep.game.model.dto.GetAllGameDTO;
 import com.danstep.game.model.mapper.GameMapper;
 import com.danstep.util.S3Util;
 import org.springframework.stereotype.Service;
@@ -24,22 +25,29 @@ public class GameServiceImpl implements GameService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<GameInfoDTO> getAllGames() {
+    public List<GetAllGameDTO> getAllGames() {
         List<Integer> gamesIdList = gameMapper.getGamesId();
 
         if (gamesIdList == null || gamesIdList.isEmpty()) {
             throw new GameNotFoundException("Game does not exist");
         }
 
-        List<GameInfoDTO> gameInfoDTOList = new ArrayList<>();
+        List<GetAllGameDTO> gameList = new ArrayList<>();
+        int len = 0;
+
         for (Integer id : gamesIdList) {
             GameInfoDTO gameInfoDTO = this.getGameInfo(id);
             List<GameRankTop3DTO> gameRankTop3List = this.getGameRankTop3ById(id);
+            len = gameRankTop3List.size();
 
-            gameInfoDTOList.add(getGameInfo(id));
+            for (int i = 0; i < len; i++) {
+                gameRankTop3List.get(i).setRank(i + 1);
+            }
+
+            gameList.add(new GetAllGameDTO(gameInfoDTO, gameRankTop3List));
         }
 
-        return gameInfoDTOList;
+        return gameList;
     }
 
     @Override
@@ -74,9 +82,9 @@ public class GameServiceImpl implements GameService {
     @Override
     @Transactional(readOnly = true)
     public List<GameRankTop3DTO> getGameRankTop3ById(Integer id) {
-        List<GameRankTop3DTO> gameRankTop3List = gameMapper.getGameRankTop3ById(id);
+//        List<GameRankTop3DTO> gameRankTop3List = gameMapper.getGameRankTop3ById(id);
 
-        return gameRankTop3List;
+        return gameMapper.getGameRankTop3ById(id);
     }
 
     @Override
