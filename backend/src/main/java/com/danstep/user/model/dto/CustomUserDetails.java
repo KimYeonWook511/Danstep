@@ -44,7 +44,7 @@ public class CustomUserDetails implements UserDetails {
 
     // 내가 임의로 추가한 메소드
     public String getNickname() {
-        return userInfoDTO.getUsername();
+        return userInfoDTO.getNickname();
     }
 
     @Override
