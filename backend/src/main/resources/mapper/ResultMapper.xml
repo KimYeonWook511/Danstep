@@ -63,7 +63,8 @@
               AND ri.user_info_id = ui.id
             LEFT JOIN game_info AS gi
               ON ri.game_info_id = gi.id
-            WHERE ri.user_info_id = (SELECT id FROM user_info WHERE username = #{username});
+            WHERE ri.user_info_id = (SELECT id FROM user_info WHERE username = #{username})
+            ORDER BY ri.result_date DESC;
         </select>
 
 <!--    <select id="getUserResultsByGameInfoId" resultMap="getResultInfoBasic">-->
