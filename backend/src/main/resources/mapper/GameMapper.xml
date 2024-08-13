@@ -36,12 +36,13 @@
     </select>
 
     <select id="getGameRankTop3ById" resultMap="gameRankTop3Basic">
-        SELECT ui.username, ui.nickname, ri.score
+        SELECT ui.username, ui.nickname, MAX(ri.score) AS score
         FROM result_info AS ri
         LEFT JOIN user_info AS ui
         ON ri.user_info_id = ui.id
-        WHERE game_info_id = #{id}
-        ORDER BY ri.score DESC, ri.id ASC
+        WHERE ri.game_info_id = #{id}
+        GROUP BY ui.username, ui.nickname
+        ORDER BY score DESC, MAX(ri.id) DESC
         LIMIT 3;
     </select>
 
