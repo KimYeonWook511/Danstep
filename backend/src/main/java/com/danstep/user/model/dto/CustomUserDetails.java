@@ -11,7 +11,6 @@ public class CustomUserDetails implements UserDetails {
     private final UserInfoDTO userInfoDTO;
 
     public CustomUserDetails(UserInfoDTO userInfoDTO) {
-
         this.userInfoDTO = userInfoDTO;
     }
 
@@ -35,13 +34,16 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-
         return userInfoDTO.getPassword();
     }
 
     @Override
     public String getUsername() {
+        return userInfoDTO.getUsername();
+    }
 
+    // 내가 임의로 추가한 메소드
+    public String getNickname() {
         return userInfoDTO.getUsername();
     }
 
