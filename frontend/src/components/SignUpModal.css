@@ -1,77 +1,80 @@
 .signup-box {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 500px;
-    padding: 60px 40px;
-    transform: translate(-50%, -50%);
-    background: rgb(23, 22, 22);
-    box-sizing: border-box;
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.7), 
-                0 0 30px rgba(0, 255, 255, 0.5), 
-                0 0 40px rgba(0, 255, 255, 0.4),
-                0 0 50px rgba(0, 255, 255, 0.3);
-    animation: signup-animation 2s ease-in-out infinite alternate;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 500px;
+  padding: 60px 40px;
+  transform: translate(-50%, -50%);
+  background: rgb(23, 22, 22);
+  box-sizing: border-box;
+  border-radius: 10px;
+  box-shadow:
+    0 0 20px rgba(0, 255, 255, 0.7),
+    0 0 30px rgba(0, 255, 255, 0.5),
+    0 0 40px rgba(0, 255, 255, 0.4),
+    0 0 50px rgba(0, 255, 255, 0.3);
+  animation: signup-animation 2s ease-in-out infinite alternate;
+}
+
+@keyframes signup-animation {
+  0% {
+    box-shadow:
+      0 0 30px rgba(0, 255, 255, 0.5),
+      0 0 60px rgba(0, 255, 255, 0.3),
+      0 0 90px rgba(0, 255, 255, 0.2),
+      0 0 120px rgba(0, 255, 255, 0.1);
   }
-  
-  @keyframes signup-animation {
-    0% {
-      box-shadow: 0 0 30px rgba(0, 255, 255, 0.5), 
-                  0 0 60px rgba(0, 255, 255, 0.3), 
-                  0 0 90px rgba(0, 255, 255, 0.2),
-                  0 0 120px rgba(0, 255, 255, 0.1);
-    }
-    100% {
-      box-shadow: 0 0 50px rgba(0, 255, 255, 0.8), 
-                  0 0 100px rgba(0, 255, 255, 0.6), 
-                  0 0 150px rgba(0, 255, 255, 0.4),
-                  0 0 200px rgba(0, 255, 255, 0.3);
-    }
+  100% {
+    box-shadow:
+      0 0 50px rgba(0, 255, 255, 0.8),
+      0 0 100px rgba(0, 255, 255, 0.6),
+      0 0 150px rgba(0, 255, 255, 0.4),
+      0 0 200px rgba(0, 255, 255, 0.3);
   }
-  
-  .signup-box h2 {
-    margin: 0 0 40px;
-    padding: 0;
-    color: #fff;
-    text-align: center;
-  }
-  
-  .signup-box .user-box {
-    position: relative;
-  }
-  
-  .signup-box .user-box input {
-    width: 100%;
-    padding: 12px 0;
-    font-size: 18px;
-    color: #fff;
-    margin-bottom: 40px;
-    border: none;
-    border-bottom: 1px solid #fff;
-    outline: none;
-    background: transparent;
-  }
-  
-  .submit-button {
-    display: inline-block;
-    color: rgb(0, 255, 255);
-    font-size: 18px;
-    padding: 14px 20px;
-    text-transform: uppercase;
-    transition: .5s;
-    margin-top: 40px;
-    letter-spacing: 4px;
-    background: transparent; 
-  }
-  
-  .submit-button :hover {
-    background: rgb(0, 255, 255);
-    color: rgb(0, 0, 0);
-    border-radius: 5px;
-    box-shadow: 0 0 5px rgb(0, 255, 255),
-                0 0 25px rgb(0, 255, 255),
-                0 0 50px rgb(0, 255, 255),
-                0 0 100px rgb(0, 255, 255);
-  }
-  
+}
+
+.signup-box h2 {
+  margin: 0 0 40px;
+  padding: 0;
+  color: #fff;
+  text-align: center;
+}
+
+.signup-box .user-box {
+  position: relative;
+}
+
+.signup-box .user-box input {
+  width: 100%;
+  padding: 12px;
+  font-size: 18px;
+  color: #fff;
+  margin-bottom: 40px;
+  border: none;
+  border-bottom: 1px solid #fff;
+  outline: none;
+  background: transparent;
+}
+
+.submit-button {
+  display: inline-block;
+  color: rgb(0, 255, 255);
+  font-size: 18px;
+  padding: 14px 20px;
+  text-transform: uppercase;
+  transition: 0.5s;
+  margin-top: 40px;
+  letter-spacing: 4px;
+  background: transparent;
+}
+
+.submit-button :hover {
+  background: rgb(0, 255, 255);
+  color: rgb(0, 0, 0);
+  border-radius: 5px;
+  box-shadow:
+    0 0 5px rgb(0, 255, 255),
+    0 0 25px rgb(0, 255, 255),
+    0 0 50px rgb(0, 255, 255),
+    0 0 100px rgb(0, 255, 255);
+}

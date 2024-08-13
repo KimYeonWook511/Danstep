@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef, FC } from 'react';
+import { useState, useEffect, useRef, FC } from 'react';
 import { Link } from 'react-router-dom';
-import { logout } from '../api/logout';
 import Category from './Category'
 import Menu from './Menu'
 import './NavBar.css';
 import './ProfileIcon.css'
+import { logout } from '../api/logout';
 import { HttpStatusCode } from 'axios';
 
 

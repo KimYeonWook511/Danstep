@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './ResultModal.css';
 import { resultGrade } from '../utils/ResultGrade';
 import axios from 'axios';
@@ -20,19 +20,29 @@ interface ResultModalProps {
 const ResultModal: React.FC<ResultModalProps> = ({ isOpen, onClose, score, bad, good, great, perfect, maxCombo, poseData, gameInfoId }) => {
   const [showLogin, setShowLogin] = useState(false);
   const [isLoggedIn, setIsLoggedin] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false); // 제출 여부를 저장할 상태 추가
+
+  useEffect(() => {
+    if (isOpen) {
+      setIsSubmitted(false); // ResultModal이 열릴 때마다 isSubmitted를 초기화
+    }
+  }, [isOpen]);
+
   if (!isOpen) {
     return null;
   }
+
   const closeLoginForm = () => {
     setShowLogin(false);
     setIsLoggedin(true);
   };
 
   const handleSubmit = async () => {
-    const accessToken = localStorage.getItem('accessToken') || '';
+    if (isSubmitted) return; // 이미 제출되었다면 아무 동작도 하지 않음
 
+    const accessToken = localStorage.getItem('accessToken') || '';
+    setIsSubmitted(true); // 제출 완료 후 상태 업데이트
     if (!accessToken) {
-      // accessToken이 없으면 로그인 폼을 보여줍니다.
       setShowLogin(true);
       return;
     }
@@ -57,6 +67,7 @@ const ResultModal: React.FC<ResultModalProps> = ({ isOpen, onClose, score, bad, 
       });
 
       console.log(response);
+      
     } catch (error) {
       console.error('Failed to submit result:', error);
     }
@@ -72,7 +83,7 @@ const ResultModal: React.FC<ResultModalProps> = ({ isOpen, onClose, score, bad, 
           &times;
         </button>
         {showLogin ? (
-          <LoginForm onClose={closeLoginForm} onLogin={closeLoginForm}/> // accessToken이 없으면 LoginForm을 표시
+          <LoginForm onClose={closeLoginForm} onLogin={closeLoginForm}/> 
         ) : (
           <>
             <div
@@ -144,18 +155,19 @@ const ResultModal: React.FC<ResultModalProps> = ({ isOpen, onClose, score, bad, 
             </div>
             <button 
               onClick={handleSubmit} 
+              disabled={isSubmitted} // 제출 여부에 따라 버튼 비활성화
               style={{ 
                 marginTop: '15px', 
                 padding: '10px 20px', 
                 fontSize: '18px', 
                 fontFamily: 'neon-text', 
-                backgroundColor: 'black', 
+                backgroundColor: isSubmitted ? 'grey' : 'black', // 제출된 경우 색상을 회색으로 변경
                 color: 'white', 
                 border: 'none', 
-                cursor: 'pointer' 
+                cursor: isSubmitted ? 'not-allowed' : 'pointer' // 제출된 경우 커서를 비활성화 모양으로 변경
               }}
             >
-              저장하기
+              {isSubmitted ? '제출 완료' : '저장하기'}
             </button>
           </>
         )}

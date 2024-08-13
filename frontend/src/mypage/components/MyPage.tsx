@@ -1,40 +1,62 @@
 import React, { useEffect, useState } from 'react';
 import PlayVideo from './PlayVideo';
 import ModifyProfile from './ModifyProfile';
-import LoginForm from '../../components/LoginForm'; // LoginForm 컴포넌트를 임포트
+import LoginForm from '../../components/LoginForm';
 import './MyPage.css';
-// import { logout } from '../../api/login';
 import { logout } from '../../api/logout';
-import  { jwtDecode,JwtPayload } from 'jwt-decode';
-import { getUser } from '../utils/mypageAxios';
+import { jwtDecode, JwtPayload } from 'jwt-decode';
+import axios, { HttpStatusCode } from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { HttpStatusCode } from 'axios';
 
 interface CustomJwtPayload extends JwtPayload {
   username: string;
+  nickname: string;
+}
+
+interface VideoData {
+  title: string;
+  score: number;
+  resultDate: string;
+  resultInfoId: number;
+  nickname: string;
 }
 
 const Mypage: React.FC = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'video' | 'profile'>('video');
   const [showLogin, setShowLogin] = useState(false);
-  const [decodeUsername, setDecodeUsername] = useState<string | null>(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [nickname, setNickname] = useState<string | null>(null);
+  const [videos, setVideos] = useState<VideoData[]>([]);
 
-  useEffect(() => {
+  const fetchData = async () => {
     const token = localStorage.getItem('accessToken');
     if (token) {
       const decodedToken = jwtDecode<CustomJwtPayload>(token);
-      setDecodeUsername(decodedToken.username);
+      setNickname(decodedToken.nickname);
+      try {
+        const response = await axios.get(`https://i11a406.p.ssafy.io/api/v1/results/${decodedToken.username}`, {
+          headers: {
+            Authorization: token,
+          },
+        });
+        console.log(response.data);
+        setVideos(response.data);
+      } catch (error) {
+        console.error('Error fetching videos:', error);
+      }
     } else {
-      setShowLogin(true); // 토큰이 없으면 로그인 폼을 표시
+      setShowLogin(true);
     }
-  }, []); // 빈 배열을 전달하여 컴포넌트가 처음 마운트될 때만 실행되도록 함
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const handleLogout = async () => {
     if (await logout() === HttpStatusCode.Ok) {
       // 로그아웃 후 추가적인 동작이 필요한 경우 여기서 처리할 수 있습니다.
-      setDecodeUsername(null); // 로그아웃 시 decodeUsername 초기화
+      setNickname(null);
       // setShowLogin(true); // 로그아웃 시 로그인 폼을 다시 표시
       navigate("/");
     }
@@ -43,11 +65,9 @@ const Mypage: React.FC = () => {
   const handleCloseLoginForm = () => {
     const token = localStorage.getItem('accessToken');
     if (token) {
-      const decodedToken = jwtDecode<CustomJwtPayload>(token);
-      setDecodeUsername(decodedToken.username);
+      setShowLogin(false);
+      fetchData(); // 로그인 후 비디오 데이터를 다시 가져옵니다.
     }
-    setShowLogin(false); // 로그인 폼 닫기
-    setIsLoggedIn(true);
   };
 
   const handleTabChange = (tab: 'video' | 'profile') => {
@@ -55,12 +75,16 @@ const Mypage: React.FC = () => {
     if (token) {
       setActiveTab(tab);
     } else {
-      setShowLogin(true); // 토큰이 없으면 로그인 폼을 표시
+      setShowLogin(true);
     }
   };
 
+  const handleBackClick = () => {
+    navigate('/');
+  };
+
   if (showLogin) {
-    return <LoginForm onClose={handleCloseLoginForm} onLogin={handleCloseLoginForm} />; // 로그인 폼을 표시하고 onClose prop 전달
+    return <LoginForm onClose={handleCloseLoginForm} onLogin={handleCloseLoginForm} />;
   }
 
   return (
@@ -101,18 +125,6 @@ const Mypage: React.FC = () => {
             }}
           >
             <div
-              style={{
-                color: 'black',
-                width: '100px',
-                height: '100px',
-                backgroundColor: 'brown',
-                textAlign: 'center',
-                alignContent: 'center',
-                marginTop: '15%',
-                borderRadius: '50%',
-              }}
-            ></div>
-            <div
               className='red-neon animated-text red'
               style={{
                 fontFamily: 'neon-number',
@@ -123,12 +135,12 @@ const Mypage: React.FC = () => {
                 fontSize: '50px',
               }}
             >
-              {decodeUsername}
+              {nickname}
             </div>
           </div>
           <div
             style={{
-              height: '50%',
+              height: '70%',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
@@ -144,7 +156,8 @@ const Mypage: React.FC = () => {
                 width: '50%',
                 textAlign: 'center',
                 alignContent: 'center',
-                margin: '5px',
+                margin: '10px',
+                padding: '10px',
                 backgroundColor: 'black',
                 border: '1px solid white',
                 borderRadius: '5px',
@@ -160,7 +173,8 @@ const Mypage: React.FC = () => {
                 width: '50%',
                 textAlign: 'center',
                 alignContent: 'center',
-                margin: '5px',
+                margin: '10px',
+                padding: '10px',
                 backgroundColor: 'black',
                 border: '1px solid white',
                 borderRadius: '5px',
@@ -176,7 +190,25 @@ const Mypage: React.FC = () => {
                 width: '50%',
                 textAlign: 'center',
                 alignContent: 'center',
-                margin: '5px',
+                margin: '10px',
+                padding: '10px',
+                backgroundColor: 'black',
+                border: '1px solid white',
+                borderRadius: '5px',
+              }}
+              onClick={handleBackClick}
+            >
+              메인페이지로 이동
+            </button>
+            <button
+              style={{
+                color: 'white',
+                height: '50%',
+                width: '50%',
+                textAlign: 'center',
+                alignContent: 'center',
+                margin: '10px',
+                padding: '10px',
                 backgroundColor: 'black',
                 border: '1px solid white',
                 borderRadius: '5px',
@@ -204,7 +236,7 @@ const Mypage: React.FC = () => {
             flexWrap: 'wrap',
           }}
         >
-          {activeTab === 'video' ? <PlayVideo /> : <ModifyProfile />}
+          {activeTab === 'video' ? <PlayVideo videos={videos} /> : <ModifyProfile />}
         </div>
       </div>
     </div>

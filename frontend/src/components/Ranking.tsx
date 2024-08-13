@@ -62,7 +62,6 @@ const RankingPage: React.FC = () => {
   return (
     <div className="ranking-page-container">
       <NavBar />
-      <Carousel3d data={rankings} isRankingPage={true} />
     </div>
   );
 };

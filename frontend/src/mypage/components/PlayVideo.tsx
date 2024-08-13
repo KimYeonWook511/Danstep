@@ -1,59 +1,43 @@
-// PlayVideo.tsx
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import  { jwtDecode,JwtPayload } from 'jwt-decode';
 
-interface CustomJwtPayload extends JwtPayload {
-    username: string;
-  }
 interface VideoData {
   title: string;
   score: number;
-  playedDate: string;
+  resultDate: string;
+  resultInfoId: number;
 }
 
-const PlayVideo: React.FC = () => {
-  const [videos, setVideos] = useState<VideoData[]>([]);
+interface PlayVideoProps {
+  videos: VideoData[];
+}
+
+const PlayVideo: React.FC<PlayVideoProps> = ({ videos }) => {
   const navigate = useNavigate();
-  const [username, setUsername] = useState('');
 
-  useEffect(() => {
-    // axios 요청으로 데이터를 가져오는 부분
-
-    const accessToken = localStorage.getItem('accessToken');
-    const decodedToken = jwtDecode<CustomJwtPayload>(accessToken!);
-    const username = decodedToken.username;
-    console.log(username);
-    setUsername(username);
-    axios.get(`https://i11a406.p.ssafy.io/api/results/${username}`,{
-      headers: {
-          'Authorization': accessToken,
-      }
-  })  // 서버에서 데이터 받아오는 URL
-      .then(response => {
-        setVideos(response.data);
-      })
-      .catch(error => {
-        console.error('데이터를 가져오는 중 오류가 발생했습니다.', error);
-      });
-  }, []);
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear().toString().slice(-2);
+    const month = ('0' + (date.getMonth() + 1)).slice(-2);
+    const day = ('0' + date.getDate()).slice(-2);
+    const hours = ('0' + date.getHours()).slice(-2);
+    const minutes = ('0' + date.getMinutes()).slice(-2);
+    return `${year}/${month}/${day} ${hours}:${minutes}`;
+  };
 
   const handleReplayClick = (videoId: number) => {
-    // Replay 페이지로 이동, videoId를 URL 파라미터로 전달
     navigate(`/replay/${videoId}`);
   };
 
   return (
-    <div style={{ width: '100%', height: '100%' }}>
-      <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', textAlign: 'center' }}>
+    <div style={{ width: '100%', height: '100%', color: 'black' }}>
+      <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', textAlign: 'center', color: 'black' }}>
         <p style={{ width: '25%' }}>제목</p>
         <p style={{ width: '25%' }}>점수</p>
         <p style={{ width: '25%' }}>플레이한 날짜</p>
         <p style={{ width: '25%' }}>다시보기</p>
       </div>
       <hr style={{ marginTop: '10px', marginBottom: '20px' }}></hr>
-      {/* axios로 받아온 데이터를 map을 사용하여 리스트로 렌더링 */}
       {videos.map((video, index) => (
         <div
           key={index}
@@ -63,14 +47,15 @@ const PlayVideo: React.FC = () => {
             justifyContent: 'space-between',
             textAlign: 'center',
             marginBottom: '10px',
+            color: 'black',
           }}
         >
           <p style={{ width: '25%' }}>{video.title}</p>
           <p style={{ width: '25%' }}>{video.score}</p>
-          <p style={{ width: '25%' }}>{video.playedDate}</p>
+          <p style={{ width: '25%' }}>{formatDate(video.resultDate)}</p>
           <button
-            style={{ width: '25%' }}
-            onClick={() => handleReplayClick(index)}  // 클릭 시 handleReplayClick 호출
+            style={{ width: '25%', color: 'black' }}
+            onClick={() => handleReplayClick(video.resultInfoId)}
           >
             다시보기
           </button>
