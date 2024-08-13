@@ -28,7 +28,7 @@ public class UserInfoEntity {
     @Column(nullable = false, columnDefinition = "datetime default now()")
     private Date registDate;
 
-    @Column(length = 200)
+    @Column(length = 400)
     private String refresh;
 
     @Column(nullable = false, length = 20, columnDefinition = "varchar(20) default 'ROLE_USER'")
