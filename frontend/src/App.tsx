@@ -6,6 +6,7 @@ import GamePage from './components/GamePage';
 import './fonts/font.css';
 import mainBgm from './assets/mainbgm.mp3';
 import MyPage from './mypage/components/MyPage';
+import Replay from './mypage/components/Replay'
 
 const MusicPlayer: React.FC = () => {
   const location = useLocation();
@@ -14,7 +15,7 @@ const MusicPlayer: React.FC = () => {
   const [volume, setVolume] = useState(0.5);
   const [showVolumeControl, setShowVolumeControl] = useState(false);
 
-  const musicRoutes = ['/', '/ranking'];
+  const musicRoutes = ['/', '/ranking', '/mypage'];
   const shouldPlayMusic = musicRoutes.includes(location.pathname);
 
   useEffect(() => {
@@ -93,33 +94,6 @@ const MusicPlayer: React.FC = () => {
           onMouseEnter={() => setShowVolumeControl(true)}
           onMouseLeave={() => setShowVolumeControl(false)}
         >
-          {/* {showVolumeControl && (
-            <input
-              type="range"
-              min="0"
-              max="1"
-              step="0.01"
-              value={volume}
-              onChange={(e) => setVolume(parseFloat(e.target.value))}
-              style={{
-                transform: 'rotate(-90deg)',
-                width: '100px',
-                marginBottom: '10px',
-              }}
-            />
-          )}
-          <div 
-            style={{ 
-              backgroundColor: 'white', 
-              padding: '10px', 
-              borderRadius: '50%', 
-              boxShadow: '0px 0px 5px rgba(0, 0, 0, 0.2)', 
-              cursor: 'pointer' 
-            }}
-            onClick={() => setIsMuted(!isMuted)}
-          >
-            {isMuted ? volumeMuteIcon : volumeUpIcon}
-          </div> */}
           {showVolumeControl && (
             <input
               type="range"
@@ -156,15 +130,35 @@ const MusicPlayer: React.FC = () => {
   );
 };
 
+// let isCloseTriggered = false;
+
+// window.addEventListener('beforeunload', (event) => {
+//   isCloseTriggered = true; // 창이 닫힐 때 플래그를 설정
+// });
+
+// window.addEventListener('unload', () => {
+//   if (isCloseTriggered) {
+//     // 창이 실제로 닫힐 때만 localStorage 초기화
+//     localStorage.clear();
+//   }
+// });
+
+// // 페이지가 로드될 때 isCloseTriggered를 초기화
+// window.addEventListener('load', () => {
+//   isCloseTriggered = false;
+// });
+
+
 const App: React.FC = () => {
   return (
     <Router>
       <MusicPlayer />
       <Routes>
-        {/* <Route path="/" element={<MainPage />} />
+        <Route path="/" element={<MainPage />} />
         <Route path="/ranking" element={<Ranking />} />
         <Route path="/game/:id" element={<GamePage />} />
-        <Route path="/mypage" element={<MyPage />} /> */}
+        <Route path="/mypage" element={<MyPage />} />
+        <Route path="/replay/:id" element={<Replay/>}/>
       </Routes>
     </Router>
   );

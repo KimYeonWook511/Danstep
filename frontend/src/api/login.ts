@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { login as loginApi } from '../api/auth';
 
 interface LoginRequest {
@@ -19,12 +20,4 @@ export const login = async (credentials: LoginRequest): Promise<void> => {
     console.error('Login failed:', error);
     throw error; // 필요한 경우 에러를 다시 던질 수 있습니다.
   }
-};
-
-export const logout = (): void => {
-  localStorage.removeItem('accessToken');
-//   localStorage.removeItem('refreshToken');
-
-  // 이후 필요한 로직 추가 (예: 사용자 상태 초기화)
-  console.log('Logged out');
 };

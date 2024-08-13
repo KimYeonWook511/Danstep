@@ -49,17 +49,16 @@
 }
 
 .animated-text {
-  font-size: 70px;
   font-weight: bold;
   animation: grow-shrink 0.2s infinite alternate; /* 0.2초 주기로 65px ~ 70px */
 }
 
 @keyframes grow-shrink {
   0% {
-    font-size: 65px;
+    transform: scale(0.95);
   }
   100% {
-    font-size: 70px;
+    transform: scale(1);
   }
 }
 
@@ -98,10 +97,10 @@
 /*글자가 너무 작아서 숫자는 따로 지정*/
 @keyframes grow-shrink-number {
   0% {
-    font-size: 75px; /* 처음 크기 */
+    transform: scale(0.95); /* 처음 크기 */
   }
   100% {
-    font-size: 80px; /* 커진 크기 */
+    transform: scale(1); /* 커진 크기 */
   }
 }
 
@@ -123,26 +122,26 @@
 }
 
 /* PERFECT 텍스트의 스타일 */
-.animated-text.perfect {
-  color: purple; /* 보라색 */
+.animated-text.grade-now {
+  color: var(--neon-color); /* 보라색 */
   animation:
     grow-shrink 0.2s infinite alternate,
-    neon-glow-purple 0.2s infinite alternate; /* 보라색 네온 효과 */
+    neon-glow-grade 0.2s infinite alternate; /* 보라색 네온 효과 */
 }
 
-@keyframes neon-glow-purple {
+@keyframes neon-glow-grade {
   0% {
     text-shadow:
-      0 0 5px rgba(128, 0, 128, 0.5),
-      /* 보라색 */ 0 0 10px rgba(128, 0, 128, 0.2),
-      /* 보라색 */ 0 0 15px rgba(128, 0, 128, 0.1); /* 보라색 */
+      0 0 5px rgba(var(--neon-color-rgb), 0.5),
+      0 0 10px rgba(var(--neon-color-rgb), 0.2),
+      0 0 15px rgba(var(--neon-color-rgb), 0.1);
     opacity: 0.9; /* 초기 투명도 */
   }
   100% {
     text-shadow:
-      0 0 10px rgba(128, 0, 128, 0.9),
-      /* 보라색 */ 0 0 20px rgba(128, 0, 128, 0.7),
-      /* 보라색 */ 0 0 30px rgba(128, 0, 128, 0.5); /* 보라색 */
+      0 0 10px rgba(var(--neon-color-rgb), 0.9),
+      0 0 20px rgba(var(--neon-color-rgb), 0.7),
+      0 0 30px rgba(var(--neon-color-rgb), 0.5);
     opacity: 1; /* 최대 투명도 */
   }
 }

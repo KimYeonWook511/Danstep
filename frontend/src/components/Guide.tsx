@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import './Guide.css';
-import greenImage from './green-image.png';
-import redImage from './red-image.png';
+import greenImage from '../assets/images/right_case.png';
+import redImage from '../assets/images/wrong_case.png';
 
 interface GuideProps {
     onShowPoseEstimator: () => void;
@@ -14,7 +14,7 @@ const Guide: React.FC<GuideProps> = ({ onShowPoseEstimator }) => {
         setIsVisible(false);
         setTimeout(() => {
             onShowPoseEstimator();
-        }, 500); // Match the duration of the fade-out animation
+        }, 500); // Fade-out 애니메이션의 지속 시간과 일치시킴
     };
 
     return (
@@ -33,7 +33,7 @@ const Guide: React.FC<GuideProps> = ({ onShowPoseEstimator }) => {
                 </div>
                 <button className="play-button" onClick={handleClose}>Play</button>
             </div>
-         </div>
+        </div>
     );
 };
 

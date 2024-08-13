@@ -1,14 +1,59 @@
 import axios from 'axios';
+import {jwtDecode,JwtPayload} from 'jwt-decode';
 
-interface Score {
-    bad: number;
-    good: number;
-    great: number;
-    perfect: number;
-    health: number;
+
+interface ModifyProfileData {
+    currentPassword: string;
+    newPassword: string;
+    // username: string;
+    nickname: string;
 }
 
-export const receiveScores = async (): Promise<Score[]> => {
-    const response = await axios.get('http://localhost:8080/scores');
-    return response.data;
-};
+interface CustomJwtPayload extends JwtPayload {
+    username: string;
+}
+
+
+
+export const getUser = async () =>{
+    const accessToken = localStorage.getItem('accessToken');
+    const decodedToken = jwtDecode<CustomJwtPayload>(accessToken!);
+    const decodeUsername = decodedToken.username; // JWT의 페이로드에서 username 추출
+    try{
+    const response = await axios.get(`https://i11a406.p.ssafy.io/api/v1/users/${decodeUsername}`,{
+        headers:{
+            'Authorization':accessToken,
+            'Content-Type': 'application/json',
+        }});
+    console.log(response.data);
+    }
+    catch(error){
+        console.error('Failed to submit result:', error);
+    }
+
+}
+
+export const modifyProfile = async ({currentPassword, newPassword, nickname}:ModifyProfileData) => {
+    const token = localStorage.getItem('accessToken');
+    const decodedToken = jwtDecode<CustomJwtPayload>(token!);
+    const decodeUsername = decodedToken.username; // JWT의 페이로드에서 username 추출
+
+    const data = {
+        currentPassword,
+        newPassword,
+        // username,
+        nickname
+    }
+    const accessToken = localStorage.getItem('accessToken');
+    try{
+    const response = await axios.patch(`https://i11a406.p.ssafy.io/api/v1/users/${decodeUsername}`, data, {
+        headers:{
+        'Content-Type': 'multipart/form-data',
+        'Authorization' : accessToken,
+      }});
+      console.log(response);
+    }
+    catch (error) {
+        console.error('Failed to submit result:', error);
+      }
+}

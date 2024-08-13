@@ -15,6 +15,7 @@ const Category: React.FC = () => {
           GAME
         </Link>
       </div>
+      
       <div className="category-item">
         <Link to="/ranking" className="category-link ranking-button">
           <span></span>

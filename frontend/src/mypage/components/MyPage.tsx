@@ -1,62 +1,70 @@
 import React, { useEffect, useState } from 'react';
-import { receiveScores } from '../utils/mypageAxios';
-import { Line } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-} from 'chart.js';
-import 'chart.js/auto'; // Ensure Chart.js is registered
-import axios from 'axios';
+import PlayVideo from './PlayVideo';
+import ModifyProfile from './ModifyProfile';
+import LoginForm from '../../components/LoginForm'; // LoginForm 컴포넌트를 임포트
 import './MyPage.css';
+// import { logout } from '../../api/login';
+import { logout } from '../../api/logout';
+import  { jwtDecode,JwtPayload } from 'jwt-decode';
+import { getUser } from '../utils/mypageAxios';
+import { useNavigate } from 'react-router-dom';
+import { HttpStatusCode } from 'axios';
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+interface CustomJwtPayload extends JwtPayload {
+  username: string;
+}
 
-const ChartTest: React.FC = () => {
-  const [data, setData] = useState<any>(null);
-  const [chartData, setChartData] = useState<any>(null);
+const Mypage: React.FC = () => {
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState<'video' | 'profile'>('video');
+  const [showLogin, setShowLogin] = useState(false);
+  const [decodeUsername, setDecodeUsername] = useState<string | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const result = await receiveScores();
-        setData(result);
-        console.log(result);
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      const decodedToken = jwtDecode<CustomJwtPayload>(token);
+      setDecodeUsername(decodedToken.username);
+    } else {
+      setShowLogin(true); // 토큰이 없으면 로그인 폼을 표시
+    }
+  }, []); // 빈 배열을 전달하여 컴포넌트가 처음 마운트될 때만 실행되도록 함
 
-        // Extracting health values and creating labels
-        const labels = result.map((item: any, index: number) => `Point ${index + 1}`);
-        const values = result.map((item: any) => item.health);
+  const handleLogout = async () => {
+    if (await logout() === HttpStatusCode.Ok) {
+      // 로그아웃 후 추가적인 동작이 필요한 경우 여기서 처리할 수 있습니다.
+      setDecodeUsername(null); // 로그아웃 시 decodeUsername 초기화
+      // setShowLogin(true); // 로그아웃 시 로그인 폼을 다시 표시
+      navigate("/");
+    }
+  };
 
-        setChartData({
-          labels: labels,
-          datasets: [
-            {
-              label: 'Health Scores',
-              data: values,
-              borderColor: 'rgba(75, 192, 192, 1)',
-              backgroundColor: 'rgba(75, 192, 192, 0.2)',
-              fill: true,
-            },
-          ],
-        });
-      } catch (error) {
-        console.error('Error fetching data: ', error);
-      }
-    };
+  const handleCloseLoginForm = () => {
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      const decodedToken = jwtDecode<CustomJwtPayload>(token);
+      setDecodeUsername(decodedToken.username);
+    }
+    setShowLogin(false); // 로그인 폼 닫기
+    setIsLoggedIn(true);
+  };
 
-    fetchData();
-  }, []);
+  const handleTabChange = (tab: 'video' | 'profile') => {
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      setActiveTab(tab);
+    } else {
+      setShowLogin(true); // 토큰이 없으면 로그인 폼을 표시
+    }
+  };
+
+  if (showLogin) {
+    return <LoginForm onClose={handleCloseLoginForm} onLogin={handleCloseLoginForm} />; // 로그인 폼을 표시하고 onClose prop 전달
+  }
 
   return (
     <div style={{ display: 'flex', width: '1200px', height: '600px' }}>
-      {/* {data ? <p>Data received: {JSON.stringify(data)}</p> : <p>Loading data...</p>} */}
-      {chartData && <Line data={chartData} />}
-
       <div
         className='red-neon red'
         style={{
@@ -115,7 +123,7 @@ const ChartTest: React.FC = () => {
                 fontSize: '50px',
               }}
             >
-              user_132
+              {decodeUsername}
             </div>
           </div>
           <div
@@ -129,7 +137,7 @@ const ChartTest: React.FC = () => {
               color: 'white',
             }}
           >
-            <div
+            <button
               style={{
                 color: 'white',
                 height: '50%',
@@ -137,11 +145,15 @@ const ChartTest: React.FC = () => {
                 textAlign: 'center',
                 alignContent: 'center',
                 margin: '5px',
+                backgroundColor: 'black',
+                border: '1px solid white',
+                borderRadius: '5px',
               }}
+              onClick={() => handleTabChange('video')}
             >
               플레이 영상
-            </div>
-            <div
+            </button>
+            <button
               style={{
                 color: 'white',
                 height: '50%',
@@ -149,12 +161,15 @@ const ChartTest: React.FC = () => {
                 textAlign: 'center',
                 alignContent: 'center',
                 margin: '5px',
+                backgroundColor: 'black',
+                border: '1px solid white',
+                borderRadius: '5px',
               }}
+              onClick={() => handleTabChange('profile')}
             >
               프로필 수정
-            </div>
-
-            <div
+            </button>
+            <button
               style={{
                 color: 'white',
                 height: '50%',
@@ -162,12 +177,17 @@ const ChartTest: React.FC = () => {
                 textAlign: 'center',
                 alignContent: 'center',
                 margin: '5px',
+                backgroundColor: 'black',
+                border: '1px solid white',
+                borderRadius: '5px',
               }}
+              onClick={handleLogout}
             >
               로그아웃
-            </div>
+            </button>
           </div>
         </div>
+
         <div
           className='white-neon'
           style={{
@@ -184,301 +204,11 @@ const ChartTest: React.FC = () => {
             flexWrap: 'wrap',
           }}
         >
-          <div style={{ width: '100%', height: '100%' }}>
-            {/* <select>
-              <option>최근 플레이</option>
-              <option>티라미수케잌</option>
-              <option>슈퍼노바</option>
-              <option>알파노바</option>
-              <option>베타노바</option>
-            </select>
-            <hr style={{ marginTop: '10px', marginBottom: '10px' }}></hr>
-            <div
-              style={{
-                width: '100%',
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-              }}
-            >
-              <div
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  padding: '10px',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <video
-                  src='background.mp4'
-                  style={{
-                    width: '30%',
-                    height: '100%',
-                    backgroundColor: 'gray',
-                    borderRadius: '15%',
-                  }}
-                ></video>
-                <video
-                  src='background.mp4'
-                  style={{
-                    width: '30%',
-                    height: '100%',
-                    backgroundColor: 'gray',
-                    borderRadius: '15%',
-                  }}
-                ></video>
-                <video
-                  src='background.mp4'
-                  style={{
-                    width: '30%',
-                    height: '100%',
-                    backgroundColor: 'gray',
-                    borderRadius: '15%',
-                  }}
-                ></video>
-              </div>
-              <div
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  padding: '10px',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <video
-                  src='background.mp4'
-                  style={{
-                    width: '30%',
-                    height: '100%',
-                    backgroundColor: 'gray',
-                    borderRadius: '15%',
-                  }}
-                ></video>
-                <video
-                  src='background.mp4'
-                  style={{
-                    width: '30%',
-                    height: '100%',
-                    backgroundColor: 'gray',
-                    borderRadius: '15%',
-                  }}
-                ></video>
-                <video
-                  src='background.mp4'
-                  style={{
-                    width: '30%',
-                    height: '100%',
-                    backgroundColor: 'gray',
-                    borderRadius: '15%',
-                  }}
-                ></video>
-              </div>
-              <div
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  padding: '10px',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <video
-                  src='background.mp4'
-                  style={{
-                    width: '30%',
-                    height: '100%',
-                    backgroundColor: 'gray',
-                    borderRadius: '15%',
-                  }}
-                ></video>
-                <video
-                  src='background.mp4'
-                  style={{
-                    width: '30%',
-                    height: '100%',
-                    backgroundColor: 'gray',
-                    borderRadius: '15%',
-                  }}
-                ></video>
-                <video
-                  src='background.mp4'
-                  style={{
-                    width: '30%',
-                    height: '100%',
-                    backgroundColor: 'gray',
-                    borderRadius: '15%',
-                  }}
-                ></video>
-              </div>
-            </div> */}
-            <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', textAlign: 'center' }}>
-              <p style={{ width: '25%' }}>제목</p>
-              <p style={{ width: '25%' }}>점수</p>
-              <p style={{ width: '25%' }}>플레이한 날짜</p>
-              <button style={{ width: '25%' }}>다운로드</button>
-            </div>
-            <hr style={{ marginTop: '10px', marginBottom: '20px' }}></hr>
-            <div
-              style={{
-                width: '100%',
-                display: 'flex',
-                justifyContent: 'space-between',
-                textAlign: 'center',
-                marginBottom: '10px',
-              }}
-            >
-              <p style={{ width: '25%' }}>와 랭킹 1위</p>
-              <p style={{ width: '25%' }}>99</p>
-              <p style={{ width: '25%' }}>2024/08/09</p>
-              <button style={{ width: '25%' }}>다운로드</button>
-            </div>
-            <div
-              style={{
-                width: '100%',
-                display: 'flex',
-                justifyContent: 'space-between',
-                textAlign: 'center',
-                marginBottom: '10px',
-              }}
-            >
-              <p style={{ width: '25%' }}>와 랭킹 1위</p>
-              <p style={{ width: '25%' }}>99</p>
-              <p style={{ width: '25%' }}>2024/08/09</p>
-              <button style={{ width: '25%' }}>다운로드</button>
-            </div>
-            <div
-              style={{
-                width: '100%',
-                display: 'flex',
-                justifyContent: 'space-between',
-                textAlign: 'center',
-                marginBottom: '10px',
-              }}
-            >
-              <p style={{ width: '25%' }}>와 랭킹 1위</p>
-              <p style={{ width: '25%' }}>99</p>
-              <p style={{ width: '25%' }}>2024/08/09</p>
-              <button style={{ width: '25%' }}>다운로드</button>
-            </div>
-            <div
-              style={{
-                width: '100%',
-                display: 'flex',
-                justifyContent: 'space-between',
-                textAlign: 'center',
-                marginBottom: '10px',
-              }}
-            >
-              <p style={{ width: '25%' }}>와 랭킹 1위</p>
-              <p style={{ width: '25%' }}>99</p>
-              <p style={{ width: '25%' }}>2024/08/09</p>
-              <button style={{ width: '25%' }}>다운로드</button>
-            </div>
-            <div
-              style={{
-                width: '100%',
-                display: 'flex',
-                justifyContent: 'space-between',
-                textAlign: 'center',
-                marginBottom: '10px',
-              }}
-            >
-              <p style={{ width: '25%' }}>와 랭킹 1위</p>
-              <p style={{ width: '25%' }}>99</p>
-              <p style={{ width: '25%' }}>2024/08/09</p>
-              <button style={{ width: '25%' }}>다운로드</button>
-            </div>
-            <div
-              style={{
-                width: '100%',
-                display: 'flex',
-                justifyContent: 'space-between',
-                textAlign: 'center',
-                marginBottom: '10px',
-              }}
-            >
-              <p style={{ width: '25%' }}>와 랭킹 1위</p>
-              <p style={{ width: '25%' }}>99</p>
-              <p style={{ width: '25%' }}>2024/08/09</p>
-              <button style={{ width: '25%' }}>다운로드</button>
-            </div>
-            <div
-              style={{
-                width: '100%',
-                display: 'flex',
-                justifyContent: 'space-between',
-                textAlign: 'center',
-                marginBottom: '10px',
-              }}
-            >
-              <p style={{ width: '25%' }}>와 랭킹 1위</p>
-              <p style={{ width: '25%' }}>99</p>
-              <p style={{ width: '25%' }}>2024/08/09</p>
-              <button style={{ width: '25%' }}>다운로드</button>
-            </div>
-            <div
-              style={{
-                width: '100%',
-                display: 'flex',
-                justifyContent: 'space-between',
-                textAlign: 'center',
-                marginBottom: '10px',
-              }}
-            >
-              <p style={{ width: '25%' }}>와 랭킹 1위</p>
-              <p style={{ width: '25%' }}>99</p>
-              <p style={{ width: '25%' }}>2024/08/09</p>
-              <button style={{ width: '25%' }}>다운로드</button>
-            </div>
-            <div
-              style={{
-                width: '100%',
-                display: 'flex',
-                justifyContent: 'space-between',
-                textAlign: 'center',
-                marginBottom: '10px',
-              }}
-            >
-              <p style={{ width: '25%' }}>와 랭킹 1위</p>
-              <p style={{ width: '25%' }}>99</p>
-              <p style={{ width: '25%' }}>2024/08/09</p>
-              <button style={{ width: '25%' }}>다운로드</button>
-            </div>
-            <div
-              style={{
-                width: '100%',
-                display: 'flex',
-                justifyContent: 'space-between',
-                textAlign: 'center',
-                marginBottom: '10px',
-              }}
-            >
-              <p style={{ width: '25%' }}>와 랭킹 1위</p>
-              <p style={{ width: '25%' }}>99</p>
-              <p style={{ width: '25%' }}>2024/08/09</p>
-              <button style={{ width: '25%' }}>다운로드</button>
-            </div>
-          </div>
+          {activeTab === 'video' ? <PlayVideo /> : <ModifyProfile />}
         </div>
       </div>
-      {/* <button
-        onClick={async () => {
-          console.log('실행');
-
-          try {
-            const response = await axios.get('https://i11a406.p.ssafy.io/api/v1/games/1');
-            console.log(response);
-          } catch (error) {
-            console.log(error);
-          }
-        }}
-      >
-        버어튼
-      </button> */}
     </div>
   );
 };
 
-export default ChartTest;
+export default Mypage;

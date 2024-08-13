@@ -1,10 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import LoginForm from './LoginForm';
 import SignUpModal from './SignUpModal';
 import './Menu.css';
 import './ProfileIcon.css'
 
-const Menu: React.FC = () => {
+interface MenuProps {
+  isLoggedIn: boolean;
+  onLogout: () => void;
+  onLogin: () => void;
+}
+
+const Menu: React.FC<MenuProps> = ({ isLoggedIn, onLogout, onLogin }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showLoginForm, setShowLoginForm] = useState<boolean>(false);
   const [showSignUpModal, setShowSignUpModal] = useState<boolean>(false);
@@ -45,33 +52,57 @@ const Menu: React.FC = () => {
         </a>
       </div>
 
-      <ul className={`dropdown-list ${isOpen ? 'opened' : ''}`}>
-        <li onClick={() => {
-          setShowLoginForm(true);
-          closeMenu(); // 메뉴 닫기
-        }}>
-          <span className="lnr lnr-login"></span> 로그인
-        </li>        
-        
-        <li onClick={() => {
-          setShowSignUpModal(true);
-          closeMenu(); // 메뉴 닫기
-        }}>
-          <span className="lnr lnr-signup"></span> 회원가입
-        </li>
+      {isOpen && ( // 조건부 렌더링 적용: isOpen이 true일 때만 메뉴바 렌더링
+        <ul className={`dropdown-list ${isOpen ? 'opened' : ''}`}>
+          {isLoggedIn ? (
+            <>
+              <Link to="/mypage" onClick={closeMenu}>
+                <li>
+                  <span className="lnr lnr-mypage"></span> 마이페이지
+                </li>
+              </Link>
 
-        <li><span className="lnr lnr-mypage"></span>마이페이지</li>
-      </ul>    
+              <li
+                onClick={() => {
+                  onLogout();
+                  closeMenu();
+                }}
+              >
+                <span className="lnr lnr-exit"></span> 로그아웃
+              </li>
+            </>
+          ) : (
+            <>
+              <li
+                onClick={() => {
+                  setShowLoginForm(true);
+                  closeMenu(); 
+                }}
+              >
+                <span className="lnr lnr-login"></span> 로그인
+              </li>
 
-    {showLoginForm && (
-        <LoginForm onClose={() => setShowLoginForm(false)} />
+              <li
+                onClick={() => {
+                  setShowSignUpModal(true);
+                  closeMenu(); 
+                }}
+              >
+                <span className="lnr lnr-signup"></span> 회원가입
+              </li>
+            </>
+          )}
+        </ul>
+      )}
+
+      {showLoginForm && (
+        <LoginForm onClose={() => setShowLoginForm(false)} onLogin={onLogin} />
       )}
 
       {showSignUpModal && (
         <SignUpModal onClose={() => setShowSignUpModal(false)} />
       )}
     </div>
-
   );
 };
 
