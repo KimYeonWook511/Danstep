@@ -70,17 +70,17 @@ public class ReissueController {
         //DB에 저장되어 있는지 확인
         String username = jwtUtil.getUsername(refresh);
         String role = jwtUtil.getRole(refresh);
+        String nickname = jwtUtil.getNickname(refresh);
         Boolean isExist = existsRefresh(username, refresh);
 
         if (!isExist) {
-
             //response body
             return new ResponseEntity<>("invalid refresh token", HttpStatus.BAD_REQUEST);
         }
 
         //make new JWT
-        String newAccess = jwtUtil.createJwt("access", username, role, 600000L);
-        String newRefresh = jwtUtil.createJwt("refresh", username, role, 86400000L);
+        String newAccess = jwtUtil.createJwt("access", username, nickname, role, 600000L);
+        String newRefresh = jwtUtil.createJwt("refresh", username, nickname, role, 86400000L);
 
         //Refresh 토큰 저장 DB에 기존의 Refresh 토큰 삭제 후 새 Refresh 토큰 저장
         reissueRefresh(username, newRefresh);

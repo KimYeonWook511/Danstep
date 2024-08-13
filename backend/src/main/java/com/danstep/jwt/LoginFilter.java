@@ -1,5 +1,6 @@
 package com.danstep.jwt;
 
+import com.danstep.user.model.dto.CustomUserDetails;
 import com.danstep.user.model.mapper.RefreshMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletRequest;
@@ -35,6 +36,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         this.refreshMapper = refreshMapper;
     }
 
+    // 인증
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
 
@@ -54,7 +56,10 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) {
 
         //유저 정보
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal(); // CustomUserDetails로 캐스팅
         String username = authentication.getName();
+//        String username = userDetails.getUsername();
+        String nickname = userDetails.getUsername();
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
@@ -62,8 +67,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String role = auth.getAuthority();
 
         //토큰 생성
-        String access = jwtUtil.createJwt("access", username, role, 600000L);
-        String refresh = jwtUtil.createJwt("refresh", username, role, 86400000L);
+        String access = jwtUtil.createJwt("access", username, nickname, role, 600000L);
+        String refresh = jwtUtil.createJwt("refresh", username, nickname, role, 86400000L);
 
         //Refresh 토큰 저장
         addRefresh(username, refresh);
