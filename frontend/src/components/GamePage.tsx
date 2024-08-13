@@ -121,7 +121,7 @@ const GamePage: React.FC = () => {
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
-      // audioRef.current.remove();
+      audioRef.current.remove();
     }
   };
 

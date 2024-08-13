@@ -3,7 +3,7 @@
 :root {
   /* 배경색을 투명하게 설정 */
   --bg: rgba(5, 8, 1); 
-  --clr: #fff200;
+  --clr: #95f9fe;
 }
 
 .yellow-profile-button {

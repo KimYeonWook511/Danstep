@@ -86,6 +86,7 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
   const [countdown, setCountdown] = useState<number | null>(null);
   const [showComboEffect, setShowComboEffect] = useState<boolean>(false);
   const beepSoundRef = useRef<HTMLAudioElement | null>(null);
+  const timerIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const keypointsJson = useRef([]);
   const idx = useRef(-1);
@@ -93,6 +94,7 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
   const detector = useRef<PoseDetector>();
   const camdetector = useRef<PoseDetector>();
   const checkdetector = useRef<PoseDetector>();
+  const animationFrameRef = useRef<number | null>(null);
 
   const camKeypoints = useRef<Object[]>([]);
 
@@ -105,7 +107,19 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
   const stopDetection = () => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
+      intervalRef.current = null;
     }
+    if (animationFrameRef.current !== null) {
+      cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = null;
+    }
+  };
+
+  const releaseDetectors = () => {
+    console.log('releaseDetectors => detector 전부 꺼버려~~~~');
+    detector.current = undefined;
+    camdetector.current = undefined;
+    checkdetector.current = undefined;
   };
 
   const resetState = () => {
@@ -153,171 +167,143 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
   };
 
   useEffect(() => {
+    if (!state) {
+      // 상태가 false로 바뀔 때 초기화 수행
+      resetResource(1);
+    }
+  }, [state]);
+
+  useEffect(() => {
     const handleVisibilityChange = () => {
-      if (document.hidden) {
-        setState(false);
-        stopDetection();
-      } else {
-        resetState();
-        init();
+      if (!isFinished && document.hidden) {
+        resetResource(1);
       }
     };
 
-    
-
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
+    // Clean up the event listener on unmount
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, []);
+  }, [isFinished]);
 
   const init = async () => {
-    await tf.setBackend('webgl');
-    await tf.ready();
+    try {
+      await tf.setBackend('webgl');
+      await tf.ready();
 
-    const camera = await setupCamera();
-    const video = await setupVideo();
+      const camera = await setupCamera();
+      const video = await setupVideo();
 
-    await fetchKeypoints();
+      await fetchKeypoints();
 
-    beepSoundRef.current = new Audio('/countdown.mp3');
+      beepSoundRef.current = new Audio('/countdown.mp3');
 
-    if (video) {
-      const modelConfig = {
-        runtime: 'mediapipe',
-        modelType: 'full',
-        solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/pose/',
-        render3D: true,
-      };
+      if (video) {
+        const modelConfig = {
+          runtime: 'mediapipe',
+          modelType: 'full',
+          solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/pose/',
+          render3D: true,
+        };
 
-      detector.current = await createDetector(SupportedModels.BlazePose, modelConfig);
-      camdetector.current = await createDetector(SupportedModels.BlazePose, modelConfig);
-      checkdetector.current = await createDetector(SupportedModels.BlazePose, modelConfig);
+        detector.current = await createDetector(SupportedModels.BlazePose, modelConfig);
+        camdetector.current = await createDetector(SupportedModels.BlazePose, modelConfig);
+        checkdetector.current = await createDetector(SupportedModels.BlazePose, modelConfig);
 
-      // if(camera && video && detector.current && camdetector.current && checkdetector.current){
-      //   setState(true);
-      // }
-      // 첫 프레임 가져오기
-      await detectFirstFrame(keypointsJson.current[0], firstFrameY);
+        if (!detector.current || !camdetector.current || !checkdetector.current) {
+          throw new Error('포즈 감지 초기화에 실패했습니다.');
+        }
 
-      // 시작 동작 검사 (만세)
-      console.log('동작 검사 시작');
-      intervalRef.current = setInterval(async () => await checkDetect(), 50);
+        // 첫 프레임 가져오기
+        await detectFirstFrame(keypointsJson.current[0], firstFrameY);
+
+        // 시작 동작 검사 (만세)
+        console.log('동작 검사 시작');
+        intervalRef.current = setInterval(async () => await checkDetect(), 50);
+      }
+    } catch (error) {
+      console.error('init 함수에서 오류 발생:', error);
     }
   };
 
   const checkDetect = async () => {
-    if (isCheckEnd.current) return;
+    try {
+      if (isCheckEnd.current) return;
 
-    isYAligned.current = false;
-    // setYAlignedState(false);
-
-    const checkKeypoints = await checkdetectPose(checkdetector.current!);
-    yAligned.current = await checkInitialYAlignment(camdetector.current!, camRef, firstFrameY);
-
-    if (checkKeypoints && checkKeypoints.length > 0) {
-      iskeypoint.current = keypointsDetected(checkKeypoints!, requiredKeypointsIndices);
-
-      if (iskeypoint.current) {
-        // 프레임 안에 모든 키포인트가 다 들어가 있는지 체크
-        if (yAligned.current > -0.5 && yAligned.current < 0.5) {
-          // console.log('프레임이 초록색일 때 머리 위로 동그라미를 만들면 게임이 시작됩니다.');
-          isYAligned.current = true;
-          // setYAlignedState(true);
-          setAlignmentMessage('Hands Up');
-        } else {
-          if (yAligned.current < -0.5) {
-            setAlignmentMessage('Go Back');
-            // console.log('카메라에서 멀어지세요');
-          }
-          if (yAligned.current > 0.5) {
-            setAlignmentMessage('Go front');
-            // console.log('카메라로 가까이 오세요');
-          }
-        }
-
-        if (isYAligned.current) {
-          // 영상의 비율과 나의 비율이 맞는지 체크
-
-          if (isArmsUp(checkKeypoints)) {
-            // 손 들었는지 체크
-            setDetectedArmsUp(true);
-            console.log('타이머 시작');
-            clearInterval(intervalRef.current!);
-            isCheckEnd.current = true;
-            startTimer();
-            return;
-          }
-
-          return;
-        }
-
+      if (!checkdetector.current) {
+        console.error('checkDetector가 아직 초기화되지 않았습니다.');
         return;
       }
-      setAlignmentMessage('inside Frame');
-      // console.log('몸 전체가 프레임 안에 들어오도록 해주세요');
-      return;
-    }
 
-    // console.log('인식이 안 되고 있는 거 같아요');
+      isYAligned.current = false;
+
+      const checkKeypoints = await checkdetectPose(checkdetector.current);
+      yAligned.current = await checkInitialYAlignment(camdetector.current!, camRef, firstFrameY);
+
+      if (checkKeypoints && checkKeypoints.length > 0) {
+        iskeypoint.current = keypointsDetected(checkKeypoints, requiredKeypointsIndices);
+
+        if (iskeypoint) {
+          if (yAligned.current > -0.5 && yAligned.current < 0.5) {
+            console.log('프레임이 초록색일 때 머리 위로 동그라미를 만들면 게임이 시작됩니다.');
+            isYAligned.current = true;
+            setAlignmentMessage('Hands Up');
+          } else {
+            setAlignmentMessage(yAligned.current < -0.5 ? 'Go Back' : 'Go front');
+            console.log(yAligned.current < -0.5 ? '카메라에서 멀어지세요' : '카메라로 가까이 오세요');
+          }
+
+          if (isYAligned.current && isArmsUp(checkKeypoints)) {
+            setDetectedArmsUp(true);
+            console.log('타이머 시작');
+            clearInterval(intervalRef.current);
+            isCheckEnd.current = true;
+            startTimer();
+          }
+        } else {
+          setAlignmentMessage('inside Frame');
+          console.log('몸 전체가 프레임 안에 들어오도록 해주세요');
+        }
+      } else {
+        console.log('인식이 안 되고 있는 것 같습니다.');
+      }
+    } catch (error) {
+      console.error('checkDetect 함수에서 오류 발생:', error);
+    }
   };
 
-  const startTimer = () => {
-    let startTime = Date.now();
-    setCountdown(3);
-
-    // return new Promise<void>((resolve) => {
-    //   const tick = () => {
-    //     const nowTime = Date.now();
-    //     const elapsedTime = nowTime - startTime;
-    //     const secondsLeft = 4 - Math.floor(elapsedTime / 1000);
-
-    //     if (secondsLeft > 0) {
-    //       setCountdown(secondsLeft);
-    //       console.log('\n' + countdown + '\n');
-    //       // 포즈 감지 수행
-    //       camdetectPose(detector.current!);
-
-    //       // 다음 프레임 요청
-    //       requestAnimationFrame(tick);
-    //     } else {
-    //       setCountdown(null);
-    //       setShowComboEffect(true);
-    //       intervalRef.current = setInterval(async () => await camDetect(), 50);
-    //       resolve();
-    //     }
-    //   };
-
-    //   tick(); // 첫 프레임 시작
-    // });
+  const startTimer = (): Promise<void> => {
     return new Promise<void>((resolve) => {
-      const tick = () => {
-        const nowTime = Date.now();
-        const elapsedTime = nowTime - startTime;
-        const secondsLeft = 3 - Math.floor(elapsedTime / 1000);
+      setCountdown(4); //출력 값
 
-        if (secondsLeft > 0) {
-          setCountdown(secondsLeft);
-          console.log('\n' + countdown + '\n');
-          // 포즈 감지 수행 (빨강이)
-          camdetectPose(detector.current!);
+      let countdown = 4; // 카운트다운 시작 값
+      let intervalCount = 0; // 50ms마다 증가할 카운트
+      const interval = 20; // 20번 50ms를 더하면 1초
 
-          // 초록이
-          drawJson(keypointsJson.current[0], 0);
+      timerIntervalRef.current = setInterval(() => {
+        camdetectPose(detector.current!, false); // 포즈 감지 수행 (빨강이)
+        drawJson(keypointsJson.current[0], 0); // 초록이
 
-          // 다음 프레임 요청
-          requestAnimationFrame(tick);
-          console.log('requestAnimationFrame');
-        } else {
+        intervalCount++;
+
+        if (intervalCount === interval) {
+          // 1초가 지나면 카운트다운 감소
+          intervalCount = 0;
+          countdown--;
+          setCountdown(countdown);
+          playBeep(); // 비프음 재생
+        }
+
+        if (countdown <= 0) {
+          clearInterval(timerIntervalRef.current!); // 인터벌 종료
           setCountdown(null);
           setShowComboEffect(true);
           intervalRef.current = setInterval(async () => await camDetect(), 50);
           resolve();
         }
-      };
-
-      tick(); // 첫 프레임 시작
+      }, 50); // 50ms마다 실행
     });
   };
 
@@ -341,7 +327,7 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
     }
 
     const posesKeypoints = drawJson(keypointsJson.current[++idx.current], 1);
-    const camKeypoints = await camdetectPose(camdetector.current!);
+    const camKeypoints = await camdetectPose(camdetector.current!, true);
 
     setScores((prevScores) => {
       const newScores = [...prevScores];
@@ -378,33 +364,40 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
   };
 
   const setupVideo = async () => {
-    if (videoRef.current) {
-      videoRef.current.src = game.audioUrl; // 비디오 파일 경로를 설정하세요.
-      return new Promise<HTMLVideoElement>((resolve) => {
-        videoRef.current!.onloadedmetadata = () => {
-          // videoRef.current!.play();
-          videoRef.current!.pause(); // 이거 안 넣어도 되지 않나??
-          resolve(videoRef.current!);
-        };
-      });
+    try {
+      if (videoRef.current) {
+        videoRef.current.src = game.audioUrl;
+
+        return new Promise<HTMLVideoElement>((resolve) => {
+          videoRef.current!.onloadedmetadata = () => {
+            videoRef.current!.pause();
+            resolve(videoRef.current!);
+          };
+        });
+      }
+    } catch (error) {
+      console.error('비디오 설정 중 오류 발생:', error);
+      return null;
     }
-    return null;
   };
 
   const setupCamera = async () => {
-    if (camRef.current) {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      camRef.current.srcObject = stream;
+    try {
+      if (camRef.current) {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        camRef.current.srcObject = stream;
 
-      return new Promise<HTMLVideoElement>((resolve) => {
-        camRef.current!.onloadedmetadata = () => {
-          camRef.current!.play();
-          resolve(camRef.current!);
-        };
-      });
+        return new Promise<HTMLVideoElement>((resolve) => {
+          camRef.current!.onloadedmetadata = () => {
+            camRef.current!.play();
+            resolve(camRef.current!);
+          };
+        });
+      }
+    } catch (error) {
+      console.error('카메라 설정 중 오류 발생:', error);
+      return null;
     }
-
-    return null;
   };
 
   const drawJson = (keypoints: Keypoint[], status: number) => {
@@ -424,29 +417,44 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
     }
   };
 
-  const camdetectPose = async (detector: PoseDetector) => {
-    if (videoRef.current && camRef.current && camcanvasRef.current) {
-      const ctx = camcanvasRef.current.getContext('2d');
+  const camdetectPose = async (detector: PoseDetector, isPush: boolean) => {
+    try {
+      if (!detector) {
+        console.log('감지기가 초기화되지 않았습니다.');
+        return;
+      }
 
-      //if (videoRef.current.paused || videoRef.current.ended) return;
+      if (camRef.current && camcanvasRef.current) {
+        const ctx = camcanvasRef.current.getContext('2d');
 
-      if (ctx) {
-        ctx.clearRect(0, 0, camcanvasRef.current.width, camcanvasRef.current.height);
-        camcanvasRef.current.width = camRef.current.videoWidth;
-        camcanvasRef.current.height = camRef.current.videoHeight;
+        if (ctx) {
+          ctx.clearRect(0, 0, camcanvasRef.current.width, camcanvasRef.current.height);
+          camcanvasRef.current.width = camRef.current.videoWidth;
+          camcanvasRef.current.height = camRef.current.videoHeight;
 
-        const camposes = await detector.estimatePoses(camRef.current);
-        if (camposes.length > 0) {
-          camKeypoints.current.push(camposes[0].keypoints);
-          drawRed(ctx, camposes[0].keypoints);
-          drawHandFoot(ctx, camposes[0].keypoints);
-          return camposes[0].keypoints;
+          const camposes = await detector.estimatePoses(camRef.current);
+          if (camposes.length > 0) {
+            if (isPush) {
+              camKeypoints.current.push(camposes[0].keypoints);
+            }
+
+            drawRed(ctx, camposes[0].keypoints);
+            drawHandFoot(ctx, camposes[0].keypoints);
+            return camposes[0].keypoints;
+          }
         }
       }
+    } catch (error) {
+      console.error('camdetectPose 함수에서 오류 발생:', error);
     }
   };
 
   const checkdetectPose = async (detector: PoseDetector) => {
+    if (!detector) {
+      console.log('아직 포즈감지 초기화 안됨');
+      return;
+    }
+
     if (camRef.current && camcanvasRef.current) {
       setState(true);
       const ctx = camcanvasRef.current.getContext('2d');
@@ -499,25 +507,15 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
   };
 
   useEffect(() => {
-    init();
+    const initialize = async () => {
+      await init(); // 비동기 함수 호출
+    };
+
+    initialize(); // 비동기 함수 호출
   }, [game.id]);
 
-  useEffect(() => {
-    if (countdown === 0) {
-      setCountdown(null);
-    } else {
-      playBeep();
-    }
-  }, [countdown]);
-
-  useEffect(() => {
-    if (detectedArmsUp) {
-      pauseAudio(); // detectedArmsUp이 true일 때 오디오 멈추기
-    }
-  }, [detectedArmsUp, pauseAudio]);
-
-  // const handleRestart = () => {
-  const resetResource = (status: number) => {
+  // const handleRestart = async () => {
+  const resetResource = async (status: number) => {
     // 초록색 스켈레톤이 그려져 있는 캔버스를 초기화합니다.
     if (canvasRef.current) {
       const ctx = canvasRef.current.getContext('2d');
@@ -533,7 +531,7 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
         ctx.clearRect(0, 0, camcanvasRef.current.width, camcanvasRef.current.height); // 캔버스 초기화
       }
     }
-    
+
     // 카메라 스트림을 정지시키는 로직 추가
     if (camRef.current && camRef.current.srcObject) {
       const stream = camRef.current.srcObject as MediaStream;
@@ -541,7 +539,7 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
       tracks.forEach((track) => track.stop()); // 모든 트랙을 정지
       camRef.current.srcObject = null; // 참조를 제거하여 메모리 누수 방지
     }
-    
+
     // 카메라 스트림을 정지시키는 로직 추가
     if (videoRef.current && videoRef.current.srcObject) {
       const stream = videoRef.current.srcObject as MediaStream;
@@ -560,16 +558,20 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
     if (checkdetector.current) {
       checkdetector.current = undefined;
     }
-  
+
     if (intervalRef.current) {
       clearInterval(intervalRef.current); // setInterval로 반복 작업이 실행된 경우 정지
       intervalRef.current = null;
     }
-    
+    if (timerIntervalRef.current) {
+      clearInterval(timerIntervalRef.current);
+      timerIntervalRef.current = null;
+    }
+
     // 상태를 초기화합니다.
     // setYAlignedState(false);
     setCountdown(null);
-    setShowPoseEstimator(false)
+    setShowPoseEstimator(false);
     setAlignmentMessage('');
     setShowComboEffect(false);
     setState(false);
@@ -596,12 +598,60 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
     camKeypoints.current = [];
     pauseAudio();
 
-    if (status === 1) { // handleRestart
+    if (status === 1) {
+      // handleRestart
       resumeAudio();
-      init();
+      await init();
     }
     if (status === 2) navigate('/'); // moveMainpage
   };
+
+  // const moveMainpage = () => {
+  //   // 상태를 초기화합니다.
+  //   // setYAlignedState(false);
+  //   setAlignmentMessage('');
+  //   setShowComboEffect(false);
+  //   setState(false);
+  //   setDetectedArmsUp(false);
+  //   setScores([]);
+  //   isYAligned.current = false;
+  //   isCheckEnd.current = false;
+  //   firstFrameY.current = [];
+  //   idx.current = -1;
+  //   health.current = 100;
+  //   bad.current = 0;
+  //   good.current = 0;
+  //   great.current = 0;
+  //   perfect.current = 0;
+  //   combo.current = 0;
+  //   maxCombo.current = 0;
+
+  //   // 카메라 스트림을 정지시키는 로직 추가
+  //   if (camRef.current && camRef.current.srcObject) {
+  //     const stream = camRef.current.srcObject as MediaStream;
+  //     const tracks = stream.getTracks();
+  //     tracks.forEach((track) => track.stop()); // 모든 트랙을 정지
+  //     camRef.current.srcObject = null; // 참조를 제거하여 메모리 누수 방지
+  //   }
+
+  //   // 카메라 스트림을 정지시키는 로직 추가
+  //   if (videoRef.current && videoRef.current.srcObject) {
+  //     const stream = videoRef.current.srcObject as MediaStream;
+  //     const tracks = stream.getTracks();
+  //     tracks.forEach((track) => track.stop()); // 모든 트랙을 정지
+  //     videoRef.current.srcObject = null; // 참조를 제거하여 메모리 누수 방지
+  //   }
+
+  //   // 인식 로직 정지
+  //   stopDetection();
+  //   releaseDetectors();
+
+  //   if (status === 1) { // handleRestart
+  //     resumeAudio();
+  //     init();
+  //   }
+  //   if (status === 2) navigate('/'); // moveMainpage
+  // };
 
   // const moveMainpage = () => {
   //   // 초록색 스켈레톤이 그려져 있는 캔버스를 초기화합니다.
@@ -619,7 +669,7 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
   //       ctx.clearRect(0, 0, camcanvasRef.current.width, camcanvasRef.current.height); // 캔버스 초기화
   //     }
   //   }
-    
+
   //   // 카메라 스트림을 정지시키는 로직 추가
   //   if (camRef.current && camRef.current.srcObject) {
   //     const stream = camRef.current.srcObject as MediaStream;
@@ -627,7 +677,7 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
   //     tracks.forEach((track) => track.stop()); // 모든 트랙을 정지
   //     camRef.current.srcObject = null; // 참조를 제거하여 메모리 누수 방지
   //   }
-    
+
   //   // 카메라 스트림을 정지시키는 로직 추가
   //   if (videoRef.current && videoRef.current.srcObject) {
   //     const stream = videoRef.current.srcObject as MediaStream;
@@ -646,12 +696,12 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
   //   if (checkdetector.current) {
   //     checkdetector.current = undefined;
   //   }
-  
+
   //   if (intervalRef.current) {
   //     clearInterval(intervalRef.current); // setInterval로 반복 작업이 실행된 경우 정지
   //     intervalRef.current = null;
   //   }
-    
+
   //   // 상태를 초기화합니다.
   //   // setYAlignedState(false);
   //   setCountdown(null);
@@ -792,7 +842,7 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
                 className='animated-text combo'
                 style={{ fontFamily: 'neon-number', fontSize: '100px' }}
               >
-                {countdown}
+                {countdown === 4 ? null : countdown}
               </div>
             )
           ) : (

@@ -25,12 +25,7 @@ export const signUp = async (credentials: SignUpRequest): Promise<SignUpResponse
 };
 
 export const login = async (credentials: LoginRequest): Promise<LoginResponse> => {
-  // const response = await api.post<LoginResponse>('http://localhost:8080/api/v1/users/login', credentials, {
-  //   withCredentials: true,
-  //   headers: {
-  //     "Content-Type" : 'application/x-www-form-urlencoded',
-  //   }
-  // });  
+    
   const response = await api.post<LoginResponse>('/api/v1/users/login', credentials, {
     withCredentials: true,
   });  
