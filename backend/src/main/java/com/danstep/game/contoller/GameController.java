@@ -1,6 +1,7 @@
 package com.danstep.game.contoller;
 
 import com.danstep.game.model.dto.GameInfoDTO;
+import com.danstep.game.model.dto.GetAllGameDTO;
 import com.danstep.game.model.service.GameService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,10 +20,10 @@ public class GameController {
     }
 
     @GetMapping
-    public ResponseEntity<List<GameInfoDTO>> getAllGames() {
+    public ResponseEntity<List<GetAllGameDTO>> getAllGames() {
         System.out.println("getAllGames 호출");
 
-        List<GameInfoDTO> gameList = gameService.getAllGames();
+        List<GetAllGameDTO> gameList = gameService.getAllGames();
 
         return new ResponseEntity<>(gameList, HttpStatus.OK);
     }

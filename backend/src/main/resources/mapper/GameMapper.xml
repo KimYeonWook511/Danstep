@@ -41,7 +41,7 @@
         LEFT JOIN user_info AS ui
         ON ri.user_info_id = ui.id
         WHERE game_info_id = #{id}
-        ORDER BY ri.id ASC
+        ORDER BY ri.score DESC, ri.id ASC
         LIMIT 3;
     </select>
 
