@@ -10,7 +10,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class GetResultInfoDTO {
+public class GetUserResultDTO {
     private Integer resultInfoId;
 
     private Integer gameInfoId;
