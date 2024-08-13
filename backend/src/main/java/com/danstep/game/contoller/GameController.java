@@ -65,4 +65,11 @@ public class GameController {
 //    public ResponseEntity<GameDTO> createGame(@RequestBody GameDTO gameDTO) {
 //        return new ResponseEntity<>(HttpStatus.CREATED);
 //    }
+
+//    @GetMapping("/selectBox")
+//    public ResponseEntity<List<GetAllGameDTO>> getAllGamesSelectBox() {
+//        List<GetAllGameDTO> gameList = gameService.getAllGames();
+//
+//        return new ResponseEntity<>(gameList, HttpStatus.OK);
+//    }
 }

@@ -1,9 +1,7 @@
 package com.danstep.result.model.service;
 
-import com.danstep.exception.GameNotFoundException;
 import com.danstep.exception.ReplayNotFoundException;
 import com.danstep.exception.UserNotFoundException;
-import com.danstep.game.model.dto.GameInfoDTO;
 import com.danstep.game.model.service.GameService;
 import com.danstep.rank.model.dto.SaveRankDTO;
 import com.danstep.rank.model.mapper.RankMapper;
@@ -13,7 +11,6 @@ import com.danstep.util.S3Util;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -90,21 +87,18 @@ public class ResultServiceImpl implements ResultService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<GetResultInfoDTO> getUserResultsByGameInfoId(GetResultInfoDTO getResultInfoDTO) {
+    public List<GetUserResultDTO> getUserResults(String username) {
 //        List<GetResultInfoDTO> results = resultMapper.getUserResultsByGameInfoId(getResultInfoDTO);
 //
 //        return results;
 
-        return resultMapper.getUserResultsByGameInfoId(getResultInfoDTO);
+        return resultMapper.getUserResults(username);
     }
 
     @Override
     @Transactional(readOnly = true)
     public GetReplayDTO getUserReplay(ReplayDTO replayDTO) {
         ReplayDTO dto = resultMapper.getUserReplay(replayDTO);
-
-        System.out.println(replayDTO.toString());
-        System.out.println(dto != null ? dto.toString() : "비어있음!");
 
         if (dto == null) {
             throw new ReplayNotFoundException("Replay not found with resultInfoId " + replayDTO.getResultInfoId());
@@ -114,19 +108,15 @@ public class ResultServiceImpl implements ResultService {
 
         // mp3파일 url 가져오기
         getReplayDTO.setAudioUrl(s3Util.getPublicUrl("games", Integer.toString(dto.getGameInfoId()), dto.getAudioFilename()));
-        System.out.println(getReplayDTO.getAudioUrl());
 
         // background mp4 url 가져오기
         getReplayDTO.setBackgroundUrl(s3Util.getPublicUrl("games", Integer.toString(dto.getGameInfoId()), dto.getBackgroundFilename()));
-        System.out.println(getReplayDTO.getBackgroundUrl());
 
         // game poseData json 가져오기
         getReplayDTO.setGamePoseData(s3Util.getPublicJson("games", Integer.toString(dto.getGameInfoId()), dto.getGamePoseFilename()));
-        System.out.println("통과1");
 
         // my poseData json 가져오기
         getReplayDTO.setMyPoseData(s3Util.getPrivateJson("users", replayDTO.getUsername(), dto.getGameInfoId() + "/" + dto.getMyPoseFilename()));
-        System.out.println("통과2");
 
         return getReplayDTO;
     }

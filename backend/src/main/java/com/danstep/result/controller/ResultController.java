@@ -2,7 +2,7 @@ package com.danstep.result.controller;
 
 import com.danstep.jwt.JWTUtil;
 import com.danstep.result.model.dto.GetReplayDTO;
-import com.danstep.result.model.dto.GetResultInfoDTO;
+import com.danstep.result.model.dto.GetUserResultDTO;
 import com.danstep.result.model.dto.ReplayDTO;
 import com.danstep.result.model.dto.SaveResultDTO;
 import com.danstep.result.model.service.ResultService;
@@ -49,21 +49,13 @@ public class ResultController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping("/{username}/{gameInfoId}")
-    public ResponseEntity<List<GetResultInfoDTO>> getUserResultsByGameInfoId(@AuthenticationPrincipal CustomUserDetails customUserDetails,
-                                                                             @PathVariable String username,
-                                                                             @PathVariable Integer gameInfoId) {
+    @GetMapping("/{username}")
+    public ResponseEntity<List<GetUserResultDTO>> getUserResults(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                                                 @PathVariable String username) {
 
-        System.out.println("pathvariable : " + username + " | " + gameInfoId);
+        System.out.println("getUserResults(custom): " + username+ "(" + customUserDetails.getUsername() + ")");
 
-        GetResultInfoDTO getResultInfoDTO = GetResultInfoDTO.builder()
-                .username(customUserDetails.getUsername())
-                .gameInfoId(gameInfoId)
-                .build();
-        getResultInfoDTO.setUsername(customUserDetails.getUsername());
-        getResultInfoDTO.setGameInfoId(gameInfoId);
-
-        return new ResponseEntity<>(resultService.getUserResultsByGameInfoId(getResultInfoDTO), HttpStatus.OK);
+        return new ResponseEntity<>(resultService.getUserResults(customUserDetails.getUsername()), HttpStatus.OK);
     }
 
 //  audiourl backgroundurl poseData myPoseData
@@ -84,4 +76,6 @@ public class ResultController {
 
         return new ResponseEntity<>(resultService.getUserReplay(replayDTO), HttpStatus.OK);
     }
+
+
 }

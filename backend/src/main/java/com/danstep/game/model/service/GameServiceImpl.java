@@ -91,14 +91,6 @@ public class GameServiceImpl implements GameService {
     public String getGamePose(Integer id) {
         GameInfoDTO gameInfo = gameMapper.getGameInfoById(id);
 
-        try {
-            // Json파일 가져오기
-            return s3Util.getPublicJson("games", Integer.toString(id), gameInfo.getPoseFilename());
-
-        } catch (RuntimeException e) {
-            // GET 요청 보내면서 문제 생김
-            // 처리할 로직 작성해야함!
-            return null;
-        }
+        return s3Util.getPublicJson("games", Integer.toString(id), gameInfo.getPoseFilename());
     }
 }
