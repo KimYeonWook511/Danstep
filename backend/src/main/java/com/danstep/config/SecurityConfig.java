@@ -68,7 +68,6 @@ public class SecurityConfig {
 
                         // configuration.setAllowedOrigins(Collections.singletonList("http://danstep-frontend-container:3000"));
                         configuration.setAllowedOrigins(Arrays.asList(
-                                "http://danstep-frontend-container:3000",
                                 "http://localhost:3000",
                                 "https://i11a406.p.ssafy.io"
                         ));
