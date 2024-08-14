@@ -12,7 +12,7 @@
   transition: top 0.3s ease; /* 애니메이션 효과 추가 */
   padding: 10px 20px; /* 상하 여백 및 좌우 여백 추가 */
   box-sizing: border-box; /* padding을 포함하여 전체 너비를 조정 */
-  z-index: 4;
+  z-index: 1000;
   height: 60px;
 }
 

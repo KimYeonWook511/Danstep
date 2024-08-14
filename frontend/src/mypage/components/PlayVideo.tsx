@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaTrash } from 'react-icons/fa';
+// import { FaEye } from 'react-icons/fa';
+import { BsPlayBtn } from 'react-icons/bs';
 import './PlayVideo.css';
+import RemovePoseModal from './RemovePoseModal';
 
 interface VideoData {
   title: string;
@@ -18,6 +21,8 @@ const PlayVideo: React.FC<PlayVideoProps> = ({ videos }) => {
   const navigate = useNavigate();
 
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [selectedVideoIndex, setSelectedVideoIndex] = useState<number | null>(null);
+  const [showRemovePoseModal, setShowRemovePoseModal] = useState(false);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -34,17 +39,36 @@ const PlayVideo: React.FC<PlayVideoProps> = ({ videos }) => {
   };
 
   const handleTrashClick = (index: number) => {
-    alert(`나와라 좌표 : ${index}`);
+    setSelectedVideoIndex(index);
+    setShowRemovePoseModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowRemovePoseModal(false);
+    setSelectedVideoIndex(null);
+  };
+
+  const handleRemove = () => {
+    videos.splice(selectedVideoIndex!, 1);
+    setShowRemovePoseModal(true);
+    handleCloseModal();
   };
 
   return (
     <div style={{ width: '100%', height: '100%', color: 'black' }}>
       <div
-        style={{ width: '100%', display: 'flex', justifyContent: 'space-between', textAlign: 'center', color: 'black' }}
+        style={{
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'space-between',
+          textAlign: 'center',
+          color: 'white',
+          fontSize: '20px',
+        }}
       >
         <p style={{ width: '25%' }}>제목</p>
         <p style={{ width: '25%' }}>점수</p>
-        <p style={{ width: '25%' }}>플레이한 날짜</p>
+        <p style={{ width: '25%' }}>플레이 날짜</p>
         <p style={{ width: '25%' }}></p>
       </div>
       <hr style={{ marginTop: '10px', marginBottom: '20px' }}></hr>
@@ -53,25 +77,28 @@ const PlayVideo: React.FC<PlayVideoProps> = ({ videos }) => {
           key={index}
           style={{
             width: '100%',
+            height: 'auto',
             display: 'flex',
             justifyContent: 'space-between',
             textAlign: 'center',
-            alignItems: 'center',
             marginBottom: '10px',
-            color: 'black',
+            marginTop: '10px',
+            color: 'white',
+            fontSize: '18px',
           }}
         >
-          <p style={{ width: '25%' }}>{video.title}</p>
-          <p style={{ width: '25%' }}>{video.score}</p>
+          <p style={{ width: '25%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            {video.title}
+          </p>
+          <p style={{ width: '25%' }}>{(video.score / 100).toFixed(2)}</p>
           <p style={{ width: '25%' }}>{formatDate(video.resultDate)}</p>
-          <div
-            style={{ width: '25%', color: 'black', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-          >
-            <button
-              style={{ color: 'black', marginRight: '40px', textAlign: 'center' }}
-              onClick={() => handleReplayClick(video.resultInfoId)}
-            >
-              다시보기
+          <div style={{ width: '25%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <button>
+              <BsPlayBtn
+                className='replay-icon'
+                style={{ marginRight: '40px', textAlign: 'center' }}
+                onClick={() => handleReplayClick(video.resultInfoId)}
+              />
             </button>
             <button onClick={() => handleTrashClick(index)}>
               <FaTrash
@@ -83,6 +110,13 @@ const PlayVideo: React.FC<PlayVideoProps> = ({ videos }) => {
           </div>
         </div>
       ))}
+
+      {showRemovePoseModal && (
+        <RemovePoseModal
+          onClose={handleCloseModal}
+          onRemove={handleRemove}
+        />
+      )}
     </div>
   );
 };

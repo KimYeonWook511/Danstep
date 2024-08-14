@@ -1,4 +1,3 @@
-
 // // interface Game {
 // //   id: string;
 // //   thumbnailUrl: string;
@@ -233,7 +232,6 @@
 
 // export default Carousel3d;
 
-
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Carousel from 'react-spring-3d-carousel';
@@ -253,7 +251,7 @@ interface Game {
 
 interface Ranking {
   rank: number;
-  score: string;
+  score: number;
   nickname: string;
   game_info_id?: string;
 }
@@ -278,19 +276,22 @@ const Carousel3d: React.FC<{ data: Game[] }> = ({ data }) => {
 
     for (let i = 0; i < levelNum; i++) {
       stars.push(
-        <span key={i} className='star'>
+        <span
+          key={i}
+          className='star'
+        >
           ★
         </span>
-      )
-    };
+      );
+    }
     return stars;
-  }
+  };
 
   const slides = data.map((item, index) => ({
     key: uuidv4(),
     content: (
       <div
-        className="carousel-item"
+        className='carousel-item'
         onMouseEnter={() => {
           if (goToSlide === index) setIsHovered(item);
         }}
@@ -302,38 +303,43 @@ const Carousel3d: React.FC<{ data: Game[] }> = ({ data }) => {
             setGoToSlide(index);
             playSlideSound();
           }
-
         }}
       >
-        <img src={item.thumbnailUrl} alt={`slide-${index}`} className="carousel-image" />
+        <img
+          src={item.thumbnailUrl}
+          alt={`slide-${index}`}
+          className='carousel-image'
+        />
         {isHovered && isHovered.id === item.id && (
-          <div className="game-info-overlay">
+          <div className='game-info-overlay'>
             <h2>{item.title}</h2>
-            <div className="game-details">
-              {item.level && <p className="level-stars">{renderStars(item.level)}</p>}
-              {item.playtime && <p className="play-time">PlayTime: {item.playtime}</p>}
+            <div className='game-details'>
+              {item.level && <p className='level-stars'>{renderStars(item.level)}</p>}
+              {item.playtime && <p className='play-time'>PlayTime: {item.playtime}</p>}
             </div>
             {item.rankTop3List && item.rankTop3List.length > 0 && (
-              <div className="ranking-podium">
-                {item.rankTop3List.sort((a, b) => a.rank - b.rank).map(ranking => (
-                  <div
-                    key={ranking.rank}
-                    className={`podium-step ${ranking.rank === 1 ? 'first' : ranking.rank === 2 ? 'second' : 'third'}`}
-                  >
-                    <span className="nickname">{ranking.nickname}</span>
-                    <span className="score">{ranking.score}</span>
-                  </div>
-                ))}
+              <div className='ranking-podium'>
+                {item.rankTop3List
+                  .sort((a, b) => a.rank - b.rank)
+                  .map((ranking) => (
+                    <div
+                      key={ranking.rank}
+                      className={`podium-step ${ranking.rank === 1 ? 'first' : ranking.rank === 2 ? 'second' : 'third'}`}
+                    >
+                      <span className='nickname'>{ranking.nickname}</span>
+                      <span className='score'>{(ranking.score / 100).toFixed(2)}</span>
+                    </div>
+                  ))}
               </div>
             )}
           </div>
         )}
-       <span className="border-animation"></span>
-        <span className="border-animation"></span>
-        <span className="border-animation"></span>
-        <span className="border-animation"></span>
+        <span className='border-animation'></span>
+        <span className='border-animation'></span>
+        <span className='border-animation'></span>
+        <span className='border-animation'></span>
       </div>
-    )
+    ),
   }));
 
   const handleWheel = useCallback(
@@ -345,13 +351,15 @@ const Carousel3d: React.FC<{ data: Game[] }> = ({ data }) => {
       } else {
         setGoToSlide((goToSlide + 1) % slides.length);
       }
-
     },
     [slides.length, goToSlide]
   );
 
   return (
-    <div className="w-screen h-screen" onWheel={handleWheel}>
+    <div
+      className='w-screen h-screen'
+      onWheel={handleWheel}
+    >
       <Carousel
         slides={slides}
         goToSlide={goToSlide}

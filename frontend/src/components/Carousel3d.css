@@ -44,7 +44,7 @@ div:hover .game-info-overlay {
   align-items: center;
   cursor: pointer;
   transition: 0.5s ease-in-out; /* 부드러운 트랜지션 효과 추가 */
-  
+
   /* 캐러셀 이미지 밑에 거울 모드 */
   -webkit-box-reflect: below 1px linear-gradient(transparent, #0005);
 }
@@ -63,17 +63,20 @@ div:hover .game-info-overlay {
 
 .carousel-item:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 15px #ffff3f,  /* 호버 시 노란색 네온 효과 */
-              0 0 30px #ffff3f,
-              0 0 45px #ffff3f,
-              0 0 60px #ffff3f;
+  box-shadow:
+    0 0 15px #ffff3f,
+    /* 호버 시 노란색 네온 효과 */ 0 0 30px #ffff3f,
+    0 0 45px #ffff3f,
+    0 0 60px #ffff3f;
 }
 
 .carousel-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
+  transition:
+    transform 0.5s ease-in-out,
+    box-shadow 0.5s ease-in-out;
 }
 
 .border-animation:nth-child(2),
@@ -83,12 +86,11 @@ div:hover .game-info-overlay {
   background: linear-gradient(90deg, transparent, #ffff3f); /* game 버튼의 애니메이션 색상과 동일하게 설정 */
 }
 
-
 /* 애니메이션이 적용될 span 요소들 */
 .border-animation {
-position: absolute;
-display: block;
-background: linear-gradient(90deg, transparent, #ffff3f);
+  position: absolute;
+  display: block;
+  background: linear-gradient(90deg, transparent, #ffff3f);
 }
 
 .border-animation:nth-child(1) {
@@ -232,6 +234,10 @@ background: linear-gradient(90deg, transparent, #ffff3f);
 .podium-step .nickname {
   font-weight: bold;
   font-size: 1.2rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
 }
 
 .podium-step .score {

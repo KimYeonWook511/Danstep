@@ -90,7 +90,7 @@ const ResultModal: React.FC<ResultModalProps> = ({ isOpen, onClose, score, bad, 
               className='gameover'
               style={{ color: 'black', fontFamily: 'neon-text' }}
             >
-              Game Over
+              Score
             </div>
             <div
               className='score'
