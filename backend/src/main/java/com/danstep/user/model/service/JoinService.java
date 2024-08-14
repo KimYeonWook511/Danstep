@@ -1,6 +1,7 @@
 package com.danstep.user.model.service;
 
 import com.danstep.exception.NicknameAlreadyExistsException;
+import com.danstep.exception.UsernameAlreadyExistsException;
 import com.danstep.user.model.dto.UserInfoDTO;
 import com.danstep.user.model.mapper.UserMapper;
 import com.danstep.user.model.dto.JoinDTO;
@@ -26,7 +27,7 @@ public class JoinService {
         String nickname = joinDTO.getNickname();
 
         if (userMapper.existsByUsername(username)) {
-            throw new NicknameAlreadyExistsException("아이디가 이미 존재합니다.");
+            throw new UsernameAlreadyExistsException("아이디가 이미 존재합니다.");
         }
 
         // 이름 중복!!
