@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
 
         // 이름 중복!!
         if (userMapper.existsByNicknameExcludingUsername(updateUserDTO)) {
-            throw new NicknameAlreadyExistsException("닉네임이 존재합니다.");
+            throw new NicknameAlreadyExistsException("닉네임이 이미 존재합니다.");
         }
 
         // 프로필 사진 변경 시 UUID 생성
