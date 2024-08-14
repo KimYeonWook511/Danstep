@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.regex.Pattern;
+
 @RestController
 @RequestMapping("/api/v1/users")
 public class JoinController {
@@ -21,6 +23,9 @@ public class JoinController {
 
     @Value("nickname.regex")
     private String nicknameRegex;
+
+    @Value("password.rege")
+    private String passwordRegex;
 
     private final JoinService joinService;
 
@@ -32,12 +37,19 @@ public class JoinController {
     @PostMapping("/join")
     public ResponseEntity<String> joinProcess(@RequestBody JoinDTO joinDTO) {
 
-        if (!joinDTO.getUsername().matches(usernameRegex) || joinDTO.getUsername().length() < 4 || joinDTO.getUsername().length() > 20) {
-            throw new InvalidUsernameException("유효하지 않은 아이디입니다.");
+        String username = joinDTO.getUsername();
+        if (!Pattern.compile(usernameRegex).matcher(username).matches()) {
+            throw new InvalidNicknameException("유효하지 않은 아이디입니다.");
         }
 
-        if (!joinDTO.getNickname().matches(nicknameRegex) || joinDTO.getNickname().length() < 2 || joinDTO.getNickname().length() > 6) {
+        String nickname = joinDTO.getNickname();
+        if (!Pattern.compile(nicknameRegex).matcher(nickname).matches()) {
             throw new InvalidNicknameException("유효하지 않은 닉네임입니다.");
+        }
+
+        String password = joinDTO.getPassword();
+        if (!Pattern.compile(passwordRegex).matcher(password).matches()) {
+            throw new InvalidNicknameException("유효하지 않은 비밀번호입니다.");
         }
 
         joinService.joinProcess(joinDTO);

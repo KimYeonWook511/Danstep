@@ -14,12 +14,18 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 @RestController
 @RequestMapping("/api/v1/users")
 public class UserController {
 
     @Value("nickname.regex")
     private String nicknameRegex;
+
+    @Value("password.regex")
+    private String passwordRegex;
 
     private final UserService userService;
     private final JWTUtil jwtUtil;
@@ -62,8 +68,14 @@ public class UserController {
             // 프로필 적용시 확장자 검증 필수
         }
 
-        if (!updateUserDTO.getNickname().matches(nicknameRegex) || updateUserDTO.getNickname().length() < 2 || updateUserDTO.getNickname().length() > 6) {
+        String nickname = updateUserDTO.getNickname();
+        if (!nickname.isEmpty() && !Pattern.compile(nicknameRegex).matcher(nickname).matches()) {
             throw new InvalidNicknameException("유효하지 않은 닉네임입니다.");
+        }
+
+        String newPassword = updateUserDTO.getNewPassword();
+        if (!newPassword.isEmpty() && !Pattern.compile(passwordRegex).matcher(newPassword).matches()) {
+            throw new InvalidNicknameException("유효하지 않은 비밀번호입니다.");
         }
 
         updateUserDTO.setUsername(customUserDetails.getUsername());
@@ -71,7 +83,7 @@ public class UserController {
 
         String oldAccessToken  = request.getHeader("Authorization").substring(7);
         String username = customUserDetails.getUsername();
-        String nickname = updateUserDTO.getNickname().isEmpty() ? customUserDetails.getNickname() : updateUserDTO.getNickname();
+        nickname = nickname.isEmpty() ? customUserDetails.getNickname() : nickname;
         String role = jwtUtil.getRole(oldAccessToken);
 
         String access = jwtUtil.createJwt("access", username, nickname, role, 59000L); // 59초

@@ -16,11 +16,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>("S3 Error: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR); // 500
     }
 
-    @ExceptionHandler(PasswordMismatchException.class)
-    public ResponseEntity<String> handlePasswordMismatchException(PasswordMismatchException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED); // 401
-    }
-
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<String> handleUserNotFoundException(UserNotFoundException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND); // 404 Not Found
@@ -38,17 +33,38 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidUsernameException.class)
     public ResponseEntity<String> handleInvalidUsernameException(InvalidUsernameException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST); // 400
+        String jsonResponse = "{\"message\": \"" + e.getMessage() + "\", \"errorCode\": \"4000\"}";
+        return new ResponseEntity<>(jsonResponse, HttpStatus.BAD_REQUEST); // 400
     }
 
     @ExceptionHandler(InvalidNicknameException.class)
     public ResponseEntity<String> handleInvalidNicknameException(InvalidNicknameException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST); // 400
+        String jsonResponse = "{\"message\": \"" + e.getMessage() + "\", \"errorCode\": \"4001\"}";
+        return new ResponseEntity<>(jsonResponse, HttpStatus.BAD_REQUEST); // 400
+    }
+
+    @ExceptionHandler(InvalidPasswordException.class)
+    public ResponseEntity<String> handleInvalidPasswordException(InvalidPasswordException e) {
+        String jsonResponse = "{\"message\": \"" + e.getMessage() + "\", \"errorCode\": \"4002\"}";
+        return new ResponseEntity<>(jsonResponse, HttpStatus.BAD_REQUEST); // 400
+    }
+
+    @ExceptionHandler(UsernameAlreadyExistsException.class)
+    public ResponseEntity<String> handleUsernameAlreadyExistsException(UsernameAlreadyExistsException e) {
+        String jsonResponse = "{\"message\": \"" + e.getMessage() + "\", \"errorCode\": \"4003\"}";
+        return new ResponseEntity<>(jsonResponse, HttpStatus.CONFLICT); // 409
     }
 
     @ExceptionHandler(NicknameAlreadyExistsException.class)
     public ResponseEntity<String> handleNicknameAlreadyExistsException(NicknameAlreadyExistsException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT); // 409
+        String jsonResponse = "{\"message\": \"" + e.getMessage() + "\", \"errorCode\": \"4004\"}";
+        return new ResponseEntity<>(jsonResponse, HttpStatus.CONFLICT); // 409
+    }
+
+    @ExceptionHandler(PasswordMismatchException.class)
+    public ResponseEntity<String> handlePasswordMismatchException(PasswordMismatchException e) {
+        String jsonResponse = "{\"message\": \"" + e.getMessage() + "\", \"errorCode\": \"4005\"}";
+        return new ResponseEntity<>(jsonResponse, HttpStatus.UNAUTHORIZED); // 401
     }
 
     @ExceptionHandler(Exception.class)
