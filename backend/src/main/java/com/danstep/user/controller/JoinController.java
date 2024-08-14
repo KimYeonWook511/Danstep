@@ -18,13 +18,13 @@ import java.util.regex.Pattern;
 @RequestMapping("/api/v1/users")
 public class JoinController {
 
-    @Value("username.regex")
+    @Value("${username.regex}")
     private String usernameRegex;
 
-    @Value("nickname.regex")
+    @Value("${nickname.regex}")
     private String nicknameRegex;
 
-    @Value("password.rege")
+    @Value("${password.regex}")
     private String passwordRegex;
 
     private final JoinService joinService;
@@ -39,6 +39,7 @@ public class JoinController {
 
         String username = joinDTO.getUsername();
         if (!Pattern.compile(usernameRegex).matcher(username).matches()) {
+            System.out.println(usernameRegex);
             throw new InvalidNicknameException("유효하지 않은 아이디입니다.");
         }
 

@@ -21,10 +21,10 @@ import java.util.regex.Pattern;
 @RequestMapping("/api/v1/users")
 public class UserController {
 
-    @Value("nickname.regex")
+    @Value("${nickname.regex}")
     private String nicknameRegex;
 
-    @Value("password.regex")
+    @Value("${password.regex}")
     private String passwordRegex;
 
     private final UserService userService;
