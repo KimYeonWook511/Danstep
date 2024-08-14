@@ -109,6 +109,7 @@ const Replay: React.FC = () => {
       console.log('Loaded keypoints:', camKeypointJson.current);
     } catch (error) {
       console.error('Error fetching JSON:', error);
+      navigate("/");
     } finally {
       setLoading(false);
     }
