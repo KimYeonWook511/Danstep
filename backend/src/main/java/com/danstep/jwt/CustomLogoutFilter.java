@@ -53,12 +53,12 @@ public class CustomLogoutFilter extends GenericFilterBean {
         String refresh = null;
         Cookie[] cookies = request.getCookies();
         if (cookies == null) {
-            System.out.println("쿠키가 널입니다!");
+            System.out.println("로그아웃 쿠키 null!!");
         }
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                System.out.println(cookie.getName() + ": " + cookie.getValue());
                 if (cookie.getName().equals("refresh")) {
+                    System.out.println("로그아웃 쿠키에서 refresh 찾음");
                     refresh = cookie.getValue();
                 }
             }

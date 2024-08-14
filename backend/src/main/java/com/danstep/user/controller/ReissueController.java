@@ -39,7 +39,7 @@ public class ReissueController {
             for (Cookie cookie : cookies) {
 
                 if (cookie.getName().equals("refresh")) {
-
+                    System.out.println("reissue 쿠키에서 refresh 찾음");
                     refresh = cookie.getValue();
                 }
             }
@@ -81,8 +81,10 @@ public class ReissueController {
         }
 
         //make new JWT
-        String newAccess = jwtUtil.createJwt("access", username, nickname, role, 600000L);
-        String newRefresh = jwtUtil.createJwt("refresh", username, nickname, role, 86400000L);
+//        String newAccess = jwtUtil.createJwt("access", username, nickname, role, 600000L);
+//        String newRefresh = jwtUtil.createJwt("refresh", username, nickname, role, 86400000L);
+        String newAccess = jwtUtil.createJwt("access", username, nickname, role, 120000L); // 2분
+        String newRefresh = jwtUtil.createJwt("refresh", username, nickname, role, 59000L); // 59초
 
         //Refresh 토큰 저장 DB에 기존의 Refresh 토큰 삭제 후 새 Refresh 토큰 저장
         reissueRefresh(username, newRefresh);
