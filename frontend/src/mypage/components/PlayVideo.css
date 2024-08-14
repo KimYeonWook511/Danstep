@@ -1,0 +1,10 @@
+.trash-icon {
+  transition:
+    color 0.3s,
+    transform 0.3s;
+  color: black;
+}
+
+.trash-icon.hover {
+  color: red;
+}

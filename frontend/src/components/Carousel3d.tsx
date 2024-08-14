@@ -1,10 +1,3 @@
-// // import React, { useCallback, useRef, useState } from 'react';
-// // import { useNavigate } from 'react-router-dom';
-// // import Carousel from 'react-spring-3d-carousel';
-// // import { v4 as uuidv4 } from 'uuid';
-// // import { config } from 'react-spring';
-// // import './Carousel3dforS3.css';
-// // import slideSound from '../assets/sound/slide_sound_2.mp3';
 
 // // interface Game {
 // //   id: string;
@@ -116,7 +109,7 @@
 //   score: string;
 //   nickname: string;
 //   game_info_id?: string;
-  
+
 // }
 
 // interface Game {
@@ -239,7 +232,9 @@
 // };
 
 // export default Carousel3d;
-import React, { useCallback, useRef, useState } from 'react';
+
+
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Carousel from 'react-spring-3d-carousel';
 import { v4 as uuidv4 } from 'uuid';
@@ -307,6 +302,7 @@ const Carousel3d: React.FC<{ data: Game[] }> = ({ data }) => {
             setGoToSlide(index);
             playSlideSound();
           }
+
         }}
       >
         <img src={item.thumbnailUrl} alt={`slide-${index}`} className="carousel-image" />
@@ -325,13 +321,17 @@ const Carousel3d: React.FC<{ data: Game[] }> = ({ data }) => {
                     className={`podium-step ${ranking.rank === 1 ? 'first' : ranking.rank === 2 ? 'second' : 'third'}`}
                   >
                     <span className="nickname">{ranking.nickname}</span>
-                    <span className="score">Score: {ranking.score}</span>
+                    <span className="score">{ranking.score}</span>
                   </div>
                 ))}
               </div>
             )}
           </div>
         )}
+       <span className="border-animation"></span>
+        <span className="border-animation"></span>
+        <span className="border-animation"></span>
+        <span className="border-animation"></span>
       </div>
     )
   }));
@@ -340,12 +340,12 @@ const Carousel3d: React.FC<{ data: Game[] }> = ({ data }) => {
     (e: React.WheelEvent) => {
       if (slides.length === 0) return;
       playSlideSound();
-
       if (e.deltaY < 0) {
         setGoToSlide(goToSlide === 0 ? slides.length - 1 : goToSlide - 1);
       } else {
         setGoToSlide((goToSlide + 1) % slides.length);
       }
+
     },
     [slides.length, goToSlide]
   );
@@ -357,7 +357,7 @@ const Carousel3d: React.FC<{ data: Game[] }> = ({ data }) => {
         goToSlide={goToSlide}
         offsetRadius={5}
         showNavigation={false}
-        animationConfig={config.stiff}
+        animationConfig={config.default}
       />
     </div>
   );

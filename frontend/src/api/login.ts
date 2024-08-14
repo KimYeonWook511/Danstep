@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { login as loginApi } from '../api/auth';
 
 interface LoginRequest {

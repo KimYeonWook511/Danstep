@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './ResultModal.css';
 import { resultGrade } from '../utils/ResultGrade';
-import axios from 'axios';
+import api from "../../api/api";
 import LoginForm from '../../components/LoginForm';
 
 interface ResultModalProps {
@@ -59,7 +59,7 @@ const ResultModal: React.FC<ResultModalProps> = ({ isOpen, onClose, score, bad, 
         poseData
       };
 
-      const response = await axios.post("https://i11a406.p.ssafy.io/api/v1/results", data, {
+      const response = await api.post("/results", data, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': accessToken,

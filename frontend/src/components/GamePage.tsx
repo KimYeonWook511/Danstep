@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import api from "../api/api";
 import Guide from './Guide';
 import PoseEstimator from '../GameMode/components/PoseEstimator';
 import bgm from '../assets/sound/ready_to_start.mp3';
@@ -33,9 +33,9 @@ const GamePage: React.FC = () => {
     // Fetch the game data using the ID from the URL
     const fetchGame = async () => {
       try {
-        const response = await axios.get(`https://i11a406.p.ssafy.io/api/v1/games/${id}`);
+        const response = await api.get(`/games/${id}`);
         setGame(response.data); // Set the fetched game data to the state
-        console.log(response);
+        console.log("GamePage.tsx api: ", response);
       } catch (error) {
         console.error('Error fetching game data:', error);
       }

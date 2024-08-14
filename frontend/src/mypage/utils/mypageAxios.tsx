@@ -1,4 +1,4 @@
-import axios from 'axios';
+import api from '../../api/api';
 import {jwtDecode,JwtPayload} from 'jwt-decode';
 
 
@@ -20,7 +20,7 @@ export const getUser = async () =>{
     const decodedToken = jwtDecode<CustomJwtPayload>(accessToken!);
     const decodeUsername = decodedToken.username; // JWT의 페이로드에서 username 추출
     try{
-    const response = await axios.get(`https://i11a406.p.ssafy.io/api/v1/users/${decodeUsername}`,{
+    const response = await api.get(`/users/${decodeUsername}`,{
         headers:{
             'Authorization':accessToken,
             'Content-Type': 'application/json',
@@ -46,7 +46,7 @@ export const modifyProfile = async ({currentPassword, newPassword, nickname}:Mod
     }
     const accessToken = localStorage.getItem('accessToken');
     try{
-    const response = await axios.patch(`https://i11a406.p.ssafy.io/api/v1/users/${decodeUsername}`, data, {
+    const response = await api.patch(`/users/${decodeUsername}`, data, {
         headers:{
         'Content-Type': 'multipart/form-data',
         'Authorization' : accessToken,

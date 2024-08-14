@@ -5,7 +5,8 @@ import LoginForm from '../../components/LoginForm';
 import './MyPage.css';
 import { logout } from '../../api/logout';
 import { jwtDecode, JwtPayload } from 'jwt-decode';
-import axios, { HttpStatusCode } from 'axios';
+import { HttpStatusCode } from 'axios';
+import api from "../../api/api";
 import { useNavigate } from 'react-router-dom';
 
 interface CustomJwtPayload extends JwtPayload {
@@ -29,17 +30,17 @@ const Mypage: React.FC = () => {
   const [videos, setVideos] = useState<VideoData[]>([]);
 
   const fetchData = async () => {
-    const token = localStorage.getItem('accessToken');
-    if (token) {
-      const decodedToken = jwtDecode<CustomJwtPayload>(token);
+    const accessToken = localStorage.getItem('accessToken');
+    if (accessToken) {
+      const decodedToken = jwtDecode<CustomJwtPayload>(accessToken);
       setNickname(decodedToken.nickname);
       try {
-        const response = await axios.get(`https://i11a406.p.ssafy.io/api/v1/results/${decodedToken.username}`, {
+        const response = await api.get(`/results/${decodedToken.username}`, {
           headers: {
-            Authorization: token,
+            Authorization: accessToken,
           },
         });
-        console.log(response.data);
+        console.log("MyPage.tsx api: ", response);
         setVideos(response.data);
       } catch (error) {
         console.error('Error fetching videos:', error);

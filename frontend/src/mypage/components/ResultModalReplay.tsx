@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import '../../GameMode/components/ResultModal.css';
 import { resultGrade } from '../../GameMode/utils/ResultGrade';
-import axios from 'axios';
-import LoginForm from '../../components/LoginForm';
 
 interface ResultModalProps {
   isOpen: boolean;
