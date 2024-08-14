@@ -22,4 +22,11 @@ public class ReplayDTO {
 
     private String myPoseFilename;
 
+    private Integer score;
+    private Integer perfect;
+    private Integer great;
+    private Integer good;
+    private Integer bad;
+    private Integer maxCombo;
+
 }

@@ -15,4 +15,11 @@ public class GetReplayDTO {
     private String backgroundUrl; // 배경 CloudFront URL
     private String myPoseData; // 내 포즈 Keypoint Json
 
+    private Integer score;
+    private Integer perfect;
+    private Integer great;
+    private Integer good;
+    private Integer bad;
+    private Integer maxCombo;
+
 }
