@@ -1,7 +1,10 @@
 package com.danstep.user.controller;
 
+import com.danstep.exception.InvalidNicknameException;
+import com.danstep.exception.InvalidUsernameException;
 import com.danstep.user.model.dto.JoinDTO;
 import com.danstep.user.model.service.JoinService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/users")
 public class JoinController {
 
+    @Value("username.regex")
+    private String usernameRegex;
+
+    @Value("nickname.regex")
+    private String nicknameRegex;
+
     private final JoinService joinService;
 
     public JoinController(JoinService joinService) {
@@ -23,8 +32,13 @@ public class JoinController {
     @PostMapping("/join")
     public ResponseEntity<String> joinProcess(@RequestBody JoinDTO joinDTO) {
 
-        // 값 검증 해야함!!
-//        if (joinDTO.getUsername() == null || joinDTO.getPassword() == null || joinDTO.getNickname()) {}
+        if (!joinDTO.getUsername().matches(usernameRegex) || joinDTO.getUsername().length() < 4 || joinDTO.getUsername().length() > 20) {
+            throw new InvalidUsernameException("유효하지 않은 아이디입니다.");
+        }
+
+        if (!joinDTO.getNickname().matches(nicknameRegex) || joinDTO.getNickname().length() < 2 || joinDTO.getNickname().length() > 6) {
+            throw new InvalidNicknameException("유효하지 않은 닉네임입니다.");
+        }
 
         joinService.joinProcess(joinDTO);
 

@@ -79,8 +79,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         //토큰 생성
 //        String access = jwtUtil.createJwt("access", username, nickname, role, 600000L);
 //        String refresh = jwtUtil.createJwt("refresh", username, nickname, role, 86400000L);
-        String access = jwtUtil.createJwt("access", username, nickname, role, 120000L); // 2분
-        String refresh = jwtUtil.createJwt("refresh", username, nickname, role, 59000L); // 59초
+        String access = jwtUtil.createJwt("access", username, nickname, role, 59000L); // 59초
+        String refresh = jwtUtil.createJwt("refresh", username, nickname, role, 120000L); // 2분
 
         //Refresh 토큰 저장
         addRefresh(username, refresh);
@@ -127,7 +127,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private Cookie createCookie(String key, String value) {
 
         Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(24*60*60);
+//        cookie.setMaxAge(24*60*60);
+        cookie.setMaxAge(2*60);
         cookie.setSecure(true);
         cookie.setPath("/");
         cookie.setHttpOnly(true);

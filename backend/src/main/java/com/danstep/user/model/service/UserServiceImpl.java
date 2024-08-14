@@ -3,6 +3,7 @@ package com.danstep.user.model.service;
 import com.danstep.exception.NicknameAlreadyExistsException;
 import com.danstep.exception.PasswordMismatchException;
 import com.danstep.exception.UserNotFoundException;
+import com.danstep.jwt.JWTUtil;
 import com.danstep.user.model.dto.GetUserInfoDTO;
 import com.danstep.user.model.dto.UpdateUserDTO;
 import com.danstep.user.model.dto.UserInfoDTO;
@@ -58,12 +59,12 @@ public class UserServiceImpl implements UserService {
 
         // 비밀번호 불일치!!
         if (!bCryptPasswordEncoder.matches(updateUserDTO.getCurrentPassword(), dto.getPassword())) {
-            throw new PasswordMismatchException("Password does not match");
+            throw new PasswordMismatchException("비밀번호가 일치하지 않습니다.");
         }
 
         // 이름 중복!!
         if (userMapper.existsByNicknameExcludingUsername(updateUserDTO)) {
-            throw new NicknameAlreadyExistsException("Nickname already exists");
+            throw new NicknameAlreadyExistsException("닉네임이 존재합니다.");
         }
 
         // 프로필 사진 변경 시 UUID 생성
@@ -76,7 +77,7 @@ public class UserServiceImpl implements UserService {
         }
 
         // 암호화
-        if (updateUserDTO.getNewPassword() != null) {
+        if (updateUserDTO.getNewPassword() != null && !updateUserDTO.getNewPassword().isEmpty()) {
             updateUserDTO.setNewPassword(bCryptPasswordEncoder.encode(updateUserDTO.getNewPassword()));
         }
 
