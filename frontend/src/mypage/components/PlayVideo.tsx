@@ -25,12 +25,14 @@ const PlayVideo: React.FC<PlayVideoProps> = ({ videos }) => {
   const [showRemovePoseModal, setShowRemovePoseModal] = useState(false);
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const year = date.getFullYear().toString().slice(-2);
-    const month = ('0' + (date.getMonth() + 1)).slice(-2);
-    const day = ('0' + date.getDate()).slice(-2);
-    const hours = ('0' + date.getHours()).slice(-2);
-    const minutes = ('0' + date.getMinutes()).slice(-2);
+    // 연도, 월, 일, 시, 분, 초를 각각 2글자씩 추출
+    const year = dateString.slice(2, 4);
+    const month = dateString.slice(5, 7);
+    const day = dateString.slice(8, 10);
+    const hours = dateString.slice(11, 13);
+    const minutes = dateString.slice(14, 16);
+    // const second = dateString.slice(17, 19);
+
     return `${year}/${month}/${day} ${hours}:${minutes}`;
   };
 

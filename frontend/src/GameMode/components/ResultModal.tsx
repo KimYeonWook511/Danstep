@@ -35,6 +35,7 @@ const ResultModal: React.FC<ResultModalProps> = ({ isOpen, onClose, score, bad, 
   const closeLoginForm = () => {
     setShowLogin(false);
     setIsLoggedin(true);
+    
   };
 
   const handleSubmit = async () => {
@@ -42,10 +43,10 @@ const ResultModal: React.FC<ResultModalProps> = ({ isOpen, onClose, score, bad, 
 
     const accessToken = localStorage.getItem('accessToken') || '';
     setIsSubmitted(true); // 제출 완료 후 상태 업데이트
-    if (!accessToken) {
-      setShowLogin(true);
-      return;
-    }
+    // if (!accessToken) {
+    //   setShowLogin(true);
+    //   return;
+    // }
 
     try {
       const data = {
@@ -67,9 +68,13 @@ const ResultModal: React.FC<ResultModalProps> = ({ isOpen, onClose, score, bad, 
       });
 
       console.log(response);
-    } catch (error) {
+    } catch (error : any) {
       setIsSubmitted(false);
-      console.error('Failed to submit result:', error);
+      if (error.response && error.response.status === 400) {
+        setShowLogin(true); // 에러가 400일 때 로그인 화면 표시
+      } else {
+        console.error('Failed to submit result:', error);
+      }
     }
   };
 
