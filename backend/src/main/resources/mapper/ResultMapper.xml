@@ -100,7 +100,7 @@
         FROM result_pose AS rp
         LEFT JOIN result_info AS ri
           ON rp.result_info_id = ri.id
-          AND ri.id = #{id}
+          AND ri.id = #{resultInfoId}
         LEFT JOIN user_info AS ui
           ON ri.user_info_id = ui.id
           AND ui.username = #{username}
