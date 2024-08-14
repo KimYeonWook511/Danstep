@@ -46,9 +46,11 @@ public class JWTFilter extends OncePerRequestFilter {
 
             //response body
             PrintWriter writer = response.getWriter();
-            writer.print("access token expired");
+            writer.print("{\"message\": \"access token expired\", \"errorCode\": \"ACCESS_TOKEN_EXPIRED\"}");
 
             //response status code
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
@@ -60,9 +62,11 @@ public class JWTFilter extends OncePerRequestFilter {
 
             //response body
             PrintWriter writer = response.getWriter();
-            writer.print("invalid access token");
+            writer.print("{\"message\": \"invalid access token\", \"errorCode\": \"INVALID_ACCESS_TOKEN\"}");
 
             //response status code
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
