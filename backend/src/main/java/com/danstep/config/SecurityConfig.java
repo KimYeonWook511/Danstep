@@ -101,6 +101,7 @@ public class SecurityConfig {
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/api/v1/users/login").permitAll()
                         .requestMatchers("/api/v1/users/join").permitAll()
+//                        .requestMatchers("/api/v1/users/logout").permitAll()
                         .requestMatchers("/api/v1/users/reissue").permitAll()
 //                        .requestMatchers("/api/v1/games/").permitAll()
                         .requestMatchers("/api/v1/test/**").permitAll() // 임시 테스트 부분 허용!
