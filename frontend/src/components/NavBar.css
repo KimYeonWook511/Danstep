@@ -85,12 +85,6 @@
   letter-spacing: 5px; /* 텍스트 사이의 간격 설정 */
 }
 
-.center-items {
-  flex: 1; /* 중앙 아이템이 남은 공간을 차지하도록 설정 */
-  display: flex;
-  justify-content: center; /* 중앙에 배치 */
-}
-
 .right-items {
   display: flex;
   align-items: center;

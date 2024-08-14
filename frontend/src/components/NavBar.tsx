@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef, FC } from 'react';
 import { Link } from 'react-router-dom';
-// import Category from './Category'
 import Menu from './Menu'
 import './NavBar.css';
 import './ProfileIcon.css'
@@ -48,10 +47,6 @@ const NavBar: FC = () => {
               <div className="logo">DanStep</div>
             </Link>
           </div>
-
-            {/* <div className='center-items'>
-            <Category/>
-            </div> */}
 
           <div className="right-item">
           <Menu isLoggedIn={isLoggedIn} onLogout={handleLogout} onLogin={handleLoginSuccess} />
