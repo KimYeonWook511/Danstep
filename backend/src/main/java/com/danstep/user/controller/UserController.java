@@ -1,6 +1,7 @@
 package com.danstep.user.controller;
 
 import com.danstep.exception.InvalidNicknameException;
+import com.danstep.exception.InvalidPasswordException;
 import com.danstep.jwt.JWTUtil;
 import com.danstep.user.model.dto.CustomUserDetails;
 import com.danstep.user.model.dto.UpdateUserDTO;
@@ -75,7 +76,7 @@ public class UserController {
 
         String newPassword = updateUserDTO.getNewPassword();
         if (!newPassword.isEmpty() && !Pattern.compile(passwordRegex).matcher(newPassword).matches()) {
-            throw new InvalidNicknameException("유효하지 않은 비밀번호입니다.");
+            throw new InvalidPasswordException("유효하지 않은 비밀번호입니다.");
         }
 
         updateUserDTO.setUsername(customUserDetails.getUsername());
