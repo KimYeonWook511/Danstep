@@ -37,29 +37,33 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    if (error.response.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-      console.log("api.ts: access Token 만료");
-      localStorage.removeItem("accessToken");
+    if (error.response && error.response.status === 401) {
+      const { message, errorCode } = error.response.data;
 
-      // 토큰 갱신 요청
-      const response = await api.post('/users/reissue', {}, {
-          withCredentials: true, // 쿠키를 포함하여 요청
-      });
+      if (errorCode === 'ACCESS_TOKEN_EXPIRED' && !originalRequest._retry) {
+        originalRequest._retry = true;
+        console.log("api.ts: accessToken message - ", message);
+        localStorage.removeItem("accessToken");
 
-      if (response.status === 200) {
-        // 새로운 토큰 저장
-        accessToken = response.headers.authorization;
-        localStorage.setItem('accessToken', accessToken);
+        // 토큰 갱신 요청
+        const response = await api.post('/users/reissue', {}, {
+            withCredentials: true, // 쿠키를 포함하여 요청
+        });
 
-        // 요청 다시 시도
-        console.log("api.ts: refresh Token 재발급 성공");
-        originalRequest.headers['Authorization'] = accessToken;
-        return await api(originalRequest);
-      } else {
-        console.log("api.ts: refresh Token 재발급 실패!!");
-        console.log("api.ts: 실패response", response);
-        return response;
+        if (response.status === 200) {
+          // 새로운 토큰 저장
+          accessToken = response.headers.authorization;
+          localStorage.setItem('accessToken', accessToken);
+  
+          // 요청 다시 시도
+          console.log("api.ts: refresh Token 재발급 성공");
+          originalRequest.headers['Authorization'] = accessToken;
+          return await api(originalRequest);
+        } else {
+          console.log("api.ts: refresh Token 재발급 실패!!");
+          console.log("api.ts: 실패response", response);
+          return response;
+        }
       }
     }
 

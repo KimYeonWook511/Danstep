@@ -14,10 +14,11 @@ const ModifyProfile: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: '20px', textAlign: 'center' }}>
-      <h2>프로필 수정</h2>
+    <div style={{ padding: '20px', textAlign: 'center',color:'black' }}>
+      <h2 style={{color:'white',fontSize:'30px', marginBottom:'30px'}}>프로필 수정</h2>
       <div style={{ margin: '20px 0' }}>
         <input
+          className='input-box'
           type="text"
           placeholder="닉네임 수정"
           value={nickname}
@@ -27,6 +28,7 @@ const ModifyProfile: React.FC = () => {
       </div>
       <div style={{ margin: '20px 0' }}>
         <input
+          className='input-box'
           type="password"
           placeholder="현재 비밀번호"
           value={currentPassword}
@@ -36,6 +38,7 @@ const ModifyProfile: React.FC = () => {
       </div>
       <div style={{ margin: '20px 0' }}>
         <input
+          className='input-box'
           type="password"
           placeholder="새 비밀번호"
           value={newPassword}
@@ -44,7 +47,8 @@ const ModifyProfile: React.FC = () => {
         />
       </div>
       <button
-        style={{ padding: '10px 20px', marginTop: '20px', cursor: 'pointer' }}
+        className='modify-button'
+        style={{ padding: '10px 20px', marginTop: '20px', cursor: 'pointer',color:'white',fontSize:'20px' }}
         onClick={handleModifyProfile}
       >
         수정 완료

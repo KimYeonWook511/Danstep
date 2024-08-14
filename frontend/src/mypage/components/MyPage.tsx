@@ -6,8 +6,10 @@ import './MyPage.css';
 import { logout } from '../../api/logout';
 import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { HttpStatusCode } from 'axios';
-import api from "../../api/api";
+import api from '../../api/api';
 import { useNavigate } from 'react-router-dom';
+import NavBar from '../../components/NavBar';
+import mainBackGround from '../../assets/main_background.mp4';
 
 interface CustomJwtPayload extends JwtPayload {
   username: string;
@@ -40,7 +42,7 @@ const Mypage: React.FC = () => {
             Authorization: accessToken,
           },
         });
-        console.log("MyPage.tsx api: ", response);
+        console.log('MyPage.tsx api: ', response);
         setVideos(response.data);
       } catch (error) {
         console.error('Error fetching videos:', error);
@@ -55,11 +57,11 @@ const Mypage: React.FC = () => {
   }, []);
 
   const handleLogout = async () => {
-    if (await logout() === HttpStatusCode.Ok) {
+    if ((await logout()) === HttpStatusCode.Ok) {
       // 로그아웃 후 추가적인 동작이 필요한 경우 여기서 처리할 수 있습니다.
       setNickname(null);
       // setShowLogin(true); // 로그아웃 시 로그인 폼을 다시 표시
-      navigate("/");
+      navigate('/');
     }
   };
 
@@ -85,19 +87,39 @@ const Mypage: React.FC = () => {
   };
 
   if (showLogin) {
-    return <LoginForm onClose={handleCloseLoginForm} onLogin={handleCloseLoginForm} />;
+    return (
+      <LoginForm
+        onClose={handleCloseLoginForm}
+        onLogin={handleCloseLoginForm}
+      />
+    );
   }
 
   return (
-    <div style={{ display: 'flex', width: '1200px', height: '600px' }}>
+    <div style={{ display: 'flex', width: '1200px', height: '600px', textAlign: 'center' }}>
+      <NavBar />
+      <video
+        autoPlay
+        loop
+        muted
+        className='background-video'
+      >
+        <source
+          src={mainBackGround}
+          type='video/mp4'
+        />
+      </video>
+
       <div
-        className='red-neon red'
+        className='neon-border'
         style={{
           display: 'flex',
-          width: '90%',
+          width: '100%',
           height: '90%',
           backgroundColor: 'black',
-          padding: '50px',
+          paddingTop: '50px',
+          paddingBottom: '50px',
+          paddingRight: '50px',
           margin: '50px',
           borderRadius: '5%',
           borderWidth: '1px',
@@ -112,7 +134,6 @@ const Mypage: React.FC = () => {
             flexDirection: 'column',
             width: '30%',
             height: '100%',
-            marginRight: '10px',
             margin: 'auto',
           }}
         >
@@ -164,6 +185,7 @@ const Mypage: React.FC = () => {
                 borderRadius: '5px',
               }}
               onClick={() => handleTabChange('video')}
+              className='grow-button'
             >
               플레이 영상
             </button>
@@ -181,6 +203,7 @@ const Mypage: React.FC = () => {
                 borderRadius: '5px',
               }}
               onClick={() => handleTabChange('profile')}
+              className='grow-button'
             >
               프로필 수정
             </button>
@@ -198,6 +221,7 @@ const Mypage: React.FC = () => {
                 borderRadius: '5px',
               }}
               onClick={handleBackClick}
+              className='grow-button'
             >
               메인페이지로 이동
             </button>
@@ -214,6 +238,7 @@ const Mypage: React.FC = () => {
                 border: '1px solid white',
                 borderRadius: '5px',
               }}
+              className='grow-button'
               onClick={handleLogout}
             >
               로그아웃
@@ -228,10 +253,9 @@ const Mypage: React.FC = () => {
             flexDirection: 'column',
             width: '70%',
             height: '100%',
-            marginLeft: '30px',
-            padding: '30px',
+            padding: '20px',
             borderRadius: '5%',
-            backgroundColor: 'white',
+            color: 'white',
             overflow: 'auto',
             scrollbarWidth: '-moz-initial',
             flexWrap: 'wrap',
