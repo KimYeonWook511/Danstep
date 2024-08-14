@@ -12,15 +12,8 @@ import java.util.Date;
 @ToString
 public class GetUserResultDTO {
     private Integer resultInfoId;
-
     private Integer gameInfoId;
     private Date resultDate;
-    private Integer score;
-    private Integer perfect;
-    private Integer great;
-    private Integer good;
-    private Integer bad;
-    private Integer maxCombo;
 
     // user_info join
     private String username;
@@ -28,6 +21,4 @@ public class GetUserResultDTO {
 
     // game_info join
     private String title;
-    private Integer playtime;
-    private Integer level;
 }

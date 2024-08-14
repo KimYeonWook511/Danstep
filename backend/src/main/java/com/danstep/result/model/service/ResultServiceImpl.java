@@ -88,9 +88,6 @@ public class ResultServiceImpl implements ResultService {
     @Override
     @Transactional(readOnly = true)
     public List<GetUserResultDTO> getUserResults(String username) {
-//        List<GetResultInfoDTO> results = resultMapper.getUserResultsByGameInfoId(getResultInfoDTO);
-//
-//        return results;
 
         return resultMapper.getUserResults(username);
     }
@@ -104,7 +101,14 @@ public class ResultServiceImpl implements ResultService {
             throw new ReplayNotFoundException("Replay not found with resultInfoId " + replayDTO.getResultInfoId());
         }
 
-        GetReplayDTO getReplayDTO = new GetReplayDTO();
+        GetReplayDTO getReplayDTO = GetReplayDTO.builder()
+                .score(dto.getScore())
+                .perfect(dto.getPerfect())
+                .great(dto.getGreat())
+                .good(dto.getGood())
+                .bad(dto.getBad())
+                .maxCombo(dto.getMaxCombo())
+                .build();
 
         // mp3파일 url 가져오기
         getReplayDTO.setAudioUrl(s3Util.getPublicUrl("games", Integer.toString(dto.getGameInfoId()), dto.getAudioFilename()));
