@@ -54,7 +54,10 @@
           AND ri.user_info_id = ui.id
         LEFT JOIN game_info AS gi
           ON ri.game_info_id = gi.id
+        LEFT JOIN result_pose AS rp
+          ON ri.id = rp.result_info_id
         WHERE ri.user_info_id = (SELECT id FROM user_info WHERE username = #{username})
+        AND rp.pose_filename IS NOT NULL
         ORDER BY ri.result_date DESC;
     </select>
 
@@ -69,10 +72,11 @@
           ON ri.id = rp.result_info_id
         LEFT JOIN game_info AS gi
           ON ri.game_info_id = gi.id
-        WHERE ri.id = #{resultInfoId}
+        WHERE rp.result_info_id = #{resultInfoId}
           AND ri.user_info_id = (SELECT id FROM user_info WHERE username = #{username});
     </select>
 
+    <!--  IS NOT NULL을 하지 않으면 임의로 없는 번호   -->
     <select id="getUserResultPose" resultMap="replayBasic">
         SELECT ri.game_info_id, rp.pose_filename AS my_pose_filename
         FROM result_info AS ri
@@ -80,8 +84,8 @@
           ON ri.id = rp.result_info_id
         LEFT JOIN user_info AS ui
           ON ri.user_info_id = ui.id
-        WHERE ri.id = #{resultInfoId}
-        AND ui.username = #{username};
+        WHERE rp.result_info_id = #{resultInfoId}
+        AND ui.username = #{username}
     </select>
 
     <delete id="deleteUserResultPose">
