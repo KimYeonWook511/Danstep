@@ -121,4 +121,24 @@ public class ResultServiceImpl implements ResultService {
         return getReplayDTO;
     }
 
+    @Override
+    public void deleteUserResultPost(ReplayDTO replayDTO) {
+        String poseFilename = resultMapper.getUserResultPose(replayDTO);
+
+        if (poseFilename == null) {
+            throw new ReplayNotFoundException("Replay not found with resultInfoId " + replayDTO.getResultInfoId());
+        }
+
+        int result = resultMapper.deleteUserResultPose(replayDTO.getResultInfoId());
+
+        if (result == 0) {
+            System.out.println("삭제 실패함");
+            // 삭제 실패시 처리 로직
+        }
+
+        // S3에서도 삭제해야함
+        // S3에서 삭제 실패하면? Spring Batch??
+        // poseFilename을 이용해서 삭제하기
+    }
+
 }
