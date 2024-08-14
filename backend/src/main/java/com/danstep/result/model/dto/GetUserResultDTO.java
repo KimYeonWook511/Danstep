@@ -15,6 +15,8 @@ public class GetUserResultDTO {
     private Integer gameInfoId;
     private Date resultDate;
 
+    private Integer score;
+
     // user_info join
     private String username;
     private String nickname;

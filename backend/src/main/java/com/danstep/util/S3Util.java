@@ -190,4 +190,27 @@ public class S3Util {
         // S3에 업로드
         amazonS3Admin.putObject(new PutObjectRequest(bucket, sb.toString(), inputStream, metadata));
     }
+
+    public void deleteUserJson(String folder, String username, String gameInfoId, String filename) {
+        sb = new StringBuilder().append("private/")
+                .append(folder)
+                .append("/")
+                .append(username)
+                .append("/")
+                .append(gameInfoId)
+                .append("/")
+                .append(filename);
+
+        String path = sb.toString();
+        try {
+            if (amazonS3Admin.doesObjectExist(bucket, path)) {
+                amazonS3Admin.deleteObject(bucket, path);
+                System.out.println("File deleted successfully: " + path);
+            } else {
+                System.out.println("File not found: " + path);
+            }
+        } catch (Exception e) {
+            System.out.println("S3 Error deleting file: " + path);
+        }
+    }
 }
