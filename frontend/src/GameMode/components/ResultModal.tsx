@@ -42,6 +42,11 @@ const ResultModal: React.FC<ResultModalProps> = ({ isOpen, onClose, score, bad, 
 
     const accessToken = localStorage.getItem('accessToken') || '';
     setIsSubmitted(true); // 제출 완료 후 상태 업데이트
+    if (!accessToken) {
+      setShowLogin(true);
+      return;
+    }
+
     try {
       const data = {
         score,
