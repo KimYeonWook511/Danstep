@@ -123,14 +123,16 @@ public class ResultServiceImpl implements ResultService {
 
     @Override
     public void deleteUserResultPost(ReplayDTO replayDTO) {
+        System.out.println("deleteUserResultPost 서비스 시작");
+        System.out.println(replayDTO.toString());
         String poseFilename = resultMapper.getUserResultPose(replayDTO);
-
+        System.out.println("poseFilename : " + poseFilename);
         if (poseFilename == null) {
             throw new ReplayNotFoundException("Replay not found with resultInfoId " + replayDTO.getResultInfoId());
         }
 
         int result = resultMapper.deleteUserResultPose(replayDTO.getResultInfoId());
-
+        System.out.println("result : " + result);
         if (result == 0) {
             System.out.println("삭제 실패함");
             // 삭제 실패시 처리 로직
