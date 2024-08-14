@@ -1,10 +1,11 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaTrash } from 'react-icons/fa';
-// import { FaEye } from 'react-icons/fa';
 import { BsPlayBtn } from 'react-icons/bs';
 import './PlayVideo.css';
 import RemovePoseModal from './RemovePoseModal';
+import api from '../../api/api';
+import { jwtDecode, JwtPayload } from 'jwt-decode';
 
 interface VideoData {
   title: string;
@@ -15,9 +16,14 @@ interface VideoData {
 
 interface PlayVideoProps {
   videos: VideoData[];
+  onDelete: (deletedVideoId: number) => void; // 콜백 함수 추가
 }
 
-const PlayVideo: React.FC<PlayVideoProps> = ({ videos }) => {
+interface CustomJwtPayload extends JwtPayload {
+  username: string;
+}
+
+const PlayVideo: React.FC<PlayVideoProps> = ({ videos, onDelete }) => {
   const navigate = useNavigate();
 
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
@@ -50,10 +56,28 @@ const PlayVideo: React.FC<PlayVideoProps> = ({ videos }) => {
     setSelectedVideoIndex(null);
   };
 
-  const handleRemove = () => {
-    videos.splice(selectedVideoIndex!, 1);
-    setShowRemovePoseModal(true);
-    handleCloseModal();
+  const handleRemove = async () => {
+    const accessToken = localStorage.getItem('accessToken');
+    const decodedToken = jwtDecode<CustomJwtPayload>(accessToken!);
+    if (selectedVideoIndex !== null) {
+      const videoToDelete = videos[selectedVideoIndex];
+      try {
+        await api.delete(`results/${decodedToken.username}/replay/${videoToDelete.resultInfoId}`, {
+          headers: {
+            Authorization: accessToken,
+          },
+        });
+
+        // 부모 컴포넌트로 삭제된 비디오의 ID를 전달
+        onDelete(videoToDelete.resultInfoId);
+
+        setSelectedVideoIndex(null);
+        setShowRemovePoseModal(false);
+      } catch (error) {
+        console.error('비디오 삭제에 실패했습니다:', error);
+        // 사용자에게 오류 메시지를 표시할 수 있습니다.
+      }
+    }
   };
 
   return (

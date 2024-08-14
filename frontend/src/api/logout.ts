@@ -2,7 +2,6 @@ import api from './api';
 
 export const logout = async () => {
   const accessToken = localStorage.getItem('accessToken');
-
   try {
     const response = await api.post(
       '/users/logout',
@@ -24,7 +23,7 @@ export const logout = async () => {
       console.log("로그아웃에 실패하였습니다.");
     }
 
-  } catch (error) {
-    console.log("실패로그: ", error);
+  } catch (error:any) {
+    return error.response.status;
   }
 };

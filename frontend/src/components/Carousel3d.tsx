@@ -315,7 +315,7 @@ const Carousel3d: React.FC<{ data: Game[] }> = ({ data }) => {
             <h2>{item.title}</h2>
             <div className='game-details'>
               {item.level && <p className='level-stars'>{renderStars(item.level)}</p>}
-              {item.playtime && <p className='play-time'>PlayTime: {item.playtime}</p>}
+              {item.playtime && <p className='play-time'>PlayTime: {item.playtime}sec</p>}
             </div>
             {item.rankTop3List && item.rankTop3List.length > 0 && (
               <div className='ranking-podium'>

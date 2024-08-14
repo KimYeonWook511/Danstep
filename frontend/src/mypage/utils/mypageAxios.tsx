@@ -52,8 +52,10 @@ export const modifyProfile = async ({currentPassword, newPassword, nickname}:Mod
         'Authorization' : accessToken,
       }});
       console.log(response);
+      return response;
     }
-    catch (error) {
+    catch (error:any) {
         console.error('Failed to submit result:', error);
+        return error.response;
       }
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation, Navigate } from 'react-router-dom';
 import MainPage from './components/MainPage';
 import Ranking from './components/Ranking';
 import GamePage from './components/GamePage';
@@ -183,6 +183,7 @@ const App: React.FC = () => {
         <Route path="/game/:id" element={<GamePage />} />
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/replay/:id" element={<Replay/>}/>
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
   );

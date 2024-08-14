@@ -46,6 +46,14 @@ const Replay: React.FC = () => {
   const maxCombo = useRef(0);
   const grade = useRef('');
 
+  const dbbad = useRef(0);
+  const dbgood = useRef(0);
+  const dbgreat = useRef(0);
+  const dbperfect = useRef(0);
+  const dbhealth = useRef(0);
+  const dbmaxCombo = useRef(0);
+
+
   const [yAlignedState, setYAlignedState] = useState(isYAligned.current);
   const [detectedArmsUp, setDetectedArmsUp] = useState<boolean>(false);
   const [scores, setScores] = useState<number[]>([]);
@@ -105,6 +113,12 @@ const Replay: React.FC = () => {
       audioUrl.current = response.data.audioUrl as string;
       backgroundUrl.current = response.data.backgroundUrl as string;
       SoundRef.current = new Audio(audioUrl.current);
+      dbbad.current = response.data.bad;
+      dbgood.current = response.data.good;
+      dbgreat.current = response.data.great;
+      dbperfect.current = response.data.perfect;
+      dbmaxCombo.current = response.data.maxCombo;
+      dbhealth.current = response.data.score;
       console.log('keypoints:', keypointsJson.current);
       console.log('Loaded keypoints:', camKeypointJson.current);
     } catch (error) {
@@ -466,12 +480,12 @@ const Replay: React.FC = () => {
         <ResultModalReplay
           isOpen={isFinished}
           onClose={moveMypage}
-          score={health.current}
-          bad={bad.current}
-          good={good.current}
-          great={great.current}
-          perfect={perfect.current}
-          maxCombo={maxCombo.current}
+          score={dbhealth.current}
+          bad={dbbad.current}
+          good={dbgood.current}
+          great={dbgreat.current}
+          perfect={dbperfect.current}
+          maxCombo={dbmaxCombo.current}
         />
       </div>
     </div>
