@@ -7,6 +7,7 @@ import com.danstep.result.model.dto.ReplayDTO;
 import com.danstep.result.model.dto.SaveResultDTO;
 import com.danstep.result.model.service.ResultService;
 import com.danstep.user.model.dto.CustomUserDetails;
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -92,5 +93,23 @@ public class ResultController {
         return new ResponseEntity<>(resultService.getUserReplay(replayDTO), HttpStatus.OK);
     }
 
+    @DeleteMapping("/{username}/replay/{resultInfoId}")
+    public ResponseEntity<?> deleteUserResultPose(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                                  @PathVariable String username,
+                                                  @PathVariable Integer resultInfoId) {
 
+        if (customUserDetails == null) {
+            String jsonResponse = "{\"message\": \"User not authenticated\", \"errorCode\": \"ACCESS_TOKEN_EXPIRED\"}";
+            return new ResponseEntity<>(jsonResponse, HttpStatus.UNAUTHORIZED);
+        }
+
+        ReplayDTO replayDTO = ReplayDTO.builder()
+                .username(customUserDetails.getUsername())
+                .resultInfoId(resultInfoId)
+                .build();
+
+        resultService.deleteUserResultPost(replayDTO);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

@@ -95,8 +95,22 @@
         AND ri.user_info_id = (SELECT id FROM user_info WHERE username = #{username});
     </select>
 
-<!--    <delete id="deleteUserResultPose">-->
-<!--        delete-->
-<!--    </delete>-->
+    <select id="getUserResultPose">
+        SELECT rp.pose_filename
+        FROM result_pose AS rp
+        LEFT JOIN result_info AS ri
+          ON rp.result_info_id = ri.id
+          AND ri.id = #{id}
+        LEFT JOIN user_info AS ui
+          ON ri.user_info_id = ui.id
+          AND ui.username = #{username}
+        WHERE ri.id = #{id}
+        AND ui.username = {username};
+    </select>
+
+    <delete id="deleteUserResultPose">
+        DELETE FROM result_pose
+        WHERE result_info_id = #{reusltInfoId};
+    </delete>
 
 </mapper>

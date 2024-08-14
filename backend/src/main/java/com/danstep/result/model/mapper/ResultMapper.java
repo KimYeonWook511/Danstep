@@ -16,4 +16,9 @@ public interface ResultMapper {
     List<GetUserResultDTO> getUserResults(String username);
 
     ReplayDTO getUserReplay(ReplayDTO replayDTO);
+
+    String getUserResultPose(ReplayDTO replayDTO);
+
+    int deleteUserResultPose(Integer resultInfoId);
+
 }

@@ -15,6 +15,6 @@ public interface ResultService {
 
     GetReplayDTO getUserReplay(ReplayDTO replayDTO);
 
-//    List<>
+    void deleteUserResultPost(ReplayDTO replayDTO);
 
 }
