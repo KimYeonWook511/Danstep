@@ -28,6 +28,11 @@ public class UserController {
         // 2. customUserDetails는 null이 될 수 없는가?
         // 3. getUsername이 null이면 어떻게 되는가?
 
+        if (customUserDetails == null) {
+            String jsonResponse = "{\"message\": \"User not authenticated\", \"errorCode\": \"ACCESS_TOKEN_EXPIRED\"}";
+            return new ResponseEntity<>(jsonResponse, HttpStatus.UNAUTHORIZED);
+        }
+
         return new ResponseEntity<>(userService.getUserInfoByUsername(customUserDetails.getUsername()), HttpStatus.OK);
     }
 
@@ -36,9 +41,13 @@ public class UserController {
                                                   @ModelAttribute UpdateUserDTO updateUserDTO,
                                                   @RequestPart(name = "profile", required = false) MultipartFile profile) {
 
+        if (customUserDetails == null) {
+            String jsonResponse = "{\"message\": \"User not authenticated\", \"errorCode\": \"ACCESS_TOKEN_EXPIRED\"}";
+            return new ResponseEntity<>(jsonResponse, HttpStatus.UNAUTHORIZED);
+        }
+
         if (profile == null) {
             // 확장자 검증 해야함!!
-
         }
 
         System.out.println(customUserDetails.getUsername());
