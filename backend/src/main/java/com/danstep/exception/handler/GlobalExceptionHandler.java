@@ -36,6 +36,16 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND); // 404
     }
 
+    @ExceptionHandler(InvalidUsernameException.class)
+    public ResponseEntity<String> handleInvalidUsernameException(InvalidUsernameException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST); // 400
+    }
+
+    @ExceptionHandler(InvalidNicknameException.class)
+    public ResponseEntity<String> handleInvalidNicknameException(InvalidNicknameException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST); // 400
+    }
+
     @ExceptionHandler(NicknameAlreadyExistsException.class)
     public ResponseEntity<String> handleNicknameAlreadyExistsException(NicknameAlreadyExistsException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT); // 409

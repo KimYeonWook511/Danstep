@@ -83,8 +83,8 @@ public class ReissueController {
         //make new JWT
 //        String newAccess = jwtUtil.createJwt("access", username, nickname, role, 600000L);
 //        String newRefresh = jwtUtil.createJwt("refresh", username, nickname, role, 86400000L);
-        String newAccess = jwtUtil.createJwt("access", username, nickname, role, 120000L); // 2분
-        String newRefresh = jwtUtil.createJwt("refresh", username, nickname, role, 59000L); // 59초
+        String newAccess = jwtUtil.createJwt("access", username, nickname, role, 59000L); // 59초
+        String newRefresh = jwtUtil.createJwt("refresh", username, nickname, role, 120000L); // 2분
 
         //Refresh 토큰 저장 DB에 기존의 Refresh 토큰 삭제 후 새 Refresh 토큰 저장
         reissueRefresh(username, newRefresh);
@@ -127,9 +127,10 @@ public class ReissueController {
     private Cookie createCookie(String key, String value) {
 
         Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(24*60*60);
-        //cookie.setSecure(true);
-        //cookie.setPath("/");
+//        cookie.setMaxAge(24*60*60);
+        cookie.setMaxAge(2*60);
+        cookie.setSecure(true);
+        cookie.setPath("/");
         cookie.setHttpOnly(true);
 
         return cookie;
