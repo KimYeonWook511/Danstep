@@ -6,7 +6,7 @@ import '../neon/Neon.css';
 import '../neon/TopBar.css';
 import { detectFirstFrame, checkInitialYAlignment, isArmsUp, keypointsDetected } from '../utils/Verification';
 import { sendScores } from '../utils/Result';
-import { drawGreen, drawHandFoot, drawRed } from '../utils/DrawUtils';
+import { drawGreen, drawHandFoot, drawRed,drawHandFootGreen } from '../utils/DrawUtils';
 import { calculateScore } from '../utils/CalculateUtils';
 import { updateScores } from '../utils/ScoreUtils';
 import NeonButton from '../neon/NeonButton';
@@ -411,7 +411,10 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
         canvasRef.current.width = 720;
         canvasRef.current.height = 1280;
         // console.log(canvasRef.current);
-        if (keypoints) drawGreen(ctx, keypoints);
+        if (keypoints){
+          drawGreen(ctx, keypoints);
+          drawHandFootGreen(ctx, keypoints);
+        }
         return keypoints;
       }
     }

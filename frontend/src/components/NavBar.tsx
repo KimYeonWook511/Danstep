@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, FC } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Menu from './Menu'
 import './NavBar.css';
 import './ProfileIcon.css'
@@ -12,7 +12,7 @@ const NavBar: FC = () => {
   const [navHeight, setNavHeight] = useState<number>(0);
   const navRef = useRef<HTMLDivElement | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem("accessToken") !== null); // 로그인 상태 관리
-
+  const navigate = useNavigate();
   useEffect(() => {
     const updateNavHeight = () => {
       if (navRef.current) {
@@ -33,9 +33,10 @@ const NavBar: FC = () => {
   };
 
   const handleLogout = async () => {
-    if (await logout() === HttpStatusCode.Ok) {
-      setIsLoggedIn(false);
-    }
+    await logout();
+    setIsLoggedIn(false);
+    localStorage.removeItem("accessToken");
+    navigate("/");
   };
 
   return (

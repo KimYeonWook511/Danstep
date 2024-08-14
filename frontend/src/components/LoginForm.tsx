@@ -29,6 +29,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onClose, onLogin }) => {
       onLogin();
       onClose();
     } catch (err) {
+      setPassword('');
       setError('Login failed. Please check your credentials and try again.');
     }
   };

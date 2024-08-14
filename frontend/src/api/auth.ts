@@ -20,8 +20,9 @@ interface SignUpRequest {
   }
   
 export const signUp = async (credentials: SignUpRequest): Promise<SignUpResponse> => {
-    const response = await api.post<SignUpResponse>('/users/join', credentials);
-    return response.data;
+  const response = await api.post<SignUpResponse>('/users/join', credentials);
+  return response.data;
+    
 };
 
 export const login = async (credentials: LoginRequest): Promise<LoginResponse> => {

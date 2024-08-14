@@ -5,12 +5,12 @@ const drawKeypoints1 = (
   keypoints: Keypoint[],
   color: string,
   neonColor: string,
-  alpha: number = 0.3 // 투명도 값 추가 (기본값 0.5)
+  alpha: number = 1 // 투명도 값 추가 (기본값 0.5)
 ) => {
   ctx.globalAlpha = alpha;
   ctx.fillStyle = color;
   ctx.strokeStyle = color;
-  ctx.lineWidth = 20;
+  ctx.lineWidth = 40;
   ctx.lineCap = 'round'; // 선의 끝을 둥글게 설정
   ctx.lineJoin = 'round'; // 선의 연결 부분을 둥글게 설정
 
@@ -74,7 +74,7 @@ const drawKeypoints2 = (
 ) => {
   ctx.fillStyle = color;
   ctx.strokeStyle = color;
-  ctx.lineWidth = 20;
+  ctx.lineWidth = 40;
   ctx.lineCap = 'round'; // 선의 끝을 둥글게 설정
   ctx.lineJoin = 'round'; // 선의 연결 부분을 둥글게 설정
 
@@ -108,7 +108,7 @@ const drawKeypoints3 = (
 ) => {
   ctx.fillStyle = color;
   ctx.strokeStyle = color;
-  ctx.lineWidth = 20;
+  ctx.lineWidth = 40;
   ctx.lineCap = 'round'; // 선의 끝을 둥글게 설정
   ctx.lineJoin = 'round'; // 선의 연결 부분을 둥글게 설정
 
@@ -158,7 +158,46 @@ const drawKeypoints3 = (
   ctx.restore();
 };
 
+const drawKeypoints4 = (
+  ctx: CanvasRenderingContext2D,
+  keypoints: Keypoint[],
+  color: string,
+  neonColor: string
+) => {
+  ctx.fillStyle = color;
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 40;
+  ctx.lineCap = 'round'; // 선의 끝을 둥글게 설정
+  ctx.lineJoin = 'round'; // 선의 연결 부분을 둥글게 설정
 
+  ctx.shadowColor = neonColor;
+  ctx.shadowBlur = 30;
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = 0;
+  ctx.save();
+  ctx.scale(-1, 1);
+  ctx.translate(-ctx.canvas.width, 0);
+
+  util.getAdjacentPairs(SupportedModels.BlazePose).forEach(([i, j]) => {
+    const kp1 = keypoints[i];
+    const kp2 = keypoints[j];
+
+    const score1 = kp1.score != null ? kp1.score : 1;
+    const score2 = kp2.score != null ? kp2.score : 1;
+    const scoreThreshold = 0.1;
+
+    if (score1 >= scoreThreshold && score2 >= scoreThreshold && ((i > 14 && j > 14 && i < 23 && j < 23) || (i > 26 && j > 26))) {
+      ctx.beginPath();
+      ctx.moveTo(kp1.x, kp1.y);
+      ctx.lineTo(kp2.x, kp2.y);
+      ctx.stroke();
+    }
+  });
+};
+
+export const drawHandFootGreen = (ctx: CanvasRenderingContext2D, keypoints: Keypoint[]) => {
+  drawKeypoints4(ctx, keypoints, 'rgba(255,255,255,0.5)', 'rgba(255, 255, 255, 1)');
+};
 
 export const drawHandFoot = (ctx: CanvasRenderingContext2D, keypoints: Keypoint[]) => {
   drawKeypoints2(ctx, keypoints, 'rgba(255,255,255,0.5)', 'rgba(255, 255, 255, 1)');

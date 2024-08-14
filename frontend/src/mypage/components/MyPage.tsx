@@ -44,13 +44,12 @@ const Mypage: React.FC = () => {
         });
         console.log('MyPage.tsx api: ', response);
         setVideos(response.data);
-      } catch (error:any) {
+      } catch (error: any) {
         if (error.response && error.response.status === 400) {
           setShowLogin(true); // 에러가 400일 때 로그인 화면 표시
         } else {
           console.error('Error fetching videos:', error);
         }
-        
       }
     } else {
       setShowLogin(true);
@@ -63,11 +62,10 @@ const Mypage: React.FC = () => {
 
   const handleLogout = async () => {
     if ((await logout()) === HttpStatusCode.Ok) {
-      // 로그아웃 후 추가적인 동작이 필요한 경우 여기서 처리할 수 있습니다.
       setNickname(null);
-      // setShowLogin(true); // 로그아웃 시 로그인 폼을 다시 표시
-      navigate('/');
     }
+    localStorage.removeItem('accessToken');
+    navigate('/');
   };
 
   const handleCloseLoginForm = () => {
@@ -75,6 +73,8 @@ const Mypage: React.FC = () => {
     if (token) {
       setShowLogin(false);
       fetchData(); // 로그인 후 비디오 데이터를 다시 가져옵니다.
+    } else {
+      navigate('/');
     }
   };
 
@@ -91,6 +91,14 @@ const Mypage: React.FC = () => {
     navigate('/');
   };
 
+  const handleNicknameChange = (newNickname: string) => {
+    setNickname(newNickname);
+  };
+
+  const handleVideoDelete = (deletedVideoId: number) => {
+    setVideos((prevVideos) => prevVideos.filter((video) => video.resultInfoId !== deletedVideoId));
+  };
+
   if (showLogin) {
     return (
       <LoginForm
@@ -103,16 +111,8 @@ const Mypage: React.FC = () => {
   return (
     <div style={{ display: 'flex', width: '1200px', height: '600px', textAlign: 'center' }}>
       <NavBar />
-      <video
-        autoPlay
-        loop
-        muted
-        className='background-video'
-      >
-        <source
-          src={mainBackGround}
-          type='video/mp4'
-        />
+      <video autoPlay loop muted className='background-video'>
+        <source src={mainBackGround} type='video/mp4' />
       </video>
 
       <div
@@ -266,7 +266,7 @@ const Mypage: React.FC = () => {
             flexWrap: 'wrap',
           }}
         >
-          {activeTab === 'video' ? <PlayVideo videos={videos} /> : <ModifyProfile />}
+          {activeTab === 'video' ? <PlayVideo videos={videos} onDelete={handleVideoDelete} /> : <ModifyProfile onNicknameChange={handleNicknameChange} />}
         </div>
       </div>
     </div>
