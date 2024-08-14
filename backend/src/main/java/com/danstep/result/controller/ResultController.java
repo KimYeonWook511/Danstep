@@ -97,17 +97,18 @@ public class ResultController {
     public ResponseEntity<?> deleteUserResultPose(@AuthenticationPrincipal CustomUserDetails customUserDetails,
                                                   @PathVariable String username,
                                                   @PathVariable Integer resultInfoId) {
-
+        System.out.println("deleteUserResult Controller");
         if (customUserDetails == null) {
             String jsonResponse = "{\"message\": \"User not authenticated\", \"errorCode\": \"ACCESS_TOKEN_EXPIRED\"}";
             return new ResponseEntity<>(jsonResponse, HttpStatus.UNAUTHORIZED);
         }
+        System.out.println("customUserDetails: " + customUserDetails.getUsername());
 
         ReplayDTO replayDTO = ReplayDTO.builder()
                 .username(customUserDetails.getUsername())
                 .resultInfoId(resultInfoId)
                 .build();
-
+        System.out.println("replayDTO: " + replayDTO.toString());
         resultService.deleteUserResultPost(replayDTO);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
