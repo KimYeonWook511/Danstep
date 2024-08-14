@@ -1,6 +1,7 @@
 package com.danstep.user.controller;
 
 import com.danstep.exception.InvalidNicknameException;
+import com.danstep.exception.InvalidPasswordException;
 import com.danstep.exception.InvalidUsernameException;
 import com.danstep.user.model.dto.JoinDTO;
 import com.danstep.user.model.service.JoinService;
@@ -40,7 +41,7 @@ public class JoinController {
         String username = joinDTO.getUsername();
         if (!Pattern.compile(usernameRegex).matcher(username).matches()) {
             System.out.println(usernameRegex);
-            throw new InvalidNicknameException("유효하지 않은 아이디입니다.");
+            throw new InvalidUsernameException("유효하지 않은 아이디입니다.");
         }
 
         String nickname = joinDTO.getNickname();
@@ -50,7 +51,7 @@ public class JoinController {
 
         String password = joinDTO.getPassword();
         if (!Pattern.compile(passwordRegex).matcher(password).matches()) {
-            throw new InvalidNicknameException("유효하지 않은 비밀번호입니다.");
+            throw new InvalidPasswordException("유효하지 않은 비밀번호입니다.");
         }
 
         joinService.joinProcess(joinDTO);
