@@ -43,6 +43,11 @@ public class ResultController {
         }
          */
 
+        if (customUserDetails == null) {
+            String jsonResponse = "{\"message\": \"User not authenticated\", \"errorCode\": \"ACCESS_TOKEN_EXPIRED\"}";
+            return new ResponseEntity<>(jsonResponse, HttpStatus.UNAUTHORIZED);
+        }
+
         saveResultDTO.setUsername(customUserDetails.getUsername());
         resultService.saveResult(saveResultDTO);
 
@@ -50,8 +55,13 @@ public class ResultController {
     }
 
     @GetMapping("/{username}")
-    public ResponseEntity<List<GetUserResultDTO>> getUserResults(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+    public ResponseEntity<?> getUserResults(@AuthenticationPrincipal CustomUserDetails customUserDetails,
                                                                  @PathVariable String username) {
+
+        if (customUserDetails == null) {
+            String jsonResponse = "{\"message\": \"User not authenticated\", \"errorCode\": \"ACCESS_TOKEN_EXPIRED\"}";
+            return new ResponseEntity<>(jsonResponse, HttpStatus.UNAUTHORIZED);
+        }
 
         System.out.println("getUserResults(custom): " + username+ "(" + customUserDetails.getUsername() + ")");
 
@@ -61,9 +71,14 @@ public class ResultController {
 //  audiourl backgroundurl poseData myPoseData
 
     @GetMapping("/{username}/replay/{resultInfoId}")
-    public ResponseEntity<GetReplayDTO> getUserReplay(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+    public ResponseEntity<?> getUserReplay(@AuthenticationPrincipal CustomUserDetails customUserDetails,
                                                       @PathVariable String username,
                                                       @PathVariable Integer resultInfoId) {
+
+        if (customUserDetails == null) {
+            String jsonResponse = "{\"message\": \"User not authenticated\", \"errorCode\": \"ACCESS_TOKEN_EXPIRED\"}";
+            return new ResponseEntity<>(jsonResponse, HttpStatus.UNAUTHORIZED);
+        }
 
         System.out.println("getUserResultPoseByResultInfoId: " + customUserDetails.getUsername());
         System.out.println("getUserResultPoseByResultInfoId: " + username);
