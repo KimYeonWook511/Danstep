@@ -70,7 +70,7 @@ public class ResultController {
         System.out.println("getUserResultPoseByResultInfoId: " + resultInfoId);
 
         ReplayDTO replayDTO = ReplayDTO.builder()
-                .username(username)
+                .username(customUserDetails.getUsername())
                 .resultInfoId(resultInfoId)
                 .build();
 
