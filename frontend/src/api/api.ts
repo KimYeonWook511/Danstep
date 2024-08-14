@@ -55,7 +55,7 @@ api.interceptors.response.use(
         // 요청 다시 시도
         console.log("api.ts: refresh Token 재발급 성공");
         originalRequest.headers['Authorization'] = accessToken;
-        return api(originalRequest);
+        return await api(originalRequest);
       } else {
         console.log("api.ts: refresh Token 재발급 실패!!");
         console.log("api.ts: 실패response", response);
