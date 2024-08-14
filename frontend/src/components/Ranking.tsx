@@ -41,6 +41,7 @@ import './Ranking.css';
 import Carousel3d from './Carousel3d';
 import NavBar from './NavBar';
 import { Game } from './types';
+import api from '../api/api';
 
 const RankingPage: React.FC = () => {
   const [rankings, setRankings] = useState<Game[]>([]); // Note: Using Game type for simplicity
@@ -48,9 +49,11 @@ const RankingPage: React.FC = () => {
   useEffect(() => {
     const fetchRankings = async () => {
       try {
-        const response = await fetch('https://i11a406.p.ssafy.io/api/v1/rankings');
-        const data = await response.json();
-        setRankings(data);
+        const response = await api.get('/rankings');
+        // const data = response.json();
+        // setRankings(data);
+        console.log("Ranking.tsx axios: ", response);
+        setRankings(response.data);
       } catch (error) {
         console.error('Failed to fetch rankings', error);
       }

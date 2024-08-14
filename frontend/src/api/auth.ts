@@ -20,14 +20,17 @@ interface SignUpRequest {
   }
   
 export const signUp = async (credentials: SignUpRequest): Promise<SignUpResponse> => {
-    const response = await api.post<SignUpResponse>('/api/v1/users/join', credentials);
+    const response = await api.post<SignUpResponse>('/users/join', credentials);
     return response.data;
 };
 
 export const login = async (credentials: LoginRequest): Promise<LoginResponse> => {
     
-  const response = await api.post<LoginResponse>('/api/v1/users/login', credentials, {
+  const response = await api.post<LoginResponse>('/users/login', credentials, {
     withCredentials: true,
+    headers: {
+      'Content-Type' : 'application/x-www-form-urlencoded',
+    }
   });  
   const accessToken = response.headers.authorization;
   

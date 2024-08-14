@@ -3,7 +3,7 @@ import './MainPage.css';
 import Carousel3d from './Carousel3d';
 import NavBar from './NavBar';
 import mainBackGround from '../assets/main_background.mp4';
-import axios from 'axios';
+import api from '../api/api'
 import { Game } from './types';
 
 const MainPage: React.FC = () => {
@@ -12,12 +12,12 @@ const MainPage: React.FC = () => {
   useEffect(() => {
     const fetchGames = async () => {
       try {
-        const response = await axios.get('https://i11a406.p.ssafy.io/api/v1/games');
+        const response = await api.get("/games");
         const data = response.data;
         setGames(data);
-        console.log(data);
+        console.log("MainPage.tsx api: ", response);
       } catch (error) {
-        console.error('Failed to fetch games', error);
+        console.error('Failed to get games', error);
       }
     };
 

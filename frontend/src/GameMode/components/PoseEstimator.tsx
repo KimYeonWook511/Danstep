@@ -20,7 +20,7 @@ import { useNavigate } from 'react-router-dom';
 import Guide from '../../components/Guide';
 import ComboEffect from './ComboEffect';
 import LifeEffect from './LifeEffect';
-import axios from 'axios';
+import api from "../../api/api";
 import Loader from '../../components/Loading';
 
 interface Game {
@@ -496,7 +496,7 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
 
   const fetchKeypoints = async () => {
     try {
-      const response = await axios.get(`https://i11a406.p.ssafy.io/api/v1/games/${game.id}/pose`);
+      const response = await api.get(`/games/${game.id}/pose`);
       keypointsJson.current = response.data; // API로부터 가져온 JSON 데이터를 keypointsJson에 저장
       len.current = keypointsJson.current.length; // JSON 데이터의 길이 설정
       console.log('Loaded keypoints:', keypointsJson.current); // 로드된 keypoints 출력

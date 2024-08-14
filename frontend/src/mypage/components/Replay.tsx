@@ -12,7 +12,7 @@ import RainbowHealthBar from '../../GameMode/neon/RainbowHealthBar';
 import NeonCircle from '../../GameMode/neon/NeonCircle';
 import { useNavigate, useParams } from 'react-router-dom';
 import ComboEffect from '../../GameMode/components/ComboEffect';
-import axios from 'axios';
+import api from "../../api/api";
 import Loader from '../../components/Loading';
 import  { jwtDecode,JwtPayload } from 'jwt-decode';
 import ResultModalReplay from './ResultModalReplay';
@@ -85,20 +85,20 @@ const Replay: React.FC = () => {
   const data = async () => {
     try {
       const accessToken = localStorage.getItem('accessToken');
+
       const decodedToken = jwtDecode<CustomJwtPayload>(accessToken!);
       const username = decodedToken.username;
-      console.log(username);
       setUsername(username);
 
-      const response = await axios.get(
-        `https://i11a406.p.ssafy.io/api/v1/results/${username}/replay/${id}`,
+      const response = await api.get(
+        `/results/${username}/replay/${id}`,
         {
           headers: {
             Authorization: accessToken,
           },
         }
       );
-      console.log(response);
+      console.log("Replay.tsx api: ", response);
       keypointsJson.current = JSON.parse(response.data.gamePoseData);
       camKeypointJson.current = JSON.parse(response.data.myPoseData);
       len.current = keypointsJson.current.length;
