@@ -5,7 +5,6 @@ import {jwtDecode,JwtPayload} from 'jwt-decode';
 interface ModifyProfileData {
     currentPassword: string;
     newPassword: string;
-    // username: string;
     nickname: string;
 }
 
@@ -20,15 +19,13 @@ export const getUser = async () =>{
     const decodedToken = jwtDecode<CustomJwtPayload>(accessToken!);
     const decodeUsername = decodedToken.username; // JWT의 페이로드에서 username 추출
     try{
-    const response = await api.get(`/users/${decodeUsername}`,{
+    await api.get(`/users/${decodeUsername}`,{
         headers:{
             'Authorization':accessToken,
             'Content-Type': 'application/json',
         }});
-    console.log(response.data);
     }
     catch(error){
-        console.error('Failed to submit result:', error);
     }
 
 }
@@ -41,7 +38,6 @@ export const modifyProfile = async ({currentPassword, newPassword, nickname}:Mod
     const data = {
         currentPassword,
         newPassword,
-        // username,
         nickname
     }
     const accessToken = localStorage.getItem('accessToken');
@@ -51,11 +47,9 @@ export const modifyProfile = async ({currentPassword, newPassword, nickname}:Mod
         'Content-Type': 'multipart/form-data',
         'Authorization' : accessToken,
       }});
-      console.log(response);
       return response;
     }
     catch (error:any) {
-        console.error('Failed to submit result:', error);
         return error.response;
       }
 }

@@ -1,25 +1,20 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState} from 'react';
 import * as tf from '@tensorflow/tfjs';
 import { createDetector, PoseDetector, SupportedModels, Keypoint } from '@tensorflow-models/pose-detection';
 import '../../canvas.css';
 import '../neon/Neon.css';
 import '../neon/TopBar.css';
 import { detectFirstFrame, checkInitialYAlignment, isArmsUp, keypointsDetected } from '../utils/Verification';
-import { sendScores } from '../utils/Result';
 import { drawGreen, drawHandFoot, drawRed,drawHandFootGreen } from '../utils/DrawUtils';
 import { calculateScore } from '../utils/CalculateUtils';
 import { updateScores } from '../utils/ScoreUtils';
 import NeonButton from '../neon/NeonButton';
-import NeonRating from '../neon/NeonRating';
 import RainbowHealthBar from '../neon/RainbowHealthBar';
 import NeonCircle from '../neon/NeonCircle';
-import ScoreDisplay from '../neon/ScoreDisplay';
-import ThreeStars from '../neon/ThreeStars';
 import ResultModal from './ResultModal';
 import { useNavigate } from 'react-router-dom';
 import Guide from '../../components/Guide';
 import ComboEffect from './ComboEffect';
-import LifeEffect from './LifeEffect';
 import api from "../../api/api";
 import Loader from '../../components/Loading';
 
@@ -77,7 +72,6 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
   const maxCombo = useRef(0);
   const grade = useRef('');
 
-  const [yAlignedState, setYAlignedState] = useState(isYAligned.current);
   const [detectedArmsUp, setDetectedArmsUp] = useState<boolean>(false);
   const [scores, setScores] = useState<number[]>([]);
   const [isFinished, setIsFinished] = useState<boolean>(false);
@@ -113,13 +107,6 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
       cancelAnimationFrame(animationFrameRef.current);
       animationFrameRef.current = null;
     }
-  };
-
-  const releaseDetectors = () => {
-    console.log('releaseDetectors => detector 전부 꺼버려~~~~');
-    detector.current = undefined;
-    camdetector.current = undefined;
-    checkdetector.current = undefined;
   };
 
   const resetState = () => {
@@ -190,7 +177,7 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
 
   const init = async () => {
     try {
-      await tf.setBackend('webgl');
+      // await tf.setBackend('webgl');
       await tf.ready();
 
       const camera = await setupCamera();
@@ -205,7 +192,6 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
           runtime: 'mediapipe',
           modelType: 'full',
           solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/pose/',
-          render3D: true,
         };
 
         detector.current = await createDetector(SupportedModels.BlazePose, modelConfig);
@@ -220,11 +206,9 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
         await detectFirstFrame(keypointsJson.current[0], firstFrameY);
 
         // 시작 동작 검사 (만세)
-        console.log('동작 검사 시작');
         intervalRef.current = setInterval(async () => await checkDetect(), 50);
       }
     } catch (error) {
-      console.error('init 함수에서 오류 발생:', error);
     }
   };
 
@@ -233,7 +217,6 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
       if (isCheckEnd.current) return;
 
       if (!checkdetector.current) {
-        console.error('checkDetector가 아직 초기화되지 않았습니다.');
         return;
       }
 
@@ -247,30 +230,22 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
 
         if (iskeypoint) {
           if (yAligned.current > -0.5 && yAligned.current < 0.5) {
-            console.log('프레임이 초록색일 때 머리 위로 동그라미를 만들면 게임이 시작됩니다.');
             isYAligned.current = true;
             setAlignmentMessage('Hands Up');
           } else {
             setAlignmentMessage(yAligned.current < -0.5 ? 'Go Back' : 'Go front');
-            console.log(yAligned.current < -0.5 ? '카메라에서 멀어지세요' : '카메라로 가까이 오세요');
           }
-
           if (isYAligned.current && isArmsUp(checkKeypoints)) {
             setDetectedArmsUp(true);
-            console.log('타이머 시작');
             clearInterval(intervalRef.current);
             isCheckEnd.current = true;
             startTimer();
           }
         } else {
           setAlignmentMessage('inside Frame');
-          console.log('몸 전체가 프레임 안에 들어오도록 해주세요');
         }
-      } else {
-        console.log('인식이 안 되고 있는 것 같습니다.');
       }
     } catch (error) {
-      console.error('checkDetect 함수에서 오류 발생:', error);
     }
   };
 
@@ -314,9 +289,7 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
   };
 
   const camDetect = async () => {
-    // console.log("camDetect: ", idx.current);
     if (idx.current >= len.current) {
-      console.log('끝!!!');
       clearInterval(intervalRef.current);
       return;
     }
@@ -338,22 +311,8 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
 
         if (newScores.length === 8) {
           const averageScore = newScores.reduce((a, b) => a + b, 0) / 8;
-          console.log('Average Score:', averageScore);
-
           updateScores(averageScore, bad, good, great, perfect, health, combo, maxCombo, grade);
-
-          // console.log("bad: ", bad, good, great, perfect, health);
-
           videoRef.current!.onended = () => {
-            console.log('끝났으니 결과 보내기!');
-            // sendScores({
-            //   bad: bad.current,
-            //   good: good.current,
-            //   great: great.current,
-            //   perfect: perfect.current,
-            //   health: health.current,
-            // });
-
             setIsFinished(true);
           };
           return [];
@@ -376,7 +335,6 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
         });
       }
     } catch (error) {
-      console.error('비디오 설정 중 오류 발생:', error);
       return null;
     }
   };
@@ -395,7 +353,6 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
         });
       }
     } catch (error) {
-      console.error('카메라 설정 중 오류 발생:', error);
       return null;
     }
   };
@@ -410,7 +367,6 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
         ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
         canvasRef.current.width = 720;
         canvasRef.current.height = 1280;
-        // console.log(canvasRef.current);
         if (keypoints){
           drawGreen(ctx, keypoints);
           drawHandFootGreen(ctx, keypoints);
@@ -423,7 +379,6 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
   const camdetectPose = async (detector: PoseDetector, isPush: boolean) => {
     try {
       if (!detector) {
-        console.log('감지기가 초기화되지 않았습니다.');
         return;
       }
 
@@ -448,13 +403,11 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
         }
       }
     } catch (error) {
-      console.error('camdetectPose 함수에서 오류 발생:', error);
     }
   };
 
   const checkdetectPose = async (detector: PoseDetector) => {
     if (!detector) {
-      console.log('아직 포즈감지 초기화 안됨');
       return;
     }
 
@@ -478,46 +431,20 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
     }
   };
 
-  // json 저장하기
-  const saveKeypointsAsJson = () => {
-    // keypoints를 JSON 문자열로 변환
-    const json = JSON.stringify(camKeypoints.current, null, 2); // 2는 들여쓰기를 위한 값
-
-    // Blob 객체 생성
-    const blob = new Blob([json], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-
-    // 다운로드를 위한 링크 생성
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'userKeypoints.json'; // 파일 이름
-    document.body.appendChild(a);
-    a.click(); // 링크 클릭하여 다운로드 시작
-    document.body.removeChild(a); // 링크 제거
-    URL.revokeObjectURL(url); // URL 객체 해제
-  };
-
   const fetchKeypoints = async () => {
     try {
       const response = await api.get(`/games/${game.id}/pose`);
       keypointsJson.current = response.data; // API로부터 가져온 JSON 데이터를 keypointsJson에 저장
       len.current = keypointsJson.current.length; // JSON 데이터의 길이 설정
-      console.log('Loaded keypoints:', keypointsJson.current); // 로드된 keypoints 출력
-      console.log('data length: ', len.current);
     } catch (error) {
-      console.error('Error fetching JSON:', error); // 오류 처리
     }
   };
 
   useEffect(() => {
-    const initialize = async () => {
-      await init(); // 비동기 함수 호출
-    };
+    if(camRef.current)
+      init(); // 비동기 함수 호출
+  }, [camRef.current]);
 
-    initialize(); // 비동기 함수 호출
-  }, [game.id]);
-
-  // const handleRestart = async () => {
   const resetResource = async (status: number) => {
     // 초록색 스켈레톤이 그려져 있는 캔버스를 초기화합니다.
     if (canvasRef.current) {
@@ -572,7 +499,6 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
     }
 
     // 상태를 초기화합니다.
-    // setYAlignedState(false);
     setCountdown(null);
     setShowPoseEstimator(false);
     setAlignmentMessage('');
@@ -608,134 +534,6 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
     }
     if (status === 2) navigate('/'); // moveMainpage
   };
-
-  // const moveMainpage = () => {
-  //   // 상태를 초기화합니다.
-  //   // setYAlignedState(false);
-  //   setAlignmentMessage('');
-  //   setShowComboEffect(false);
-  //   setState(false);
-  //   setDetectedArmsUp(false);
-  //   setScores([]);
-  //   isYAligned.current = false;
-  //   isCheckEnd.current = false;
-  //   firstFrameY.current = [];
-  //   idx.current = -1;
-  //   health.current = 100;
-  //   bad.current = 0;
-  //   good.current = 0;
-  //   great.current = 0;
-  //   perfect.current = 0;
-  //   combo.current = 0;
-  //   maxCombo.current = 0;
-
-  //   // 카메라 스트림을 정지시키는 로직 추가
-  //   if (camRef.current && camRef.current.srcObject) {
-  //     const stream = camRef.current.srcObject as MediaStream;
-  //     const tracks = stream.getTracks();
-  //     tracks.forEach((track) => track.stop()); // 모든 트랙을 정지
-  //     camRef.current.srcObject = null; // 참조를 제거하여 메모리 누수 방지
-  //   }
-
-  //   // 카메라 스트림을 정지시키는 로직 추가
-  //   if (videoRef.current && videoRef.current.srcObject) {
-  //     const stream = videoRef.current.srcObject as MediaStream;
-  //     const tracks = stream.getTracks();
-  //     tracks.forEach((track) => track.stop()); // 모든 트랙을 정지
-  //     videoRef.current.srcObject = null; // 참조를 제거하여 메모리 누수 방지
-  //   }
-
-  //   // 인식 로직 정지
-  //   stopDetection();
-  //   releaseDetectors();
-
-  //   if (status === 1) { // handleRestart
-  //     resumeAudio();
-  //     init();
-  //   }
-  //   if (status === 2) navigate('/'); // moveMainpage
-  // };
-
-  // const moveMainpage = () => {
-  //   // 초록색 스켈레톤이 그려져 있는 캔버스를 초기화합니다.
-  //   if (canvasRef.current) {
-  //     const ctx = canvasRef.current.getContext('2d');
-  //     if (ctx) {
-  //       ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height); // 캔버스 초기화
-  //     }
-  //   }
-
-  //   // 빨간색 스켈레톤이 그려져 있는 캔버스를 초기화합니다.
-  //   if (camcanvasRef.current) {
-  //     const ctx = camcanvasRef.current.getContext('2d');
-  //     if (ctx) {
-  //       ctx.clearRect(0, 0, camcanvasRef.current.width, camcanvasRef.current.height); // 캔버스 초기화
-  //     }
-  //   }
-
-  //   // 카메라 스트림을 정지시키는 로직 추가
-  //   if (camRef.current && camRef.current.srcObject) {
-  //     const stream = camRef.current.srcObject as MediaStream;
-  //     const tracks = stream.getTracks();
-  //     tracks.forEach((track) => track.stop()); // 모든 트랙을 정지
-  //     camRef.current.srcObject = null; // 참조를 제거하여 메모리 누수 방지
-  //   }
-
-  //   // 카메라 스트림을 정지시키는 로직 추가
-  //   if (videoRef.current && videoRef.current.srcObject) {
-  //     const stream = videoRef.current.srcObject as MediaStream;
-  //     const tracks = stream.getTracks();
-  //     tracks.forEach((track) => track.stop()); // 모든 트랙을 정지
-  //     videoRef.current.srcObject = null; // 참조를 제거하여 메모리 누수 방지
-  //   }
-
-  //   // MediaPipe 리소스를 정리합니다.
-  //   if (detector.current) {
-  //     detector.current = undefined; // close 메서드를 호출하여 리소스를 해제합니다.
-  //   }
-  //   if (camdetector.current) {
-  //     camdetector.current = undefined;
-  //   }
-  //   if (checkdetector.current) {
-  //     checkdetector.current = undefined;
-  //   }
-
-  //   if (intervalRef.current) {
-  //     clearInterval(intervalRef.current); // setInterval로 반복 작업이 실행된 경우 정지
-  //     intervalRef.current = null;
-  //   }
-
-  //   // 상태를 초기화합니다.
-  //   // setYAlignedState(false);
-  //   setCountdown(null);
-  //   setShowPoseEstimator(false)
-  //   setAlignmentMessage('');
-  //   setShowComboEffect(false);
-  //   setState(false);
-  //   setDetectedArmsUp(false);
-  //   setIsFinished(false);
-  //   setScores([]);
-  //   yAligned.current = 0;
-  //   isYAligned.current = false;
-  //   isCheckEnd.current = false;
-  //   iskeypoint.current = false;
-  //   firstFrameY.current = [];
-  //   idx.current = -1;
-  //   len.current = 0;
-  //   health.current = 100;
-  //   bad.current = 0;
-  //   good.current = 0;
-  //   great.current = 0;
-  //   perfect.current = 0;
-  //   combo.current = 0;
-  //   maxCombo.current = 0;
-  //   grade.current = '';
-  //   beepSoundRef.current = null;
-  //   keypointsJson.current = [];
-  //   camKeypoints.current = [];
-
-  //   navigate('/');
-  // };
 
   const handleShowPoseEstimator = () => {
     setShowPoseEstimator((prev) => !prev);
@@ -796,16 +594,6 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
                 ref={canvasRef}
                 className='canvas video-canvas'
               />
-
-              {/* {isFinished && (
-                <button
-                  className='button'
-                  onClick={handleRestart}
-                  style={{ marginTop: '20px', padding: '10px', fontSize: '16px' }}
-                >
-                  Restart
-                </button>
-              )} */}
             </>
           ) : (
             <>
@@ -876,16 +664,6 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
                 className='canvas cam-canvas'
                 style={{ transform: 'scaleX(-1)' }}
               />
-
-              {/* {isFinished && (
-                <button
-                  className='button'
-                  onClick={handleRestart}
-                  style={{ marginTop: '20px', padding: '10px', fontSize: '16px' }}
-                >
-                  Restart
-                </button>
-              )} */}
             </>
           ) : (
             <>

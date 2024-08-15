@@ -66,9 +66,7 @@ public class SecurityConfig {
 
                         CorsConfiguration configuration = new CorsConfiguration();
 
-                        // configuration.setAllowedOrigins(Collections.singletonList("http://danstep-frontend-container:3000"));
                         configuration.setAllowedOrigins(Arrays.asList(
-                                "http://localhost:3000",
                                 "https://i11a406.p.ssafy.io"
                         ));
                         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")); // 허용할 메서드 추가
@@ -103,9 +101,6 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/users/join").permitAll()
 //                        .requestMatchers("/api/v1/users/logout").permitAll()
                         .requestMatchers("/api/v1/users/reissue").permitAll()
-//                        .requestMatchers("/api/v1/games/").permitAll()
-                        .requestMatchers("/api/v1/test/**").permitAll() // 임시 테스트 부분 허용!
-//                        .requestMatchers("/api/v1/s3/**").permitAll() // 임시 테스트 부분 허용!
                         .requestMatchers("/api/v1/games/**").permitAll() // 임시 테스트 부분 허용!
                         .requestMatchers("/api/v1/results/**").permitAll() // 임시 테스트 부분 허용!
                         .requestMatchers("/admin").hasRole("ADMIN")

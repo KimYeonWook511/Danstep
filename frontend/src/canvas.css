@@ -1,16 +1,3 @@
-/* body {
-  margin: 0;
-  font-family: 'Arial', sans-serif;
-  background-color: black;
-  color: #fff;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  overflow: hidden;
-} */
-
 .no-border {
   border: none;
   box-shadow: none;
@@ -107,9 +94,6 @@
   background-color: black;
 }
 
-.cam-canvas {
-}
-
 .video-canvas {
   width: 100%;
   height: 100%;
@@ -121,8 +105,4 @@
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-}
-
-.cam-video,
-.game-video {
 }

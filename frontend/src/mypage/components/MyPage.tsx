@@ -42,13 +42,10 @@ const Mypage: React.FC = () => {
             Authorization: accessToken,
           },
         });
-        console.log('MyPage.tsx api: ', response);
         setVideos(response.data);
       } catch (error: any) {
         if (error.response && error.response.status === 400) {
           setShowLogin(true); // 에러가 400일 때 로그인 화면 표시
-        } else {
-          console.error('Error fetching videos:', error);
         }
       }
     } else {
@@ -65,6 +62,7 @@ const Mypage: React.FC = () => {
       setNickname(null);
     }
     localStorage.removeItem('accessToken');
+    localStorage.removeItem("hasSeenModal");
     navigate('/');
   };
 

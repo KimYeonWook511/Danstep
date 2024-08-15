@@ -38,8 +38,6 @@
 
 import React, { useEffect, useState } from 'react';
 import './Ranking.css';
-import Carousel3d from './Carousel3d';
-import NavBar from './NavBar';
 import { Game } from './types';
 import api from '../api/api';
 
@@ -50,12 +48,8 @@ const RankingPage: React.FC = () => {
     const fetchRankings = async () => {
       try {
         const response = await api.get('/rankings');
-        // const data = response.json();
-        // setRankings(data);
-        console.log("Ranking.tsx axios: ", response);
         setRankings(response.data);
       } catch (error) {
-        console.error('Failed to fetch rankings', error);
       }
     };
 
@@ -64,7 +58,6 @@ const RankingPage: React.FC = () => {
 
   return (
     <div className="ranking-page-container">
-      <NavBar />
     </div>
   );
 };

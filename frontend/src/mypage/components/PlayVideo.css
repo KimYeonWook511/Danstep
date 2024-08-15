@@ -18,26 +18,7 @@
 
 .replay-icon:hover {
   color: #44aaff;
-  /* animation: shake 0.3s ease-in-out; */
 }
-
-/* @keyframes shake {
-  0% {
-    transform: rotate(0deg);
-  }
-  25% {
-    transform: rotate(-10deg);
-  }
-  50% {
-    transform: rotate(10deg);
-  }
-  75% {
-    transform: rotate(-10deg);
-  }
-  100% {
-    transform: rotate(0deg);
-  }
-} */
 
 .input-box {
   border-radius: 5px;
