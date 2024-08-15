@@ -39,7 +39,6 @@ public class ReissueController {
             for (Cookie cookie : cookies) {
 
                 if (cookie.getName().equals("refresh")) {
-                    System.out.println("reissue 쿠키에서 refresh 찾음");
                     refresh = cookie.getValue();
                 }
             }
