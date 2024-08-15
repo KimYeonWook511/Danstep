@@ -141,7 +141,6 @@ const MusicPlayer: React.FC = () => {
 };
 
 const App: React.FC = () => {
-  const [isVisible, setIsVisible] = useState(() => !localStorage.getItem('hasSeenModal'));
   return (
     <Router>
       <MusicPlayer />
