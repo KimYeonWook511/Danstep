@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { modifyProfile } from '../utils/mypageAxios';
-import {jwtDecode,JwtPayload} from 'jwt-decode';
+import  { jwtDecode, JwtPayload } from 'jwt-decode';
 
 interface ModifyProfileProps {
   onNicknameChange: (newNickname: string) => void;
 }
 
-interface CustomJwtPayload{
-  nickname : string;
+interface CustomJwtPayload extends JwtPayload {
+  nickname: string;
 }
 
 const ModifyProfile: React.FC<ModifyProfileProps> = ({ onNicknameChange }) => {
@@ -44,6 +44,11 @@ const ModifyProfile: React.FC<ModifyProfileProps> = ({ onNicknameChange }) => {
     return true;
   };
 
+  const containsKorean = (text: string) => {
+    const koreanRegex = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
+    return koreanRegex.test(text);
+  };
+
   const handleModifyProfile = async () => {
     const isNicknameValid = validateNickname(nickname);
     const isNewPasswordValid = validateNewPassword(newPassword);
@@ -56,7 +61,7 @@ const ModifyProfile: React.FC<ModifyProfileProps> = ({ onNicknameChange }) => {
 
     if (response.status === 200) {
       setSuccess('수정이 완료되었습니다.');
-      localStorage.setItem("accessToken",response.headers.authorization);
+      localStorage.setItem("accessToken", response.headers.authorization);
       const decodedToken = jwtDecode<CustomJwtPayload>(response.headers.authorization!);
       onNicknameChange(decodedToken.nickname);
     } else if (response.data.errorCode === '4000') {
@@ -84,8 +89,14 @@ const ModifyProfile: React.FC<ModifyProfileProps> = ({ onNicknameChange }) => {
           placeholder="닉네임 수정"
           value={nickname}
           onChange={(e) => {
-            setNickname(e.target.value);
-            validateNickname(e.target.value);
+            const inputValue = e.target.value;
+            if (!containsKorean(inputValue)) {
+              setNickname(inputValue);
+              validateNickname(inputValue);
+            }
+            else{
+              setNicknameError("한국어가 입력되었습니다. 영문자, 숫자만 가능합니다.");
+            }
           }}
           style={{ padding: '10px', width: '60%', marginBottom: '10px' }}
         />
@@ -108,8 +119,11 @@ const ModifyProfile: React.FC<ModifyProfileProps> = ({ onNicknameChange }) => {
           placeholder="새 비밀번호"
           value={newPassword}
           onChange={(e) => {
-            setNewPassword(e.target.value);
-            validateNewPassword(e.target.value);
+            const inputValue = e.target.value;
+            if (!containsKorean(inputValue)) {
+              setNewPassword(inputValue);
+              validateNewPassword(inputValue);
+            }
           }}
           style={{ padding: '10px', width: '60%', marginBottom: '10px' }}
         />
