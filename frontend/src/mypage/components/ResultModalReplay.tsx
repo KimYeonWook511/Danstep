@@ -44,7 +44,7 @@ const ResultModalReplay: React.FC<ResultModalProps> = ({ isOpen, onClose, score,
                 className='grade'
                 style={{ color: 'violet', fontFamily: 'neon-text' }}
               >
-                {resultGrade(score)}
+                {resultGrade(score/100)}
               </div>
               <div className='grade-container'>
                 <div className='grade-wrapper'>
