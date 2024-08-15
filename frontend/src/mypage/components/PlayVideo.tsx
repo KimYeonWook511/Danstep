@@ -118,7 +118,15 @@ const PlayVideo: React.FC<PlayVideoProps> = ({ videos, onDelete }) => {
           </p>
           <p style={{ width: '25%' }}>{(video.score / 100).toFixed(2)}</p>
           <p style={{ width: '25%' }}>{formatDate(video.resultDate)}</p>
-          <div style={{ width: '25%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div
+            style={{
+              width: '25%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              overflow: 'hidden',
+            }}
+          >
             <button>
               <BsPlayBtn
                 className='replay-icon'

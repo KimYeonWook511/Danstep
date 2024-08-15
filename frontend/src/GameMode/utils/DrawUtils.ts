@@ -10,7 +10,7 @@ const drawKeypoints1 = (
   ctx.globalAlpha = alpha;
   ctx.fillStyle = color;
   ctx.strokeStyle = color;
-  ctx.lineWidth = 35;
+  ctx.lineWidth = 30;
   ctx.lineCap = 'round'; // 선의 끝을 둥글게 설정
   ctx.lineJoin = 'round'; // 선의 연결 부분을 둥글게 설정
 
@@ -74,7 +74,7 @@ const drawKeypoints2 = (
 ) => {
   ctx.fillStyle = color;
   ctx.strokeStyle = color;
-  ctx.lineWidth = 35;
+  ctx.lineWidth = 30;
   ctx.lineCap = 'round'; // 선의 끝을 둥글게 설정
   ctx.lineJoin = 'round'; // 선의 연결 부분을 둥글게 설정
 
@@ -104,11 +104,12 @@ const drawKeypoints3 = (
   ctx: CanvasRenderingContext2D,
   keypoints: Keypoint[],
   color: string,
-  neonColor: string
+  neonColor: string,
+  alpha: number = 1
 ) => {
   ctx.fillStyle = color;
   ctx.strokeStyle = color;
-  ctx.lineWidth = 35;
+  ctx.lineWidth = 30;
   ctx.lineCap = 'round'; // 선의 끝을 둥글게 설정
   ctx.lineJoin = 'round'; // 선의 연결 부분을 둥글게 설정
 
@@ -166,7 +167,7 @@ const drawKeypoints4 = (
 ) => {
   ctx.fillStyle = color;
   ctx.strokeStyle = color;
-  ctx.lineWidth = 35;
+  ctx.lineWidth = 30;
   ctx.lineCap = 'round'; // 선의 끝을 둥글게 설정
   ctx.lineJoin = 'round'; // 선의 연결 부분을 둥글게 설정
 

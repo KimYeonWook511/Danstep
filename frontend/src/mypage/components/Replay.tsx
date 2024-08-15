@@ -4,7 +4,7 @@ import '../../canvas.css';
 import '../../GameMode/neon/Neon.css';
 import '../../GameMode/neon/TopBar.css';
 import './Replay.css';
-import { drawGreen, drawHandFoot, drawRed } from '../../GameMode/utils/DrawUtils';
+import { drawGreen, drawHandFoot, drawHandFootGreen, drawRed } from '../../GameMode/utils/DrawUtils';
 import { calculateScore } from '../../GameMode/utils/CalculateUtils';
 import { updateScores } from '../../GameMode/utils/ScoreUtils';
 import NeonButton from '../../GameMode/neon/NeonButton';
@@ -221,6 +221,7 @@ const Replay: React.FC = () => {
 
         if (keypoints && keypoints.length > 0) {
           drawGreen(ctx, keypoints);
+          drawHandFootGreen(ctx, keypoints);
         } else {
           console.warn('Keypoints are undefined or empty in drawJson');
         }
