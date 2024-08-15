@@ -14,7 +14,7 @@ const MusicPlayer: React.FC = () => {
   const location = useLocation();
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isMuted, setIsMuted] = useState(false);
-  const [volume, setVolume] = useState(0.5);
+  const [volume, setVolume] = useState(0.1);
   const [showVolumeControl, setShowVolumeControl] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(() => !localStorage.getItem('hasSeenModal'));
 
@@ -98,7 +98,7 @@ const MusicPlayer: React.FC = () => {
             display: 'flex',
             flexDirection: 'column-reverse',
             alignItems: 'center',
-            zIndex: 1000,
+            zIndex: 1005,
           }}
           onMouseEnter={() => setShowVolumeControl(true)}
           onMouseLeave={() => setShowVolumeControl(false)}
@@ -134,7 +134,7 @@ const MusicPlayer: React.FC = () => {
           </div>
         </div>
       )}
-      
+
       <Modal isVisible={isModalVisible} onClose={handleCloseModal} />
     </>
   );
