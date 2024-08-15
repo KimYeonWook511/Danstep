@@ -22,8 +22,7 @@ public class UserInfoEntity {
     @Column(nullable = false, length = 200)
     private String password;
 
-//    @Column(nullable = false, length = 6, unique = true)
-    @Column(nullable = false, length = 20, unique = true)
+    @Column(nullable = false, length = 6, unique = true)
     private String nickname;
 
     @Column(nullable = false, columnDefinition = "datetime default now()")

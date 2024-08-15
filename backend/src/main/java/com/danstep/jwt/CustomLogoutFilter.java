@@ -42,6 +42,7 @@ public class CustomLogoutFilter extends GenericFilterBean {
             filterChain.doFilter(request, response);
             return;
         }
+
         String requestMethod = request.getMethod();
         if (!requestMethod.equals("POST")) {
 
@@ -88,9 +89,8 @@ public class CustomLogoutFilter extends GenericFilterBean {
 
         //DB에 저장되어 있는지 확인
         String username = jwtUtil.getUsername(refresh);
-        Boolean isExist = existsRefresh(username, refresh);
 
-        if (!isExist) {
+        if (!existsRefresh(username, refresh)) {
 
             //response status code
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -107,14 +107,6 @@ public class CustomLogoutFilter extends GenericFilterBean {
         cookie.setPath("/");
         response.addCookie(cookie);
 
-//        ResponseCookie cookie = ResponseCookie.from("refresh", null)
-//                .path("/")
-//                .sameSite("None")
-//                .httpOnly(true)
-//                .maxAge(0)
-//                .build();
-//
-//        response.addHeader("Set-Cookie", cookie.toString());
         response.setStatus(HttpServletResponse.SC_OK);
     }
 
