@@ -68,7 +68,7 @@ public class SecurityConfig {
 
                         configuration.setAllowedOrigins(Arrays.asList(
                                 "https://i11a406.p.ssafy.io",
-                                "http://localhost:8080"
+                                "http://localhost:3000"
                         ));
                         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")); // 허용할 메서드 추가
                         configuration.setAllowedMethods(Collections.singletonList("*"));
