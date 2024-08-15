@@ -158,6 +158,7 @@ const Replay: React.FC = () => {
   const camDetect = async () => {
     if (idx.current >= len.current) {
       clearInterval(intervalRef.current);
+      setIsFinished(true);
       SoundRef.current!.pause();
       return;
     }
