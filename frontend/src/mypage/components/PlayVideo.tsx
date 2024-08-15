@@ -67,15 +67,12 @@ const PlayVideo: React.FC<PlayVideoProps> = ({ videos, onDelete }) => {
             Authorization: accessToken,
           },
         });
-
         // 부모 컴포넌트로 삭제된 비디오의 ID를 전달
         onDelete(videoToDelete.resultInfoId);
 
         setSelectedVideoIndex(null);
         setShowRemovePoseModal(false);
       } catch (error) {
-        console.error('비디오 삭제에 실패했습니다:', error);
-        // 사용자에게 오류 메시지를 표시할 수 있습니다.
       }
     }
   };

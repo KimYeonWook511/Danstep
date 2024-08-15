@@ -36,7 +36,7 @@ export const calculateScore = (
         let tempSum =
             diffConfidence > 0.3
                 ? 0
-                : similarity(v1, v2) * (1 - diffConfidence);
+                : similarity(norm_v1, norm_v2) * (1 - diffConfidence);
         pose1ConfidenceSum += 1 - diffConfidence;
         sum += tempSum;
 

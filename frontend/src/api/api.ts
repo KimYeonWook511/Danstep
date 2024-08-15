@@ -14,21 +14,6 @@ const api = axios.create({
   },
 });
 
-// 요청 인터셉터
-// api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-//   // 로그인 요청에 대해서만 Content-Type 변경
-//   // if (config.url === '/users/login') {
-//   //   config.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-//   // } else if (config.url === `/users/${username}`)
-  
-//   if (accessToken) {
-//     // 다른 모든 요청에 대해 Authorization 헤더 추가
-//     config.headers['Authorization'] = `${accessToken}`;
-//   }
-
-//   return config;
-// });
-
 // 응답 인터셉터
 api.interceptors.response.use(
   (response) => {
@@ -38,11 +23,10 @@ api.interceptors.response.use(
     const originalRequest = error.config;
 
     if (error.response && error.response.status === 401) {
-      const { message, errorCode } = error.response.data;
+      const { errorCode } = error.response.data;
 
       if (errorCode === 'ACCESS_TOKEN_EXPIRED' && !originalRequest._retry) {
         originalRequest._retry = true;
-        console.log("api.ts: accessToken message - ", message);
         localStorage.removeItem("accessToken");
 
         // 토큰 갱신 요청
@@ -56,12 +40,9 @@ api.interceptors.response.use(
           localStorage.setItem('accessToken', accessToken);
   
           // 요청 다시 시도
-          console.log("api.ts: refresh Token 재발급 성공");
           originalRequest.headers['Authorization'] = accessToken;
           return await api(originalRequest);
         } else {
-          console.log("api.ts: refresh Token 재발급 실패!!");
-          console.log("api.ts: 실패response", response);
           return response;
         }
       }

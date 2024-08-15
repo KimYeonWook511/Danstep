@@ -25,7 +25,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ onClose, onLogin }) => {
     try {
       await login({ username, password });
       // 로그인 성공 후 필요한 로직 (예: 페이지 리다이렉트)
-      console.log('Login successful');
       onLogin();
       onClose();
     } catch (err) {

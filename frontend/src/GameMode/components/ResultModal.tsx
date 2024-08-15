@@ -43,14 +43,10 @@ const ResultModal: React.FC<ResultModalProps> = ({ isOpen, onClose, score, bad, 
 
     const accessToken = localStorage.getItem('accessToken') || '';
     setIsSubmitted(true); // 제출 완료 후 상태 업데이트
-    // if (!accessToken) {
-    //   setShowLogin(true);
-    //   return;
-    // }
 
     try {
       const data = {
-        score,
+        score: score * 100,
         perfect,
         great,
         good,
@@ -60,20 +56,17 @@ const ResultModal: React.FC<ResultModalProps> = ({ isOpen, onClose, score, bad, 
         poseData
       };
 
-      const response = await api.post("/results", data, {
+      await api.post("/results", data, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': accessToken,
         }
       });
-
-      console.log(response);
     } catch (error : any) {
       setIsSubmitted(false);
       if (error.response && error.response.status === 400) {
         setShowLogin(true); // 에러가 400일 때 로그인 화면 표시
       } else {
-        console.error('Failed to submit result:', error);
       }
     }
   };

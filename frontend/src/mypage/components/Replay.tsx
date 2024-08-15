@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { createDetector, PoseDetector, SupportedModels, Keypoint } from '@tensorflow-models/pose-detection';
+import { Keypoint } from '@tensorflow-models/pose-detection';
 import '../../canvas.css';
 import '../../GameMode/neon/Neon.css';
 import '../../GameMode/neon/TopBar.css';
@@ -28,7 +28,6 @@ const Replay: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const camcanvasRef = useRef<HTMLCanvasElement>(null);
 
-  const [showPoseEstimator, setShowPoseEstimator] = useState(false);
   const intervalRef = useRef<any>(null);
 
   const firstFrameY = useRef<number[]>([]);
@@ -54,11 +53,9 @@ const Replay: React.FC = () => {
   const dbmaxCombo = useRef(0);
 
 
-  const [yAlignedState, setYAlignedState] = useState(isYAligned.current);
   const [detectedArmsUp, setDetectedArmsUp] = useState<boolean>(false);
   const [scores, setScores] = useState<number[]>([]);
   const [isFinished, setIsFinished] = useState<boolean>(false);
-  const [state, setState] = useState<boolean>(false);
   const [alignmentMessage, setAlignmentMessage] = useState<string>('');
   const [countdown, setCountdown] = useState<number | null>(null);
   const [showComboEffect, setShowComboEffect] = useState<boolean>(false);
@@ -69,13 +66,10 @@ const Replay: React.FC = () => {
   const camKeypointJson = useRef([]);
   const audioUrl = useRef<string>('');
   const backgroundUrl = useRef<string>('');
-  const [username, setUsername] = useState('');
-  const resultInfoId = useRef([]);
   const [loading, setLoading] = useState(true);
 
   const idx = useRef(-1);
   const len = useRef(0);
-  const camLen = useRef(0);
 
   const setupVideo = async () => {
     if (videoRef.current) {
@@ -96,7 +90,6 @@ const Replay: React.FC = () => {
 
       const decodedToken = jwtDecode<CustomJwtPayload>(accessToken!);
       const username = decodedToken.username;
-      setUsername(username);
 
       const response = await api.get(
         `/results/${username}/replay/${id}`,
@@ -106,7 +99,6 @@ const Replay: React.FC = () => {
           },
         }
       );
-      console.log("Replay.tsx api: ", response);
       keypointsJson.current = JSON.parse(response.data.gamePoseData);
       camKeypointJson.current = JSON.parse(response.data.myPoseData);
       len.current = keypointsJson.current.length;
@@ -119,10 +111,7 @@ const Replay: React.FC = () => {
       dbperfect.current = response.data.perfect;
       dbmaxCombo.current = response.data.maxCombo;
       dbhealth.current = response.data.score;
-      console.log('keypoints:', keypointsJson.current);
-      console.log('Loaded keypoints:', camKeypointJson.current);
     } catch (error) {
-      console.error('Error fetching JSON:', error);
       navigate("/");
     } finally {
       setLoading(false);
@@ -130,7 +119,7 @@ const Replay: React.FC = () => {
   };
 
   const init = async () => {
-    const video = await setupVideo();
+    await setupVideo();
     beepSoundRef.current = new Audio('/countdown.mp3');
   };
 
@@ -172,7 +161,6 @@ const Replay: React.FC = () => {
 
   const camDetect = async () => {
     if (idx.current >= len.current) {
-      console.log('끝!!!');
       clearInterval(intervalRef.current);
       SoundRef.current!.pause();
       return;
@@ -190,12 +178,8 @@ const Replay: React.FC = () => {
 
         if (newScores.length === 8) {
           const averageScore = newScores.reduce((a, b) => a + b, 0) / 8;
-          console.log('Average Score:', averageScore);
-
           updateScores(averageScore, bad, good, great, perfect, health, combo, maxCombo, grade);
-
           SoundRef.current!.onended = () => {
-            console.log('끝났으니 결과 보내기!');
             setIsFinished(true);
           };
           return [];
@@ -222,8 +206,6 @@ const Replay: React.FC = () => {
         if (keypoints && keypoints.length > 0) {
           drawGreen(ctx, keypoints);
           drawHandFootGreen(ctx, keypoints);
-        } else {
-          console.warn('Keypoints are undefined or empty in drawJson');
         }
         return keypoints;
       }
@@ -243,8 +225,6 @@ const Replay: React.FC = () => {
         if (keypoints && keypoints.length > 0) {
           drawRed(ctx, keypoints);
           drawHandFoot(ctx, keypoints);
-        } else {
-          console.warn('Keypoints are undefined or empty in drawCamJson');
         }
         return keypoints;
       }
@@ -315,7 +295,6 @@ const Replay: React.FC = () => {
     setAlignmentMessage('');
     setIsFinished(false);
     setShowComboEffect(false);
-    setState(false);
     setDetectedArmsUp(false);
     setScores([]);
     isYAligned.current = false;
@@ -336,7 +315,6 @@ const Replay: React.FC = () => {
   const moveMypage = () => {
     setAlignmentMessage('');
     setShowComboEffect(false);
-    setState(false);
     setDetectedArmsUp(false);
     setScores([]);
     isYAligned.current = false;
@@ -384,10 +362,6 @@ const Replay: React.FC = () => {
 
   const handleDetectArmsUp = () => {
     setDetectedArmsUp(true);
-  };
-
-  const handleMain = () => {
-    navigate('/');
   };
 
   if (loading) {

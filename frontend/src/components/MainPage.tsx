@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import './MainPage.css';
 import Carousel3d from './Carousel3d';
 import NavBar from './NavBar';
+import Modal from './StartModal';
 import mainBackGround from '../assets/main_background.mp4';
-import api from '../api/api'
+import api from '../api/api';
 import { Game } from './types';
 
 const MainPage: React.FC = () => {
@@ -15,14 +16,13 @@ const MainPage: React.FC = () => {
         const response = await api.get("/games");
         const data = response.data;
         setGames(data);
-        console.log("MainPage.tsx api: ", response);
       } catch (error) {
-        console.error('Failed to get games', error);
       }
     };
 
     fetchGames();
   }, []);
+
 
   return (
     <div className='main-page-container'>
