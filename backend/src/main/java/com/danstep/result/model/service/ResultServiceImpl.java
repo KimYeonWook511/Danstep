@@ -18,20 +18,21 @@ public class ResultServiceImpl implements ResultService {
 
     private final ResultMapper resultMapper;
     private final RankMapper rankMapper;
-    private final GameService gameService;
     private final S3Util s3Util;
 
-    public ResultServiceImpl(ResultMapper resultMapper, RankMapper rankMapper,
-                             GameService gameService, S3Util s3Util) {
+    public ResultServiceImpl(ResultMapper resultMapper, RankMapper rankMapper, S3Util s3Util) {
         this.resultMapper = resultMapper;
         this.rankMapper = rankMapper;
-        this.gameService = gameService;
         this.s3Util = s3Util;
     }
 
     @Override
     @Transactional
     public void saveResult(SaveResultDTO saveResultDTO) {
+
+        if (saveResultDTO.getScore() < 0 || saveResultDTO.getScore() > 10000) {
+            throw new IllegalArgumentException("Invalid Score.");
+        }
 
         // 게임 결과 저장
         resultMapper.insertResultInfo(saveResultDTO);
