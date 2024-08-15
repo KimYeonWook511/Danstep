@@ -37,7 +37,7 @@ const ResultModalReplay: React.FC<ResultModalProps> = ({ isOpen, onClose, score,
               className='score'
               style={{ color: 'black', fontFamily: 'neon-number' }}
             >
-              {score.toFixed(1)}
+              {(score/100).toFixed(2)}
             </div>
             <div className='result-container'>
               <div

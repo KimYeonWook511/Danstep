@@ -297,6 +297,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { config } from 'react-spring';
 import './Carousel3dforS3.css';
 import slideSound from '../assets/sound/slide_sound_2.mp3';
+import throttle from 'lodash/throttle';
 
 interface Game {
   id: string;
@@ -370,7 +371,7 @@ const Carousel3d: React.FC<{ data: CarouselData[]; isRankingPage?: boolean }> = 
   }));
 
   const handleWheel = useCallback(
-    (e: React.WheelEvent) => {
+    throttle((e: React.WheelEvent) => {
       if (slides.length === 0) return;
       playSlideSound();
 
@@ -379,7 +380,7 @@ const Carousel3d: React.FC<{ data: CarouselData[]; isRankingPage?: boolean }> = 
       } else {
         setGoToSlide((goToSlide + 1) % slides.length);
       }
-    },
+    }, 200), // 200ms의 간격으로 휠 이벤트 처리
     [slides.length, goToSlide]
   );
 
@@ -390,7 +391,7 @@ const Carousel3d: React.FC<{ data: CarouselData[]; isRankingPage?: boolean }> = 
         goToSlide={goToSlide}
         offsetRadius={5}
         showNavigation={false}
-        animationConfig={config.stiff}
+        animationConfig={config.gentle}
       />
     </div>
   );
