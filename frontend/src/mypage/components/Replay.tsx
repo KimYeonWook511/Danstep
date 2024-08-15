@@ -12,13 +12,13 @@ import RainbowHealthBar from '../../GameMode/neon/RainbowHealthBar';
 import NeonCircle from '../../GameMode/neon/NeonCircle';
 import { useNavigate, useParams } from 'react-router-dom';
 import ComboEffect from '../../GameMode/components/ComboEffect';
-import api from "../../api/api";
+import api from '../../api/api';
 import Loader from '../../components/Loading';
-import  { jwtDecode,JwtPayload } from 'jwt-decode';
+import { jwtDecode, JwtPayload } from 'jwt-decode';
 import ResultModalReplay from './ResultModalReplay';
 
 interface CustomJwtPayload extends JwtPayload {
-    username: string;
+  username: string;
 }
 
 const Replay: React.FC = () => {
@@ -51,7 +51,6 @@ const Replay: React.FC = () => {
   const dbperfect = useRef(0);
   const dbhealth = useRef(0);
   const dbmaxCombo = useRef(0);
-
 
   const [detectedArmsUp, setDetectedArmsUp] = useState<boolean>(false);
   const [scores, setScores] = useState<number[]>([]);
@@ -91,14 +90,11 @@ const Replay: React.FC = () => {
       const decodedToken = jwtDecode<CustomJwtPayload>(accessToken!);
       const username = decodedToken.username;
 
-      const response = await api.get(
-        `/results/${username}/replay/${id}`,
-        {
-          headers: {
-            Authorization: accessToken,
-          },
-        }
-      );
+      const response = await api.get(`/results/${username}/replay/${id}`, {
+        headers: {
+          Authorization: accessToken,
+        },
+      });
       keypointsJson.current = JSON.parse(response.data.gamePoseData);
       camKeypointJson.current = JSON.parse(response.data.myPoseData);
       len.current = keypointsJson.current.length;
@@ -112,7 +108,7 @@ const Replay: React.FC = () => {
       dbmaxCombo.current = response.data.maxCombo;
       dbhealth.current = response.data.score;
     } catch (error) {
-      navigate("/");
+      navigate('/');
     } finally {
       setLoading(false);
     }
@@ -200,8 +196,8 @@ const Replay: React.FC = () => {
 
       if (ctx) {
         ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-        canvasRef.current.width = 720;
-        canvasRef.current.height = 1280;
+        canvasRef.current.width = 480;
+        canvasRef.current.height = 854;
 
         if (keypoints && keypoints.length > 0) {
           drawGreen(ctx, keypoints);
@@ -370,8 +366,16 @@ const Replay: React.FC = () => {
 
   return (
     <div className='BackgroundVideo'>
-      <video autoPlay loop muted className='background-video'>
-        <source src={backgroundUrl.current} type='video/mp4' />
+      <video
+        autoPlay
+        loop
+        muted
+        className='background-video'
+      >
+        <source
+          src={backgroundUrl.current}
+          type='video/mp4'
+        />
       </video>
       <div className='Neon'>
         <div className='topBar'>
@@ -382,7 +386,10 @@ const Replay: React.FC = () => {
             <NeonButton onClick={handleDetectArmsUp}>Start Replay</NeonButton>
           </div>
           <div className='right'>
-            <NeonButton onClick={handleRestart} isRetry>
+            <NeonButton
+              onClick={handleRestart}
+              isRetry
+            >
               Retry
             </NeonButton>
           </div>
@@ -410,8 +417,16 @@ const Replay: React.FC = () => {
             className={`container ${detectedArmsUp ? 'no-border' : isYAligned.current ? 'aligned' : 'not-aligned'}`}
             style={{ width: '100%', height: '90%' }}
           >
-            <video ref={videoRef} className='game-video' style={{ display: 'none' }} autoPlay />
-            <canvas ref={canvasRef} className='canvas video-canvas' />
+            <video
+              ref={videoRef}
+              className='game-video'
+              style={{ display: 'none' }}
+              autoPlay
+            />
+            <canvas
+              ref={canvasRef}
+              className='canvas video-canvas'
+            />
           </div>
           <div
             style={{
@@ -426,7 +441,10 @@ const Replay: React.FC = () => {
           >
             {detectedArmsUp ? (
               showComboEffect ? (
-                <ComboEffect combo={combo.current} grade={grade.current} />
+                <ComboEffect
+                  combo={combo.current}
+                  grade={grade.current}
+                />
               ) : (
                 <div
                   className='animated-text combo'
@@ -448,7 +466,11 @@ const Replay: React.FC = () => {
             className={`container ${detectedArmsUp ? 'no-border' : isYAligned.current ? 'aligned' : 'not-aligned'}`}
             style={{ width: '100%', height: '90%' }}
           >
-            <canvas ref={camcanvasRef} className='canvas cam-canvas' style={{ transform: 'scaleX(-1)' }} />
+            <canvas
+              ref={camcanvasRef}
+              className='canvas cam-canvas'
+              style={{ transform: 'scaleX(-1)' }}
+            />
           </div>
           <RainbowHealthBar health={health.current} />
         </div>

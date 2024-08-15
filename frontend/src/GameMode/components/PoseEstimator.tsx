@@ -1,11 +1,11 @@
-import React, { useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as tf from '@tensorflow/tfjs';
 import { createDetector, PoseDetector, SupportedModels, Keypoint } from '@tensorflow-models/pose-detection';
 import '../../canvas.css';
 import '../neon/Neon.css';
 import '../neon/TopBar.css';
 import { detectFirstFrame, checkInitialYAlignment, isArmsUp, keypointsDetected } from '../utils/Verification';
-import { drawGreen, drawHandFoot, drawRed,drawHandFootGreen } from '../utils/DrawUtils';
+import { drawGreen, drawHandFoot, drawRed, drawHandFootGreen } from '../utils/DrawUtils';
 import { calculateScore } from '../utils/CalculateUtils';
 import { updateScores } from '../utils/ScoreUtils';
 import NeonButton from '../neon/NeonButton';
@@ -15,7 +15,7 @@ import ResultModal from './ResultModal';
 import { useNavigate } from 'react-router-dom';
 import Guide from '../../components/Guide';
 import ComboEffect from './ComboEffect';
-import api from "../../api/api";
+import api from '../../api/api';
 import Loader from '../../components/Loading';
 
 interface Game {
@@ -55,8 +55,8 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
 
   const firstFrameY = useRef<number[]>([]);
 
-  // const requiredKeypointsIndices = [11, 12, 13, 14, 15, 16, 23, 24, 25, 26, 27, 28];
-  const requiredKeypointsIndices = [11, 12];
+  const requiredKeypointsIndices = [11, 12, 13, 14, 15, 16, 23, 24, 25, 26, 27, 28];
+  // const requiredKeypointsIndices = [11, 12];
 
   const yAligned = useRef(0);
   const isYAligned = useRef(false);
@@ -208,8 +208,7 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
         // 시작 동작 검사 (만세)
         intervalRef.current = setInterval(async () => await checkDetect(), 50);
       }
-    } catch (error) {
-    }
+    } catch (error) {}
   };
 
   const checkDetect = async () => {
@@ -245,8 +244,7 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
           setAlignmentMessage('inside Frame');
         }
       }
-    } catch (error) {
-    }
+    } catch (error) {}
   };
 
   const startTimer = (): Promise<void> => {
@@ -365,9 +363,9 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
 
       if (ctx) {
         ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-        canvasRef.current.width = 720;
-        canvasRef.current.height = 1280;
-        if (keypoints){
+        canvasRef.current.width = 480;
+        canvasRef.current.height = 854;
+        if (keypoints) {
           drawGreen(ctx, keypoints);
           drawHandFootGreen(ctx, keypoints);
         }
@@ -402,8 +400,7 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
           }
         }
       }
-    } catch (error) {
-    }
+    } catch (error) {}
   };
 
   const checkdetectPose = async (detector: PoseDetector) => {
@@ -436,13 +433,11 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
       const response = await api.get(`/games/${game.id}/pose`);
       keypointsJson.current = response.data; // API로부터 가져온 JSON 데이터를 keypointsJson에 저장
       len.current = keypointsJson.current.length; // JSON 데이터의 길이 설정
-    } catch (error) {
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {
-    if(camRef.current)
-      init(); // 비동기 함수 호출
+    if (camRef.current) init(); // 비동기 함수 호출
   }, [camRef.current]);
 
   const resetResource = async (status: number) => {
