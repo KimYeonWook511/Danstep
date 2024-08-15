@@ -21,6 +21,7 @@
     "chart.js": "^4.4.3",
     "glob": "^11.0.0",
     "jwt-decode": "^4.0.0",
+    "lodash": "^4.17.21",
     "lottie-web": "^5.12.2",
     "react": "^18.3.1",
     "react-chartjs-2": "^5.2.0",
@@ -37,7 +38,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "GENERATE_SOURCEMAP=false react-scripts build",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "bundle": "webpack"
@@ -61,6 +62,7 @@
     ]
   },
   "devDependencies": {
+    "@types/lodash": "^4.17.7",
     "@types/react-icons": "^3.0.0",
     "@types/react-lottie": "^1.2.10",
     "@types/three": "^0.167.1",
