@@ -36,7 +36,7 @@ const NavBar: FC = () => {
     await logout();
     setIsLoggedIn(false);
     localStorage.removeItem("accessToken");
-    localStorage.removeItem("hasSeenModal");
+    sessionStorage.removeItem("hasSeenModal");
     navigate("/");
   };
 
