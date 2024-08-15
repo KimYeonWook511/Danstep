@@ -94,7 +94,7 @@ const ResultModal: React.FC<ResultModalProps> = ({ isOpen, onClose, score, bad, 
               className='score'
               style={{ color: 'black', fontFamily: 'neon-number' }}
             >
-              {score.toFixed(1)}
+              {score.toFixed(2)}
             </div>
             <div className='result-container'>
               <div

@@ -11,22 +11,22 @@ export const updateScores = (
 ) => {
   if (averageScore < 80) {
     bad.current++;
-    health.current -= 3.1;
+    health.current -= 3.11;
     combo.current = 0;
     grade.current = 'BAD';
   } else if (averageScore < 85) {
     good.current++;
-    health.current += 0.7;
+    health.current += 0.72;
     combo.current++;
     grade.current = 'GOOD';
   } else if (averageScore < 90) {
     great.current++;
-    health.current += 1.3;
+    health.current += 1.33;
     combo.current++;
     grade.current = 'GREAT';
   } else {
     perfect.current++;
-    health.current += 1.7;
+    health.current += 1.75;
     combo.current++;
     grade.current = 'PERFECT';
   }
