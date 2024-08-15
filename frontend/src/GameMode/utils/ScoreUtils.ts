@@ -16,17 +16,17 @@ export const updateScores = (
     grade.current = 'BAD';
   } else if (averageScore < 85) {
     good.current++;
-    health.current += 1.1;
+    health.current += 0.7;
     combo.current++;
     grade.current = 'GOOD';
   } else if (averageScore < 90) {
     great.current++;
-    health.current += 2.1;
+    health.current += 1.3;
     combo.current++;
     grade.current = 'GREAT';
   } else {
     perfect.current++;
-    health.current += 3.1;
+    health.current += 1.7;
     combo.current++;
     grade.current = 'PERFECT';
   }
