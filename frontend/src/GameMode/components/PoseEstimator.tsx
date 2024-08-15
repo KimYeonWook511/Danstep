@@ -282,6 +282,7 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
 
   const playBeep = () => {
     if (beepSoundRef.current) {
+      beepSoundRef.current.volume=0.2;
       beepSoundRef.current.play();
     }
   };
@@ -328,6 +329,7 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
         return new Promise<HTMLVideoElement>((resolve) => {
           videoRef.current!.onloadedmetadata = () => {
             videoRef.current!.pause();
+            videoRef.current!.volume=0.2;
             resolve(videoRef.current!);
           };
         });

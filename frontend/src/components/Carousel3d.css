@@ -196,7 +196,7 @@ div:hover .game-info-overlay {
 
 .podium-step {
   display: flex;
-  flex-direction: column;
+  /* flex-direction: column; */
   justify-content: flex-end;
   align-items: center;
   margin: 0 10px;
@@ -206,38 +206,31 @@ div:hover .game-info-overlay {
   padding: 10px;
 }
 
-.podium-step.first {
-  order: 2; /* 가운데 위치 */
-  height: 150px;
-  width: 100px;
-  background-color: gold;
+.first {
+  font-size: 40px;
+  color: gold;
 }
 
-.podium-step.second {
-  order: 1; /* 왼쪽 위치 */
-  height: 110px;
-  width: 100px;
-  background-color: silver;
+.second {
+  font-size: 35px;
+  color: silver;
 }
 
-.podium-step.third {
-  order: 3; /* 오른쪽 위치 */
-  height: 90px;
-  width: 100px;
-  background-color: #cd7f32; /* 동색 (bronze) */
+.third {
+  font-size: 30px;
+  color: #cd7f32;
 }
 
 .podium-step span {
   margin-bottom: 10px;
 }
 
-.podium-step .nickname {
+.nickname {
   font-weight: bold;
-  font-size: 1.2rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  width: 100%;
+  width: 50%;
 }
 
 .podium-step .score {

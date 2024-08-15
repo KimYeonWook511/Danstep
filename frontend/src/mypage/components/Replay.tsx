@@ -101,6 +101,7 @@ const Replay: React.FC = () => {
       audioUrl.current = response.data.audioUrl as string;
       backgroundUrl.current = response.data.backgroundUrl as string;
       SoundRef.current = new Audio(audioUrl.current);
+      SoundRef.current.volume = 0.2;
       dbbad.current = response.data.bad;
       dbgood.current = response.data.good;
       dbgreat.current = response.data.great;
@@ -151,6 +152,7 @@ const Replay: React.FC = () => {
 
   const playBeep = () => {
     if (beepSoundRef.current) {
+      beepSoundRef.current.volume=0.2;
       beepSoundRef.current.play();
     }
   };

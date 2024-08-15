@@ -37,6 +37,16 @@ const Carousel3d: React.FC<{ data: Game[] }> = ({ data }) => {
     }
   };
 
+  const plusRank = (rank?: number) => {
+    if (rank === 1) {
+      return rank + 'st';
+    } else if (rank === 2) {
+      return rank + 'nd';
+    } else {
+      return rank + 'rd';
+    }
+  };
+
   const renderStars = (level?: string) => {
     if (!level) return null;
     const stars = [];
@@ -55,69 +65,96 @@ const Carousel3d: React.FC<{ data: Game[] }> = ({ data }) => {
     return stars;
   };
 
-  const slides = useMemo(() => data.map((item, index) => ({
-    key: uuidv4(),
-    content: (
-      <div
-        className='carousel-item'
-        onMouseEnter={() => {
-          // 클릭 시 슬라이드 이동 중 호버 상태가 업데이트되지 않도록 딜레이 적용
-          if (goToSlide === index) {
-            if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
-            hoverTimeoutRef.current = setTimeout(() => {
-              setIsHovered(item);
-            }, 300); // 100ms 지연
-          }
-        }}
-        onMouseLeave={() => {
-          if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
-          setIsHovered(null);
-        }}
-        onClick={() => {
-          if (goToSlide === index) {
-            navigate(`/game/${item.id}`);
-          } else {
-            setGoToSlide(index);
-            playSlideSound();
-          }
-        }}
-      >
-        <img
-          src={item.thumbnailUrl}
-          alt={`slide-${index}`}
-          className='carousel-image'
-        />
-        {isHovered && isHovered.id === item.id && (
-          <div className='game-info-overlay'>
-            <h2>{item.title}</h2>
-            <div className='game-details'>
-              {item.level && <p className='level-stars'>{renderStars(item.level)}</p>}
-              {item.playtime && <p className='play-time'>PlayTime: {item.playtime}sec</p>}
-            </div>
-            {item.rankTop3List && item.rankTop3List.length > 0 && (
-              <div className='ranking-podium'>
-                {item.rankTop3List
-                  .sort((a, b) => a.rank - b.rank)
-                  .map((ranking) => (
-                    <div
-                      key={ranking.rank}
-                      className={`podium-step ${ranking.rank === 1 ? 'first' : ranking.rank === 2 ? 'second' : 'third'}`}
-                    >
-                      <span className='nickname'>{ranking.nickname}</span>
-                      <span className='score'>{(ranking.score / 100).toFixed(2)}</span>
-                    </div>
-                  ))}
+  const slides = useMemo(
+    () =>
+      data.map((item, index) => ({
+        key: uuidv4(),
+        content: (
+          <div
+            className='carousel-item'
+            onMouseEnter={() => {
+              // 클릭 시 슬라이드 이동 중 호버 상태가 업데이트되지 않도록 딜레이 적용
+              if (goToSlide === index) {
+                if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+                hoverTimeoutRef.current = setTimeout(() => {
+                  setIsHovered(item);
+                }, 300); // 100ms 지연
+              }
+            }}
+            onMouseLeave={() => {
+              if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+              setIsHovered(null);
+            }}
+            onClick={() => {
+              if (goToSlide === index) {
+                navigate(`/game/${item.id}`);
+              } else {
+                setGoToSlide(index);
+                playSlideSound();
+              }
+            }}
+          >
+            <img
+              src={item.thumbnailUrl}
+              alt={`slide-${index}`}
+              className='carousel-image'
+            />
+            {isHovered && isHovered.id === item.id && (
+              <div className='game-info-overlay'>
+                <h2>{item.title}</h2>
+                <div className='game-details'>
+                  {item.level && <p className='level-stars'>{renderStars(item.level)}</p>}
+                  {item.playtime && <p className='play-time'>PlayTime: {item.playtime}sec</p>}
+                </div>
+                {item.rankTop3List && item.rankTop3List.length > 0 && (
+                  <div
+                    style={{
+                      width: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'space-between',
+                      alignContent: 'center',
+                      marginTop: '20px',
+                    }}
+                  >
+                    {item.rankTop3List
+                      .sort((a, b) => a.rank - b.rank)
+                      .map((ranking) => (
+                        <div
+                          key={ranking.rank}
+                          style={{
+                            display: 'flex',
+                            width: '100%',
+                            justifyContent: 'space-between  ',
+                            fontFamily: 'neon-number',
+                            paddingLeft: '10px',
+                            paddingRight: '10px',
+                          }}
+                          className={`${ranking.rank === 1 ? 'first' : ranking.rank === 2 ? 'second' : 'third'}`}
+                        >
+                          <div style={{ marginRight: '10px' }}>{plusRank(ranking.rank)}</div>
+                          <div
+                            style={{ textAlign: 'center' }}
+                            className='nickname'
+                          >
+                            {ranking.nickname}
+                          </div>
+                          <div style={{ marginLeft: '10px' }}>{(ranking.score / 100).toFixed(2)}</div>
+                        </div>
+                      ))}
+                  </div>
+                )}
               </div>
             )}
+            <span className='border-animation'></span>
+            <span className='border-animation'></span>
+            <span className='border-animation'></span>
+            <span className='border-animation'></span>
           </div>
-        )}
-        <span className='border-animation'></span>
-        <span className='border-animation'></span>
-        <span className='border-animation'></span>
-        <span className='border-animation'></span>
-      </div>
-    ),
-  })), [data, goToSlide, isHovered]);
+        ),
+      })),
+    [data, goToSlide, isHovered]
+  );
 
   const handleWheel = useCallback(
     throttle((e: React.WheelEvent) => {
@@ -150,5 +187,3 @@ const Carousel3d: React.FC<{ data: Game[] }> = ({ data }) => {
 };
 
 export default Carousel3d;
-
-
