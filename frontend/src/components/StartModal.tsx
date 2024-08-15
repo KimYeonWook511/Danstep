@@ -9,7 +9,7 @@ interface ModalProps {
 const Modal: FC<ModalProps> = ({ isVisible, onClose }) => {
   useEffect(() => {
     if (!isVisible) {
-      localStorage.setItem('hasSeenModal', 'true');
+      sessionStorage.setItem('hasSeenModal', 'true');
     }
   }, [isVisible]);
 

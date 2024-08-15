@@ -62,7 +62,7 @@ const Mypage: React.FC = () => {
       setNickname(null);
     }
     localStorage.removeItem('accessToken');
-    localStorage.removeItem("hasSeenModal");
+    sessionStorage.removeItem("hasSeenModal");
     navigate('/');
   };
 
