@@ -76,10 +76,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String role = auth.getAuthority();
 
         //토큰 생성
-//        String access = jwtUtil.createJwt("access", username, nickname, role, 600000L);
-//        String refresh = jwtUtil.createJwt("refresh", username, nickname, role, 86400000L);
-        String access = jwtUtil.createJwt("access", username, nickname, role, 59000L); // 59초
-        String refresh = jwtUtil.createJwt("refresh", username, nickname, role, 120000L); // 2분
+        String access = jwtUtil.createJwt("access", username, nickname, role, 600000L); // 10분
+        String refresh = jwtUtil.createJwt("refresh", username, nickname, role, 86400000L); // 24시간
 
         //Refresh 토큰 저장
         addRefresh(username, refresh);
@@ -103,46 +101,17 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         param.put("username", username);
         param.put("refresh", refresh);
 
-//        for (Object o : param.entrySet()) {
-//            System.out.println(o.toString());
-//        }
-
         refreshMapper.insertRefresh(param);
     }
-
-//    private void addRefreshEntity(String username, String refresh, Long expiredMs) {
-//
-//        Date date = new Date(System.currentTimeMillis() + expiredMs);
-//
-//        RefreshEntity refreshEntity = new RefreshEntity();
-//        refreshEntity.setUsername(username);
-//        refreshEntity.setRefresh(refresh);
-//        refreshEntity.setExpiration(date.toString());
-//
-//        refreshMapper.InsertRefresh(refreshEntity);
-//    }
 
     private Cookie createCookie(String key, String value) {
 
         Cookie cookie = new Cookie(key, value);
-//        cookie.setMaxAge(24*60*60);
-        cookie.setMaxAge(2*60);
+        cookie.setMaxAge(24*60*60);
         cookie.setSecure(true);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
 
         return cookie;
     }
-
-//    private String createCookie(String key, String value) {
-//
-//        ResponseCookie cookie = ResponseCookie.from(key, value)
-//                .path("/")
-//                .sameSite("None")
-//                .httpOnly(true)
-//                .maxAge(24 * 60 * 60)
-//                .build();
-//
-//        return cookie.toString();
-//    }
 }

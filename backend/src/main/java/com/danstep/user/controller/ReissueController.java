@@ -72,18 +72,15 @@ public class ReissueController {
         String username = jwtUtil.getUsername(refresh);
         String role = jwtUtil.getRole(refresh);
         String nickname = jwtUtil.getNickname(refresh);
-        Boolean isExist = existsRefresh(username, refresh);
 
-        if (!isExist) {
+        if (!existsRefresh(username, refresh)) {
             //response body
             return new ResponseEntity<>("invalid refresh token", HttpStatus.BAD_REQUEST);
         }
 
         //make new JWT
-//        String newAccess = jwtUtil.createJwt("access", username, nickname, role, 600000L);
-//        String newRefresh = jwtUtil.createJwt("refresh", username, nickname, role, 86400000L);
-        String newAccess = jwtUtil.createJwt("access", username, nickname, role, 59000L); // 59초
-        String newRefresh = jwtUtil.createJwt("refresh", username, nickname, role, 120000L); // 2분
+        String newAccess = jwtUtil.createJwt("access", username, nickname, role, 600000L); // 10분
+        String newRefresh = jwtUtil.createJwt("refresh", username, nickname, role, 86400000L); // 24시간
 
         //Refresh 토큰 저장 DB에 기존의 Refresh 토큰 삭제 후 새 Refresh 토큰 저장
         reissueRefresh(username, newRefresh);
@@ -111,23 +108,10 @@ public class ReissueController {
         return refreshMapper.existsByRefresh(param);
     }
 
-//    private void addRefreshEntity(String username, String refresh, Long expiredMs) {
-//
-//        Date date = new Date(System.currentTimeMillis() + expiredMs);
-//
-//        RefreshEntity refreshEntity = new RefreshEntity();
-//        refreshEntity.setUsername(username);
-//        refreshEntity.setRefresh(refresh);
-//        refreshEntity.setExpiration(date.toString());
-//
-//        refreshMapper.InsertRefresh(refreshEntity);
-//    }
-
     private Cookie createCookie(String key, String value) {
 
         Cookie cookie = new Cookie(key, value);
-//        cookie.setMaxAge(24*60*60);
-        cookie.setMaxAge(2*60);
+        cookie.setMaxAge(24*60*60);
         cookie.setSecure(true);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
