@@ -127,6 +127,7 @@ public class ResultServiceImpl implements ResultService {
     }
 
     @Override
+    @Transactional
     public void deleteUserResultPost(ReplayDTO replayDTO) {
 
         ReplayDTO deleteDTO = resultMapper.getUserResultPose(replayDTO);
@@ -140,6 +141,8 @@ public class ResultServiceImpl implements ResultService {
         if (result == 0) {
             System.out.println("result pose 삭제 실패!!");
             // 삭제 실패시 처리 로직
+            // 현재 시간이 없으니 우선 트랜잭션 처리
+            // 추후 스프링 배치와 같은걸 활용해서 S3 버킷을 비워보자!!
             return;
         }
 
