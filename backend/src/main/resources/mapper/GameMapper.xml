@@ -26,7 +26,8 @@
 
     <select id="getGamesId">
         SELECT id
-          FROM game_info
+        FROM game_info
+        ORDER BY level ASC, id ASC;
     </select>
 
     <select id="getGameInfoById" resultMap="gameBasic">
