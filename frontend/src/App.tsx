@@ -16,7 +16,7 @@ const MusicPlayer: React.FC = () => {
   const [isMuted, setIsMuted] = useState(false);
   const [volume, setVolume] = useState(0.1);
   const [showVolumeControl, setShowVolumeControl] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(() => !localStorage.getItem('hasSeenModal'));
+  const [isModalVisible, setIsModalVisible] = useState(() => !sessionStorage.getItem('hasSeenModal'));
 
   const musicRoutes = ['/', '/ranking', '/mypage'];
   const shouldPlayMusic = musicRoutes.includes(location.pathname);
