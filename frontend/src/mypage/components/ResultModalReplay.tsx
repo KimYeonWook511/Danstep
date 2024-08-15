@@ -31,7 +31,7 @@ const ResultModalReplay: React.FC<ResultModalProps> = ({ isOpen, onClose, score,
               className='gameover'
               style={{ color: 'black', fontFamily: 'neon-text' }}
             >
-              Game Over
+              SCORE
             </div>
             <div
               className='score'

@@ -111,8 +111,16 @@ const Mypage: React.FC = () => {
   return (
     <div style={{ display: 'flex', width: '1200px', height: '600px', textAlign: 'center' }}>
       <NavBar />
-      <video autoPlay loop muted className='background-video'>
-        <source src={mainBackGround} type='video/mp4' />
+      <video
+        autoPlay
+        loop
+        muted
+        className='background-video'
+      >
+        <source
+          src={mainBackGround}
+          type='video/mp4'
+        />
       </video>
 
       <div
@@ -266,7 +274,14 @@ const Mypage: React.FC = () => {
             flexWrap: 'wrap',
           }}
         >
-          {activeTab === 'video' ? <PlayVideo videos={videos} onDelete={handleVideoDelete} /> : <ModifyProfile onNicknameChange={handleNicknameChange} />}
+          {activeTab === 'video' ? (
+            <PlayVideo
+              videos={videos}
+              onDelete={handleVideoDelete}
+            />
+          ) : (
+            <ModifyProfile onNicknameChange={handleNicknameChange} />
+          )}
         </div>
       </div>
     </div>

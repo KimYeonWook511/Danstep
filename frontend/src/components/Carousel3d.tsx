@@ -232,7 +232,7 @@
 
 // export default Carousel3d;
 
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Carousel from 'react-spring-3d-carousel';
 import { v4 as uuidv4 } from 'uuid';
@@ -262,6 +262,7 @@ const Carousel3d: React.FC<{ data: Game[] }> = ({ data }) => {
   const [isHovered, setIsHovered] = useState<Game | null>(null);
   const [goToSlide, setGoToSlide] = useState(0);
   const audioRef = useRef<HTMLAudioElement>(new Audio(slideSound));
+  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null); // Hover 상태 업데이트를 지연시키기 위한 ref
 
   const playSlideSound = () => {
     if (audioRef.current) {
@@ -288,15 +289,24 @@ const Carousel3d: React.FC<{ data: Game[] }> = ({ data }) => {
     return stars;
   };
 
-  const slides = data.map((item, index) => ({
+  const slides = useMemo(() => data.map((item, index) => ({
     key: uuidv4(),
     content: (
       <div
         className='carousel-item'
         onMouseEnter={() => {
-          if (goToSlide === index) setIsHovered(item);
+          // 클릭 시 슬라이드 이동 중 호버 상태가 업데이트되지 않도록 딜레이 적용
+          if (goToSlide === index) {
+            if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+            hoverTimeoutRef.current = setTimeout(() => {
+              setIsHovered(item);
+            }, 300); // 100ms 지연
+          }
         }}
-        onMouseLeave={() => setIsHovered(null)}
+        onMouseLeave={() => {
+          if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+          setIsHovered(null);
+        }}
         onClick={() => {
           if (goToSlide === index) {
             navigate(`/game/${item.id}`);
@@ -341,7 +351,7 @@ const Carousel3d: React.FC<{ data: Game[] }> = ({ data }) => {
         <span className='border-animation'></span>
       </div>
     ),
-  }));
+  })), [data, goToSlide, isHovered]);
 
   const handleWheel = useCallback(
     throttle((e: React.WheelEvent) => {
@@ -374,3 +384,5 @@ const Carousel3d: React.FC<{ data: Game[] }> = ({ data }) => {
 };
 
 export default Carousel3d;
+
+
