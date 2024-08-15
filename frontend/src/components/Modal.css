@@ -16,7 +16,7 @@
     padding: 40px;
     border-radius: 10px;
     text-align: center;
-    max-width: 900px;
+    max-width: 1200px;
     width: 90%;
   }
   
@@ -37,8 +37,13 @@
     color: white;
   }
   
-  .start-modal-body p {
+  .start-modal-body .tip1 {
     margin-top: 40px; /* 버튼과의 간격을 벌리기 위해 margin 추가 */
+    color: white;
+    font-size: 20px;
+  }
+  .tip2{
+    margin-top: 20px; /* 버튼과의 간격을 벌리기 위해 margin 추가 */
     color: white;
     font-size: 20px;
   }

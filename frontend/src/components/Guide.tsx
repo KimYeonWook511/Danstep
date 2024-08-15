@@ -24,11 +24,11 @@ const Guide: React.FC<GuideProps> = ({ onShowPoseEstimator }) => {
                 <div className="guide-instructions">
                     <div className="instruction left">
                         <img src={greenImage} alt="Green Pose" />
-                        <p>캡 화면 테두리가 초록색이면 카메라에 인식이 잘 되고 있음을 의미해요! 이대로 재밌게 즐겨주세요!!</p>
+                        <p>화면 테두리가 초록색이면 카메라에 인식이 잘 되고 있음을 의미해요! 이대로 재밌게 즐겨주세요!!</p>
                     </div>
                     <div className="instruction right">
                         <img src={redImage} alt="Red Pose" />
-                        <p>캡 화면 테두리가 빨간색이면 카메라에 인식이 잘 안되고 있음을 의미해요! 인식이 되도록 카메라 범위로 들어와 주세요!!</p>
+                        <p>화면 테두리가 빨간색이면 카메라에 인식이 잘 안되고 있음을 의미해요! 인식이 되도록 카메라 범위로 들어와 주세요!!</p>
                     </div>
                 </div>
                 <button className="play-button" onClick={handleClose}>Play</button>
