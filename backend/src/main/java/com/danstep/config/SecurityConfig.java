@@ -67,8 +67,7 @@ public class SecurityConfig {
                         CorsConfiguration configuration = new CorsConfiguration();
 
                         configuration.setAllowedOrigins(Arrays.asList(
-                                "https://i11a406.p.ssafy.io",
-                                "http://localhost:3000"
+                                "https://i11a406.p.ssafy.io"
                         ));
                         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")); // 허용할 메서드 추가
                         configuration.setAllowedMethods(Collections.singletonList("*"));
