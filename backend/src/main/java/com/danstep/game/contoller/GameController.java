@@ -21,7 +21,6 @@ public class GameController {
 
     @GetMapping
     public ResponseEntity<List<GetAllGameDTO>> getAllGames() {
-        System.out.println("getAllGames 호출");
 
         List<GetAllGameDTO> gameList = gameService.getAllGames();
 
@@ -30,7 +29,6 @@ public class GameController {
 
     @GetMapping("/{id}")
     public ResponseEntity<GameInfoDTO> getGame(@PathVariable Integer id) {
-        System.out.println("getGame 호출");
 
         if (id == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -38,15 +36,12 @@ public class GameController {
 
         GameInfoDTO gameInfoDTO = gameService.getGameInfo(id);
 
-        if (gameInfoDTO == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
         return new ResponseEntity<>(gameInfoDTO, HttpStatus.OK);
     }
 
     @GetMapping("/{id}/pose")
     public ResponseEntity<String> getGamePose(@PathVariable Integer id) {
+
         if (id == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

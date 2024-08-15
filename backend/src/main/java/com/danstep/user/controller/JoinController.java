@@ -40,7 +40,6 @@ public class JoinController {
 
         String username = joinDTO.getUsername();
         if (!Pattern.compile(usernameRegex).matcher(username).matches()) {
-            System.out.println(usernameRegex);
             throw new InvalidUsernameException("유효하지 않은 아이디입니다.");
         }
 
