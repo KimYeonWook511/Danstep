@@ -227,7 +227,7 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
       if (checkKeypoints && checkKeypoints.length > 0) {
         iskeypoint.current = keypointsDetected(checkKeypoints, requiredKeypointsIndices);
 
-        if (iskeypoint) {
+        if (iskeypoint.current) {
           if (yAligned.current > -0.5 && yAligned.current < 0.5) {
             isYAligned.current = true;
             setAlignmentMessage('Hands Up');
