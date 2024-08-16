@@ -1,0 +1,179 @@
+-- MySQL dump 10.13  Distrib 9.0.1, for Linux (x86_64)
+--
+-- Host: localhost    Database: danstep_db
+-- ------------------------------------------------------
+-- Server version	9.0.1
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `game_info`
+--
+
+DROP TABLE IF EXISTS `game_info`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `game_info` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `audio_filename` varchar(200) NOT NULL,
+  `background_filename` varchar(200) NOT NULL,
+  `level` int NOT NULL,
+  `playtime` int NOT NULL,
+  `pose_filename` varchar(200) NOT NULL,
+  `thumbnail_filename` varchar(200) NOT NULL,
+  `title` varchar(200) NOT NULL,
+  `upload_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `video_filename` varchar(200) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `game_info`
+--
+
+LOCK TABLES `game_info` WRITE;
+/*!40000 ALTER TABLE `game_info` DISABLE KEYS */;
+INSERT INTO `game_info` VALUES (1,'a0161f5b-9294-46c1-938b-dd5c04842f3d.mp3','67fce927-2cd9-4aa1-a8b1-6f2741c1b70d.mp4',6,32,'d6e50a3e-a0d2-46ff-8a61-7be6fb44d27e.json','f3a164e7-82e4-4645-a2ca-ce5c197c70b2.png','Haidilao Naruto Dance','2024-08-15 20:33:48','a39be2c3-b7e3-43d4-ae2b-478785372750.mp4'),(2,'3dc0b4f6-cb00-419a-9c7b-cbaae8b84ab0.mp3','064d5c09-14e7-45a2-990a-1e833c9a3588.mp4',3,15,'01528844-d2d3-4aa4-ae37-efd6b250cdc9.json','2a1492ff-835e-4d60-9bdc-9c8762cd52fd.png','TACATA DANCE TUTORIAL','2024-08-15 20:33:48','85730fd1-0073-4d93-b78f-709ca2109933.mp4'),(3,'1e36eb48-c34c-421c-82a1-91d9a1629de6.mp3','5c202fb4-24de-4ada-b158-afcc4788abb2.mp4',6,25,'e1ceb849-5d70-43c8-8af2-8b397381b732.json','52e89a51-94be-4a61-b20c-c399f88d69f7.png','McNasty','2024-08-15 20:33:48','103a2aab-e302-4555-97bb-554c57779bd8.mp4'),(4,'250b336f-a45c-49cc-a508-7fe2d12f907f.mp3','f53803a3-e757-418c-a6d9-9a7bdfade4a9.mp4',5,14,'e1ceb849-5d70-43c8-8af2-8b397381b732.json','791a93a4-096a-43eb-9176-dc538cc4d2f4.png','Fast Cars & Superstars','2024-08-15 20:33:48','80901ff2-1010-41ab-ae1a-14bb61015979.mp4'),(5,'39105fb8-b931-4294-94ef-2e06cb8f4c48.mp3','a34230cc-84ce-4892-8d5e-83926d4cda60.mp4',5,15,'2835b336-126d-4bb4-a415-263847aeffbc.json','677ef0d8-0313-449b-9679-d204dec65fd8.png','Axel F','2024-08-15 20:33:48','5cd8db14-f9bf-4ebf-8a45-015c812a5764.mp4'),(6,'79d9a8a4-2488-476f-854c-4c5234adfb7a.mp3','39809850-78b3-461e-9938-6c465e524baf.mp4',4,18,'93cdcc9e-5d50-4c38-a8d7-229c7cd4133b.json','cd6eee68-6125-423c-9bf0-e923e44c8d65.png','Good Time','2024-08-15 20:33:48','1c94a3b4-6ecc-4d36-828c-2d01078d61a9.mp4'),(7,'ccb96873-cd97-4a90-b3e1-312369122086.mp3','4c9aadae-3f49-42dc-860b-b8c9f10e27a0.mp4',7,21,'76e59082-3ca1-4007-aacf-68e5db4e269f.json','eee08d33-02c7-46da-9bc7-a06548e83779.png','Queen Bee','2024-08-15 20:33:48','0a4c36c6-db50-442e-bd8c-ef8c345da5d6.mp4');
+/*!40000 ALTER TABLE `game_info` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `rank_info`
+--
+
+DROP TABLE IF EXISTS `rank_info`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `rank_info` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `result_info_id` int NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UK3sj5voowhudbfau9g4jc1ict8` (`result_info_id`),
+  CONSTRAINT `FKgeiyxaf1f1xl8q0vxkf1vynwj` FOREIGN KEY (`result_info_id`) REFERENCES `user_info` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `rank_info`
+--
+
+LOCK TABLES `rank_info` WRITE;
+/*!40000 ALTER TABLE `rank_info` DISABLE KEYS */;
+/*!40000 ALTER TABLE `rank_info` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `result_info`
+--
+
+DROP TABLE IF EXISTS `result_info`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `result_info` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `bad` int NOT NULL,
+  `good` int NOT NULL,
+  `great` int NOT NULL,
+  `max_combo` int NOT NULL,
+  `perfect` int NOT NULL,
+  `result_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `score` int NOT NULL,
+  `game_info_id` int NOT NULL,
+  `user_info_id` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FKm7gc9h797mf2e6fvhgydssii9` (`game_info_id`),
+  KEY `FKaq7nblwrnkvhtwjimmtdhs50` (`user_info_id`),
+  CONSTRAINT `FKaq7nblwrnkvhtwjimmtdhs50` FOREIGN KEY (`user_info_id`) REFERENCES `user_info` (`id`),
+  CONSTRAINT `FKm7gc9h797mf2e6fvhgydssii9` FOREIGN KEY (`game_info_id`) REFERENCES `game_info` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `result_info`
+--
+
+LOCK TABLES `result_info` WRITE;
+/*!40000 ALTER TABLE `result_info` DISABLE KEYS */;
+INSERT INTO `result_info` VALUES (1,18,4,6,4,8,'2024-08-15 21:06:05',8787,2,2),(2,10,6,8,12,12,'2024-08-15 21:12:52',8898,2,2),(3,34,0,1,1,1,'2024-08-15 21:18:44',0,2,2),(4,30,14,7,7,28,'2024-08-15 21:20:46',8980,1,2),(5,29,10,18,7,22,'2024-08-15 21:24:08',9198,1,1),(6,14,6,3,5,13,'2024-08-15 21:25:44',9520,2,1),(7,14,5,7,5,10,'2024-08-15 22:24:01',9100,2,1),(8,19,4,9,6,4,'2024-08-15 22:25:44',7260,2,3),(9,17,8,9,20,42,'2024-08-15 22:37:55',9690,1,4),(10,12,9,6,5,9,'2024-08-15 22:39:47',9690,2,3),(11,17,5,16,16,41,'2024-08-15 22:56:40',9580,1,4),(12,16,7,15,16,41,'2024-08-15 23:09:48',9488,1,4),(13,13,8,16,16,42,'2024-08-15 23:13:36',7167,1,4);
+/*!40000 ALTER TABLE `result_info` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `result_pose`
+--
+
+DROP TABLE IF EXISTS `result_pose`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `result_pose` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `pose_filename` varchar(255) NOT NULL,
+  `result_info_id` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FKjd0c9v2m3y4uc0dcis295igv` (`result_info_id`),
+  CONSTRAINT `FKjd0c9v2m3y4uc0dcis295igv` FOREIGN KEY (`result_info_id`) REFERENCES `result_info` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `result_pose`
+--
+
+LOCK TABLES `result_pose` WRITE;
+/*!40000 ALTER TABLE `result_pose` DISABLE KEYS */;
+INSERT INTO `result_pose` VALUES (1,'382efbf0-9280-40b2-97a1-8c31365190a0.json',1),(2,'51fa8d93-e9b2-4331-b1c1-77c53adde973.json',2),(3,'fc5d5377-d1b3-4548-bb42-3e09fb222176.json',3),(4,'d8554877-41a2-4367-af1e-4def28645b90.json',4),(5,'c98db6e5-0ae8-47a8-85b2-248f1b3ce20b.json',5),(6,'f4448e0f-aac4-4f61-a554-a0e7a4ed5bd4.json',6),(7,'3330be9d-7771-4152-82b1-3421032ba04b.json',7),(8,'8d264026-b478-4a66-a5aa-9d3c5d1bc8e8.json',8),(9,'c6188b13-4894-48f8-81ec-253065a03117.json',9),(10,'8ab7f1d5-3b27-4bb2-811d-5893c018f147.json',10),(11,'bf5c5a1f-2735-4898-8f78-d42adc0b0eff.json',11),(12,'6db63a57-a116-4b62-9322-415ff15b3767.json',12),(13,'79d609f9-639e-4b0e-a340-6ec3b1bad751.json',13);
+/*!40000 ALTER TABLE `result_pose` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_info`
+--
+
+DROP TABLE IF EXISTS `user_info`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_info` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nickname` varchar(6) NOT NULL,
+  `password` varchar(200) NOT NULL,
+  `profile` varchar(200) DEFAULT NULL,
+  `refresh` varchar(400) DEFAULT NULL,
+  `regist_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `role` varchar(20) NOT NULL DEFAULT 'ROLE_USER',
+  `username` varchar(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UK8v67659wisb17ryqyrscjipg7` (`nickname`),
+  UNIQUE KEY `UKf2ksd6h8hsjtd57ipfq9myr64` (`username`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_info`
+--
+
+LOCK TABLES `user_info` WRITE;
+/*!40000 ALTER TABLE `user_info` DISABLE KEYS */;
+INSERT INTO `user_info` VALUES (1,'yjs12','$2a$10$CLwHpA0MOOZz2.wf.4UL7umfKwVQ97WaQfRSZzuisGMYBvNw1lfZG',NULL,'eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6InJlZnJlc2giLCJ1c2VybmFtZSI6InRlc3QxMTEiLCJuaWNrbmFtZSI6InlqczEyIiwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTcyMzcyOTU2NywiZXhwIjoxNzIzODE1OTY3fQ.COc4lRQotefIM8WZQ4KtiGx0gvWPITc6CwZNqb5uCoE','2024-08-15 20:52:52','ROLE_USER','test111'),(2,'test1','$2a$10$pcL4WLTxFaiCwv0QJynNneVN7UVd91b3nrqvl442N7mX/ZV7yQRGu',NULL,'eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6InJlZnJlc2giLCJ1c2VybmFtZSI6InRlc3QiLCJuaWNrbmFtZSI6InRlc3QxIiwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTcyMzcyNDU0MywiZXhwIjoxNzIzODEwOTQzfQ.LlMbYkonUeeyHFqDthECf-wjPYBlw7SyiSWUeK-HF0Y','2024-08-15 21:04:40','ROLE_USER','test'),(3,'il','$2a$10$B5PLUv4WipfyvHpKLIfMIOOoqYebNDYFXEHiuD2OTSKkNCBP99Bd6',NULL,'eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6InJlZnJlc2giLCJ1c2VybmFtZSI6Inl1bnl1biIsIm5pY2tuYW1lIjoiaWwiLCJyb2xlIjoiUk9MRV9VU0VSIiwiaWF0IjoxNzIzNzI5MTM0LCJleHAiOjE3MjM4MTU1MzR9.yS3guygCEXRWYYjOum_flGDb41ayfyIUV5IAa-8y87k','2024-08-15 22:24:47','ROLE_USER','yunyun'),(4,'dansta','$2a$10$BKuu72BTOOT0zydvP4YieOGNjdbIBk51rfCRSH8a8cMbLE8Fw3AMC',NULL,'eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6InJlZnJlc2giLCJ1c2VybmFtZSI6ImRhbnN0ZXAxMjMiLCJuaWNrbmFtZSI6ImRhbnN0YSIsInJvbGUiOiJST0xFX1VTRVIiLCJpYXQiOjE3MjM3MzA5ODcsImV4cCI6MTcyMzgxNzM4N30.Nw7oug7DqvOx8b5NzG978wIzX6yYRS8aDiUnyTaZsPk','2024-08-15 22:34:43','ROLE_USER','danstep123'),(5,'yard','$2a$10$zLXxtor4oJ5H2HMJkZ7.PeGaBGIa7wqzOAPjxU9OzZNoj/Q7k2nVS',NULL,'eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6InJlZnJlc2giLCJ1c2VybmFtZSI6Indza3lhcmQiLCJuaWNrbmFtZSI6InlhcmQiLCJyb2xlIjoiUk9MRV9VU0VSIiwiaWF0IjoxNzIzNzMxMjQyLCJleHAiOjE3MjM4MTc2NDJ9.wr6otF3_bqBnjjDKSWLrAnZfD6TF6veHqtAyfVPVYXE','2024-08-15 23:13:55','ROLE_USER','wskyard');
+/*!40000 ALTER TABLE `user_info` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2024-08-16  0:58:32
