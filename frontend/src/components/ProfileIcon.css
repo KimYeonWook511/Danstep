@@ -1,0 +1,89 @@
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css');
+
+:root {
+  /* 배경색을 투명하게 설정 */
+  --bg: rgba(5, 8, 1); 
+  --clr: #95f9fe;
+}
+
+.yellow-profile-button {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: 0.5s;
+  background: var(--bg);
+}
+
+.yellow-profile-button::before {
+  content: '';
+  position: absolute;
+  inset: 15px;    
+  box-shadow: 
+  0 0 0 12px var(--bg),
+  0 0 0 14px var(--clr);
+  transition: 0.5s;
+}
+
+.yellow-profile-button:hover::before {
+  inset: 10px;
+
+}
+
+.yellow-profile-button::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+  transform: rotate(45deg);
+  transition: 0.5s;
+}
+
+.yellow-profile-button:hover::after {
+  inset: 0px; /* 이 값을 조정하여 hover 시 효과를 변경 */
+  transform: rotate(0deg);
+}
+
+.yellow-profile-button a {
+  position: relative;
+  text-decoration: none;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+ 
+}
+
+.yellow-profile-button a i {
+  font-size: 2em;
+  transition: 0.5s;
+  color: var(--clr);
+  opacity: 1;
+}
+
+.yellow-profile-button:hover a i {
+  color: var(--clr);
+  transform: translateY(-40%);
+}
+
+.yellow-profile-button a span {
+  position: absolute;
+  font-family: sans-serif;
+  color: var(--clr);
+  opacity: 0;
+  transition: 0.5s;
+  transform: scale(0) translateY(200%);
+}
+
+.yellow-profile-button:hover a span {
+  opacity: 1;
+  transform: scale(1) translateY(100%);
+}
+
+.yellow-profile-button:hover a i,
+.yellow-profile-button a span {
+  filter: drop-shadow(0 0 20px var(--clr)) drop-shadow(0 0 40px var(--clr)) drop-shadow(0 0 60px var(--clr));
+} 

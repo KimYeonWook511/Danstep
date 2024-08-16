@@ -1,0 +1,28 @@
+.neonCircle {
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #0fa;
+  box-shadow:
+    0 0 5px #0fa,
+    0 0 10px #0fa,
+    0 0 15px #0fa,
+    0 0 20px #0fa;
+  pointer-events: none;
+}
+
+.neonCircle.burst {
+  animation: burst 0.3s ease-out forwards;
+}
+
+@keyframes burst {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(3);
+    opacity: 0;
+  }
+}

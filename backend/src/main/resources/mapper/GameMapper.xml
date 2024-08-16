@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.danstep.game.model.mapper.GameMapper">
+
+    <resultMap id="gameBasic" type="com.danstep.game.model.dto.GameInfoDTO">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="upload_date" property="uploadDate"/>
+        <result column="playtime" property="playtime"/>
+        <result column="thumbnail_filename" property="thumbnailFilename"/>
+        <result column="audio_filename" property="audioFilename"/>
+        <result column="pose_filename" property="poseFilename"/>
+        <result column="video_filename" property="videoFilename"/>
+        <result column="background_filename" property="backgroundFilename"/>
+        <result column="level" property="level"/>
+    </resultMap>
+
+    <resultMap id="gameRankTop3Basic" type="com.danstep.game.model.dto.GameRankTop3DTO">
+        <result property="gameInfoId" column="game_info_id" />
+        <result property="username" column="username" />
+        <result property="nickname" column="nickname" />
+        <result property="score" column="score" />
+        <result property="rank" column="rank" />
+    </resultMap>
+
+    <select id="getGamesId">
+        SELECT id
+        FROM game_info
+        ORDER BY level ASC, id ASC;
+    </select>
+
+    <select id="getGameInfoById" resultMap="gameBasic">
+        SELECT *
+        FROM game_info
+        WHERE id = #{id}
+    </select>
+
+    <select id="getGameRankTop3ById" resultMap="gameRankTop3Basic">
+        SELECT ui.username, ui.nickname, MAX(ri.score) AS score
+        FROM result_info AS ri
+        LEFT JOIN user_info AS ui
+        ON ri.user_info_id = ui.id
+        WHERE ri.game_info_id = #{id}
+        GROUP BY ui.username, ui.nickname
+        ORDER BY score DESC, MAX(ri.id) DESC
+        LIMIT 3;
+    </select>
+
+</mapper>
