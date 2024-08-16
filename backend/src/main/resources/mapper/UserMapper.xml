@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.danstep.user.model.mapper.UserMapper">
+
+    <resultMap id="userBasic" type="com.danstep.user.model.dto.UserInfoDTO">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="upload_date" property="uploadDate"/>
+        <result column="playtime" property="playtime"/>
+        <result column="thumbnail_filename" property="thumbnailFilename"/>
+        <result column="audio_filename" property="audioFilename"/>
+        <result column="pose_filename" property="poseFilename"/>
+        <result column="video_filename" property="videoFilename"/>
+        <result column="level" property="level"/>
+    </resultMap>
+
+    <select id="existsByUsername" parameterType="String" resultType="boolean">
+        SELECT IF(COUNT(*) = 1, 1, 0)
+        FROM user_info
+        WHERE username = #{username}
+    </select>
+
+    <select id="existsByNickname" parameterType="String" resultType="boolean">
+        SELECT IF(COUNT(*) = 1, 1, 0)
+        FROM user_info
+        WHERE nickname = #{nickname}
+    </select>
+
+    <select id="existsByNicknameExcludingUsername" resultType="boolean">
+        SELECT IF(COUNT(*) = 1, 1, 0)
+        FROM user_info
+        WHERE nickname = #{nickname}
+        AND username != #{username}
+    </select>
+
+<!--    <insert id="insertUser" parameterType="userDTO" useGeneratedKeys="true" keyProperty="id">-->
+    <insert id="insertUser" parameterType="com.danstep.user.model.dto.UserInfoDTO" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO user_info (username, password, nickname)
+        VALUES (#{username}, #{password}, #{nickname})
+    </insert>
+
+    <select id="findByUsername" parameterType="String" resultType="com.danstep.user.model.dto.UserInfoDTO">
+        SELECT id, username, nickname, regist_date, role, profile, refresh, password
+        FROM user_info
+        WHERE username = #{username}
+    </select>
+
+    <update id="updateUserByUsername" parameterType="com.danstep.user.model.dto.UpdateUserDTO">
+        UPDATE user_info
+        <set>
+            <if test="newPassword != null and newPassword != ''">
+                password = #{newPassword},
+            </if>
+            <if test="nickname != null and nickname != ''">
+                nickname = #{nickname},
+            </if>
+            <if test="profile != null and profile != ''">
+                profile = #{profile},
+            </if>
+        </set>
+        WHERE username = #{username}
+    </update>
+
+</mapper>

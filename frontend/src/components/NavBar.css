@@ -1,0 +1,145 @@
+@import url('https://fonts.googleapis.com/css?family=Lobster&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Comfortaa:400,700&display=swap');
+
+.nav-bar {
+  margin: 10px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  /* background-color: #050801; */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 네비게이션 바에 그림자 추가 */
+  transition: top 0.3s ease; /* 애니메이션 효과 추가 */
+  padding: 10px 20px; /* 상하 여백 및 좌우 여백 추가 */
+  box-sizing: border-box; /* padding을 포함하여 전체 너비를 조정 */
+  z-index: 1000;
+  height: 60px;
+}
+
+.nav-content {
+  display: flex;
+  justify-content: space-between; /* 좌우로 퍼지게 함 */
+  align-items: center;
+  height: 100%;
+}
+
+.left-items {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* 좌측 아이템 사이의 간격 */
+}
+
+.logo {
+  color: #fff;
+  font-size: 30px;
+  font-weight: bold;
+  font-family: Lobster, sans-serif;
+  /* font-family: Comfortaa; */
+  animation: logo-animation 1.5s ease-in-out infinite alternate;
+  letter-spacing: 5px; /* 텍스트 사이의 간격 설정 */
+}
+
+.right-item {
+  margin-right: 5px;
+  padding-right: 5px;
+}
+
+@keyframes logo-animation {
+  from {
+    text-shadow:
+      0 0 10px #fff,
+      0 0 20px #fff,
+      0 0 30px #fff,
+      0 0 40px #ff00de,
+      0 0 70px #ff00de,
+      0 0 80px #ff00de,
+      0 0 100px #ff00de,
+      0 0 150px #ff00de;
+  }
+  to {
+    text-shadow:
+      0 0 5px #fff,
+      0 0 10px #fff,
+      0 0 15px #fff,
+      0 0 20px #ff00de,
+      0 0 35px #ff00de,
+      0 0 40px #ff00de,
+      0 0 50px #ff00de,
+      0 0 75px #ff00de;
+  }
+}
+
+.left-items {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* 좌측 아이템 사이의 간격 */
+}
+
+.logo {
+  color: #fff;
+  font-size: 30px;
+  font-weight: bold;
+  font-family: Lobster;
+  /* font-family: Comfortaa; */
+  animation: logo-animation 1.5s ease-in-out infinite alternate;
+  letter-spacing: 5px; /* 텍스트 사이의 간격 설정 */
+}
+
+.right-items {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* 우측 아이템 사이의 간격 */
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* 링크 사이의 간격 */
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+}
+
+.separator {
+  color: white;
+}
+
+.right-items {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* 우측 아이템 사이의 간격 */
+}
+
+.nav-button {
+  background: none;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+@keyframes logo-animation {
+  from {
+    text-shadow:
+      0 0 10px #fff,
+      0 0 20px #fff,
+      0 0 30px #fff,
+      0 0 40px #ff00de,
+      0 0 70px #ff00de,
+      0 0 80px #ff00de,
+      0 0 100px #ff00de,
+      0 0 150px #ff00de;
+  }
+  to {
+    text-shadow:
+      0 0 5px #fff,
+      0 0 10px #fff,
+      0 0 15px #fff,
+      0 0 20px #ff00de,
+      0 0 35px #ff00de,
+      0 0 40px #ff00de,
+      0 0 50px #ff00de,
+      0 0 75px #ff00de;
+  }
+}

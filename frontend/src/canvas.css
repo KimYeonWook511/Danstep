@@ -1,0 +1,108 @@
+.no-border {
+  border: none;
+  box-shadow: none;
+  animation: none;
+  position: relative;
+  width: 80%;
+  height: 640px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.container.not-aligned {
+  position: relative;
+  width: 80%;
+  height: 640px;
+  border-color: red;
+  border-style: solid;
+  border-radius: 5%;
+  border-width: 5px;
+  margin-left: 10px;
+  margin-right: 10px;
+  animation: neon-glow-red-border 0.3s infinite alternate; /* 보라색 네온 효과 */
+}
+
+.container.aligned {
+  position: relative;
+  width: 80%;
+  height: 640px;
+  border-color: green;
+  border-style: solid;
+  border-radius: 5%;
+  border-width: 5px;
+  margin-left: 10px;
+  margin-right: 10px;
+  animation: neon-glow-green-border 0.3s infinite alternate;
+}
+
+@keyframes neon-glow-green-border {
+  0% {
+    box-shadow:
+      0 0 5px rgba(0, 255, 0, 0.5),
+      /* 녹색 */ 0 0 10px rgba(0, 255, 0, 0.3),
+      /* 녹색 */ 0 0 15px rgba(0, 255, 0, 0.1),
+      inset 0 0 5px rgba(0, 255, 0, 0.5),
+      /* 녹색 */ inset 0 0 10px rgba(0, 255, 0, 0.3),
+      /* 녹색 */ inset 0 0 15px rgba(0, 255, 0, 0.1);
+    opacity: 0.9;
+  }
+  100% {
+    box-shadow:
+      0 0 10px rgba(0, 255, 0, 0.9),
+      /* 녹색 */ 0 0 20px rgba(0, 255, 0, 0.7),
+      /* 녹색 */ 0 0 30px rgba(0, 255, 0, 0.5),
+      inset 0 0 10px rgba(0, 255, 0, 0.9),
+      /* 녹색 */ inset 0 0 20px rgba(0, 255, 0, 0.7),
+      /* 녹색 */ inset 0 0 30px rgba(0, 255, 0, 0.5);
+    opacity: 1;
+  }
+}
+
+@keyframes neon-glow-red-border {
+  0% {
+    box-shadow:
+      0 0 5px rgba(255, 0, 0, 0.5),
+      /* 붉은색 */ 0 0 10px rgba(255, 0, 0, 0.3),
+      /* 붉은색 */ 0 0 15px rgba(255, 0, 0, 0.1),
+      inset 0 0 5px rgba(255, 0, 0, 0.5),
+      /* 붉은색 */ inset 0 0 10px rgba(255, 0, 0, 0.3),
+      /* 붉은색 */ inset 0 0 15px rgba(255, 0, 0, 0.1);
+    opacity: 0.9; /* 초기 투명도 */
+  }
+  100% {
+    box-shadow:
+      0 0 10px rgba(255, 0, 0, 0.9),
+      /* 붉은색 */ 0 0 20px rgba(255, 0, 0, 0.7),
+      /* 붉은색 */ 0 0 30px rgba(255, 0, 0, 0.5),
+      inset 0 0 10px rgba(255, 0, 0, 0.9),
+      /* 붉은색 */ inset 0 0 20px rgba(255, 0, 0, 0.7),
+      /* 붉은색 */ inset 0 0 30px rgba(255, 0, 0, 0.5);
+    opacity: 1; /* 최대 투명도 */
+  }
+}
+
+.canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.bg-canvas {
+  z-index: 1;
+  background-color: black;
+}
+
+.video-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.button {
+  z-index: 7;
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+}

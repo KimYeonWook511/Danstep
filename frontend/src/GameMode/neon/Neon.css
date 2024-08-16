@@ -1,0 +1,171 @@
+/* body {
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  overflow: hidden;
+} */
+
+.hidden {
+  display: none;
+}
+
+.visible {
+  display: block;
+}
+
+.BackgroundVideo {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.background-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0; /* Ensure the video is behind all other elements */
+}
+
+.Neon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  height: 100vh;
+  position: relative; /* Ensures that elements are positioned relative to this div */
+  z-index: 1; /* Ensure the elements are on top of the video */
+}
+
+.score-container {
+  /* margin-left : 50px; */
+  margin-right: 200px;
+}
+
+.animated-text {
+  font-weight: bold;
+  animation: grow-shrink 0.2s infinite alternate; /* 0.2초 주기로 65px ~ 70px */
+}
+
+@keyframes grow-shrink {
+  0% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animated-text.combo {
+  color: white; /* 흰색 */
+  animation:
+    grow-shrink 0.2s infinite alternate,
+    neon-glow-white 0.2s infinite alternate; /* 흰색 네온 효과 */
+}
+
+@keyframes neon-glow-white {
+  0% {
+    text-shadow:
+      0 0 5px rgba(255, 255, 255, 0.5),
+      0 0 10px rgba(255, 255, 255, 0.2),
+      0 0 15px rgba(255, 255, 255, 0.1);
+    opacity: 0.9; /* 초기 투명도 */
+  }
+  100% {
+    text-shadow:
+      0 0 10px rgba(255, 255, 255, 0.9),
+      0 0 20px rgba(255, 255, 255, 0.7),
+      0 0 30px rgba(255, 255, 255, 0.5);
+    opacity: 1; /* 최대 투명도 */
+  }
+}
+
+/* 128 텍스트의 스타일 */
+.animated-text.neon-number {
+  color: yellow; /* 노란색 */
+  animation:
+    grow-shrink-number 0.2s infinite alternate,
+    neon-glow-yellow 0.2s infinite alternate; /* 노란색 네온 효과 */
+}
+
+/*글자가 너무 작아서 숫자는 따로 지정*/
+@keyframes grow-shrink-number {
+  0% {
+    transform: scale(0.95); /* 처음 크기 */
+  }
+  100% {
+    transform: scale(1); /* 커진 크기 */
+  }
+}
+
+@keyframes neon-glow-yellow {
+  0% {
+    text-shadow:
+      0 0 5px rgba(255, 255, 0, 0.5),
+      /* 노란색 */ 0 0 10px rgba(255, 255, 0, 0.2),
+      /* 노란색 */ 0 0 15px rgba(255, 255, 0, 0.1); /* 노란색 */
+    opacity: 0.9; /* 초기 투명도 */
+  }
+  100% {
+    text-shadow:
+      0 0 10px rgba(255, 255, 0, 0.9),
+      /* 노란색 */ 0 0 20px rgba(255, 255, 0, 0.7),
+      /* 노란색 */ 0 0 30px rgba(255, 255, 0, 0.5); /* 노란색 */
+    opacity: 1; /* 최대 투명도 */
+  }
+}
+
+/* PERFECT 텍스트의 스타일 */
+.animated-text.grade-now {
+  color: var(--neon-color); /* 보라색 */
+  animation:
+    grow-shrink 0.2s infinite alternate,
+    neon-glow-grade 0.2s infinite alternate; /* 보라색 네온 효과 */
+}
+
+@keyframes neon-glow-grade {
+  0% {
+    text-shadow:
+      0 0 5px rgba(var(--neon-color-rgb), 0.5),
+      0 0 10px rgba(var(--neon-color-rgb), 0.2),
+      0 0 15px rgba(var(--neon-color-rgb), 0.1);
+    opacity: 0.9; /* 초기 투명도 */
+  }
+  100% {
+    text-shadow:
+      0 0 10px rgba(var(--neon-color-rgb), 0.9),
+      0 0 20px rgba(var(--neon-color-rgb), 0.7),
+      0 0 30px rgba(var(--neon-color-rgb), 0.5);
+    opacity: 1; /* 최대 투명도 */
+  }
+}
+
+.animated-text {
+  color: red; /* 보라색 */
+  animation:
+    grow-shrink 0.2s infinite alternate,
+    neon-glow-red 0.2s infinite alternate;
+}
+
+@keyframes neon-glow-red {
+  0% {
+    text-shadow:
+      0 0 5px rgba(255, 0, 0, 0.5),
+      /* 붉은색 */ 0 0 10px rgba(255, 0, 0, 0.2),
+      /* 붉은색 */ 0 0 15px rgba(255, 0, 0, 0.1); /* 붉은색 */
+    opacity: 0.9; /* 초기 투명도 */
+  }
+  100% {
+    text-shadow:
+      0 0 10px rgba(255, 0, 0, 0.9),
+      /* 붉은색 */ 0 0 20px rgba(255, 0, 0, 0.7),
+      /* 붉은색 */ 0 0 30px rgba(255, 0, 0, 0.5); /* 붉은색 */
+    opacity: 1; /* 최대 투명도 */
+  }
+}
