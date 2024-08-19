@@ -1,9 +1,6 @@
 package com.danstep.result.model.mapper;
 
-import com.danstep.result.model.dto.GetUserResultDTO;
-import com.danstep.result.model.dto.ReplayDTO;
-import com.danstep.result.model.dto.SaveResultDTO;
-import com.danstep.result.model.dto.SaveResultPoseDTO;
+import com.danstep.result.model.dto.*;
 
 import java.util.List;
 
@@ -13,7 +10,7 @@ public interface ResultMapper {
 
     void insertResultPose(SaveResultPoseDTO saveResultPoseDTO);
 
-    List<GetUserResultDTO> getUserResults(String username);
+    List<UserResultDTO> getUserResults(String username);
 
     ReplayDTO getUserReplay(ReplayDTO replayDTO);
 
