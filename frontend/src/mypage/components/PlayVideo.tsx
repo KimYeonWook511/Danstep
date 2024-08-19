@@ -12,6 +12,7 @@ interface VideoData {
   score: number;
   resultDate: string;
   resultInfoId: number;
+  thumbnailUrl: string;
 }
 
 interface PlayVideoProps {
@@ -72,8 +73,7 @@ const PlayVideo: React.FC<PlayVideoProps> = ({ videos, onDelete }) => {
 
         setSelectedVideoIndex(null);
         setShowRemovePoseModal(false);
-      } catch (error) {
-      }
+      } catch (error) {}
     }
   };
 
@@ -89,9 +89,9 @@ const PlayVideo: React.FC<PlayVideoProps> = ({ videos, onDelete }) => {
           fontSize: '20px',
         }}
       >
-        <p style={{ width: '25%' }}>제목</p>
-        <p style={{ width: '25%' }}>점수</p>
-        <p style={{ width: '25%' }}>플레이 날짜</p>
+        <p style={{ width: '15%' }}>Game</p>
+        <p style={{ width: '30%' }}>Score</p>
+        <p style={{ width: '30%' }}>date</p>
         <p style={{ width: '25%' }}></p>
       </div>
       <hr style={{ marginTop: '10px', marginBottom: '20px' }}></hr>
@@ -108,13 +108,24 @@ const PlayVideo: React.FC<PlayVideoProps> = ({ videos, onDelete }) => {
             marginTop: '10px',
             color: 'white',
             fontSize: '18px',
+            alignItems: 'center',
           }}
         >
-          <p style={{ width: '25%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-            {video.title}
+          <p
+            style={{
+              width: '15%',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              widows: '100%',
+              height: 'auto',
+              borderRadius: '20px',
+            }}
+          >
+            <img src={video.thumbnailUrl} title={video.title} />
           </p>
-          <p style={{ width: '25%' }}>{(video.score / 100).toFixed(2)}</p>
-          <p style={{ width: '25%' }}>{formatDate(video.resultDate)}</p>
+          <p style={{ width: '30%' }}>{(video.score / 100).toFixed(2)}</p>
+          <p style={{ width: '30%' }}>{formatDate(video.resultDate)}</p>
           <div
             style={{
               width: '25%',
