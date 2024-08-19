@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation, Navigate } from 'react-router-dom';
 import MainPage from './components/MainPage';
 import Ranking from './components/Ranking';
@@ -8,15 +8,18 @@ import mainBgm from './assets/mainbgm.mp3';
 import MyPage from './mypage/components/MyPage';
 import Replay from './mypage/components/Replay';
 import Modal from './components/StartModal';
-import NavBar from './components/NavBar';
 
-const MusicPlayer: React.FC = () => {
+const MusicPlayer: React.FC<{
+  onMainMusicControl?: (control: (play: boolean) => void) => void;
+}> = ({ onMainMusicControl }) => {
   const location = useLocation();
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isMuted, setIsMuted] = useState(false);
   const [volume, setVolume] = useState(0.1);
   const [showVolumeControl, setShowVolumeControl] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(() => !sessionStorage.getItem('hasSeenModal'));
+  const [isModalVisible, setIsModalVisible] = useState(
+    () => !sessionStorage.getItem('hasSeenModal')
+  );
 
   const musicRoutes = ['/', '/ranking', '/mypage'];
   const shouldPlayMusic = musicRoutes.includes(location.pathname);
@@ -24,7 +27,7 @@ const MusicPlayer: React.FC = () => {
   useEffect(() => {
     if (audioRef.current) {
       if (shouldPlayMusic && !isModalVisible) {
-        audioRef.current.play().catch(error => {
+        audioRef.current.play().catch((error) => {
           console.error('Failed to play audio:', error);
         });
       } else {
@@ -43,6 +46,22 @@ const MusicPlayer: React.FC = () => {
   const handleCloseModal = () => {
     setIsModalVisible(false);
   };
+
+  const handleMainMusicControl = useCallback((play: boolean) => {
+    if (audioRef.current) {
+      if (play) {
+        audioRef.current.play().catch((error) => console.error('Failed to play audio:', error));
+      } else {
+        audioRef.current.pause();
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (onMainMusicControl) {
+      onMainMusicControl(handleMainMusicControl);
+    }
+  }, [onMainMusicControl, handleMainMusicControl]);
 
   const volumeUpIcon = (
     <svg
@@ -141,11 +160,13 @@ const MusicPlayer: React.FC = () => {
 };
 
 const App: React.FC = () => {
+  const [mainMusicControl, setMainMusicControl] = useState<(play: boolean) => void>(() => () => {});
+
   return (
     <Router>
-      <MusicPlayer />
+      <MusicPlayer onMainMusicControl={setMainMusicControl} />
       <Routes>
-        <Route path="/" element={<MainPage />} />
+        <Route path="/" element={<MainPage onMainMusicControl={mainMusicControl} />} />
         <Route path="/ranking" element={<Ranking />} />
         <Route path="/game/:id" element={<GamePage />} />
         <Route path="/mypage" element={<MyPage />} />
