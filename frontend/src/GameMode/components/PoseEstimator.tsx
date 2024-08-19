@@ -49,6 +49,7 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
   const camcanvasRef = useRef<HTMLCanvasElement>(null);
 
   const [showPoseEstimator, setShowPoseEstimator] = useState(false);
+  const [isCamVisible, setIsCamVisible] = useState(true); // 캠 화면의 표시 여부 상태 추가
 
   // requestAnimationFrame -> setInterval로 변경
   const intervalRef = useRef<any>(null);
@@ -536,12 +537,22 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
     setShowPoseEstimator((prev) => !prev);
   };
 
+  // 캠 화면 표시/숨기기 토글 함수 추가
+  const toggleCamVisibility = () => {
+    setIsCamVisible((prev) => !prev);
+  };
+
   return (
     <div className='Neon'>
       {(state || isFinished) && ( // 로딩이 완료된 후에만 TopNav를 렌더링
         <div className='topBar'>
           <div className='left'>
             <NeonButton onClick={() => resetResource(2)}>Back</NeonButton>
+          </div>
+          <div className='center' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <NeonButton onClick={toggleCamVisibility}>
+              {isCamVisible ? 'Hide Cam' : 'Show Cam'}
+            </NeonButton>
           </div>
           <div className='right'>
             <NeonButton
@@ -651,7 +662,7 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
               <video
                 ref={camRef}
                 className='cam-video'
-                style={{ display: 'none' }}
+                style={{ display: isCamVisible ? 'block' : 'none',width:'100%',height:'100%',objectFit:'fill', transform: 'scaleX(-1)' }} // 캠 화면 표시/숨기기
                 autoPlay
                 muted
               />
@@ -667,7 +678,7 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
               <video
                 ref={camRef}
                 className='cam-video'
-                style={{ display: 'none' }}
+                style={{ display: isCamVisible ? 'block' : 'none',width:'100%',height:'100%',objectFit:'fill', transform: 'scaleX(-1)' }} // 캠 화면 표시/숨기기
                 autoPlay
                 muted
               />
