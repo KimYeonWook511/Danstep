@@ -35,8 +35,8 @@ const Carousel3d: React.FC<Carousel3dProps> = ({ data, onMainMusicControl = () =
   const [goToSlide, setGoToSlide] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const audioTimeoutRef = useRef<NodeJS.Timeout | null>(null); // 추가된 부분: 오디오 지연 타이머
-  const isPlayingRef = useRef(false); // 오디오 재생 상태를 추적
+  const audioTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isPlayingRef = useRef(false);
 
   const playSlideSound = () => {
     if (audioRef.current) {
@@ -55,27 +55,37 @@ const Carousel3d: React.FC<Carousel3dProps> = ({ data, onMainMusicControl = () =
         audioRef.current.pause();
       }
       onMainMusicControl(false);
-      isPlayingRef.current = true; // 오디오 재생 시작
+      isPlayingRef.current = true;
       audioTimeoutRef.current = setTimeout(() => {
         const gameAudio = new Audio(audioUrl);
         gameAudio.play().catch((error) => {
           console.error('Failed to play game sound:', error);
         });
         audioRef.current = gameAudio;
-        isPlayingRef.current = false; // 오디오 재생 끝
+        isPlayingRef.current = false;
       }, 1000);
     }
   };
 
   const stopGameSound = () => {
     if (audioTimeoutRef.current) {
-      clearTimeout(audioTimeoutRef.current); // 오디오 지연 타이머 제거
+      clearTimeout(audioTimeoutRef.current);
     }
     if (audioRef.current) {
       audioRef.current.pause();
       onMainMusicControl(true);
     }
-    isPlayingRef.current = false; // 오디오 재생 상태 초기화
+    isPlayingRef.current = false;
+  };
+
+  const handleSlideClick = (index: number, itemId: string) => {
+    if (goToSlide === index) {
+      stopGameSound(); // 페이지 이동 전에 오디오 중지
+      navigate(`/game/${itemId}`);
+    } else {
+      setGoToSlide(index);
+      playSlideSound();
+    }
   };
 
   const plusRank = (rank?: number) => {
@@ -124,14 +134,7 @@ const Carousel3d: React.FC<Carousel3dProps> = ({ data, onMainMusicControl = () =
               setIsHovered(null);
               stopGameSound();
             }}
-            onClick={() => {
-              if (goToSlide === index) {
-                navigate(`/game/${item.id}`);
-              } else {
-                setGoToSlide(index);
-                playSlideSound();
-              }
-            }}
+            onClick={() => handleSlideClick(index, item.id)}
           >
             <img src={item.thumbnailUrl} alt={`slide-${index}`} className="carousel-image" />
             {isHovered && isHovered.id === item.id && (
