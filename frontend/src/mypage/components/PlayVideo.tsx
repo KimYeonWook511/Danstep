@@ -12,6 +12,7 @@ interface VideoData {
   score: number;
   resultDate: string;
   resultInfoId: number;
+  thumbnailUrl: string;
 }
 
 interface PlayVideoProps {
@@ -121,7 +122,7 @@ const PlayVideo: React.FC<PlayVideoProps> = ({ videos, onDelete }) => {
               borderRadius: '20px',
             }}
           >
-            <img src='/logo512.png' />
+            <img src={video.thumbnailUrl} title={video.title} />
           </p>
           <p style={{ width: '30%' }}>{(video.score / 100).toFixed(2)}</p>
           <p style={{ width: '30%' }}>{formatDate(video.resultDate)}</p>
