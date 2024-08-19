@@ -283,7 +283,7 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
 
   const playBeep = () => {
     if (beepSoundRef.current) {
-      beepSoundRef.current.volume=0.2;
+      beepSoundRef.current.volume = 0.2;
       beepSoundRef.current.play();
     }
   };
@@ -330,7 +330,7 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
         return new Promise<HTMLVideoElement>((resolve) => {
           videoRef.current!.onloadedmetadata = () => {
             videoRef.current!.pause();
-            videoRef.current!.volume=0.2;
+            videoRef.current!.volume = 0.2;
             resolve(videoRef.current!);
           };
         });
@@ -549,10 +549,11 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
           <div className='left'>
             <NeonButton onClick={() => resetResource(2)}>Back</NeonButton>
           </div>
-          <div className='center' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <NeonButton onClick={toggleCamVisibility}>
-              {isCamVisible ? 'Hide Cam' : 'Show Cam'}
-            </NeonButton>
+          <div
+            className='center'
+            style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+          >
+            <NeonButton onClick={toggleCamVisibility}>{isCamVisible ? 'Hide Cam' : 'Show Cam'}</NeonButton>
           </div>
           <div className='right'>
             <NeonButton
@@ -662,7 +663,9 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
               <video
                 ref={camRef}
                 className='cam-video'
-                style={{ display: isCamVisible ? 'block' : 'none',width:'100%',height:'100%',objectFit:'fill', transform: 'scaleX(-1)' }} // 캠 화면 표시/숨기기
+                style={{
+                  display: 'none',
+                }} // 캠 화면 표시/숨기기
                 autoPlay
                 muted
               />
@@ -678,7 +681,14 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
               <video
                 ref={camRef}
                 className='cam-video'
-                style={{ display: isCamVisible ? 'block' : 'none',width:'100%',height:'100%',objectFit:'fill', transform: 'scaleX(-1)' }} // 캠 화면 표시/숨기기
+                style={{
+                  borderRadius: '20px',
+                  display: isCamVisible ? 'block' : 'none',
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'fill',
+                  transform: 'scaleX(-1)',
+                }} // 캠 화면 표시/숨기기
                 autoPlay
                 muted
               />
