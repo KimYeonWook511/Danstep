@@ -143,7 +143,7 @@ const MusicPlayer: React.FC = () => {
 const App: React.FC = () => {
   return (
     <Router>
-      {/* <MusicPlayer />
+      <MusicPlayer />
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/ranking" element={<Ranking />} />
@@ -151,7 +151,7 @@ const App: React.FC = () => {
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/replay/:id" element={<Replay />} />
         <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes> */}
+      </Routes>
     </Router>
   );
 };
