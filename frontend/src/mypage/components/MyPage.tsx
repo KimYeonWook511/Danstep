@@ -22,6 +22,7 @@ interface VideoData {
   resultDate: string;
   resultInfoId: number;
   nickname: string;
+  thumbnailUrl: string;
 }
 
 const Mypage: React.FC = () => {
