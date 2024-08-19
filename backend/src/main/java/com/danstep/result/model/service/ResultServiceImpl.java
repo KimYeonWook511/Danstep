@@ -97,7 +97,7 @@ public class ResultServiceImpl implements ResultService {
 
         for (UserResultDTO userResultDTO : list) {
             getUserResultDTO = new GetUserResultDTO(userResultDTO);
-            getUserResultDTO.setThumbnailUrl(s3Util.getPublicJson("games", Integer.toString(userResultDTO.getGameInfoId()), userResultDTO.getThumbnailFilename()));
+            getUserResultDTO.setThumbnailUrl(s3Util.getPublicUrl("games", Integer.toString(userResultDTO.getGameInfoId()), userResultDTO.getThumbnailFilename()));
 
             userResults.add(getUserResultDTO);
         }
