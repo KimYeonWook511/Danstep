@@ -43,6 +43,7 @@ const Carousel3d: React.FC<Carousel3dProps> = ({ data, onMainMusicControl = () =
       audioRef.current.pause();
     }
     audioRef.current = new Audio(slideSound);
+    audioRef.current.volume = 0.1;
     audioRef.current.currentTime = 0;
     audioRef.current.play().catch((error) => {
       console.error('Failed to play slide sound:', error);
@@ -62,6 +63,7 @@ const Carousel3d: React.FC<Carousel3dProps> = ({ data, onMainMusicControl = () =
           console.error('Failed to play game sound:', error);
         });
         audioRef.current = gameAudio;
+        audioRef.current.volume = 0.05;
         isPlayingRef.current = false;
       }, 1000);
     }
