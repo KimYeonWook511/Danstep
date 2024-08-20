@@ -14,12 +14,11 @@ const MusicPlayer: React.FC<{
 }> = ({ onMainMusicControl }) => {
   const location = useLocation();
   const audioRef = useRef<HTMLAudioElement>(null);
+
   const [isMuted, setIsMuted] = useState(false);
   const [volume, setVolume] = useState(0.05);
   const [showVolumeControl, setShowVolumeControl] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(
-    () => !sessionStorage.getItem('hasSeenModal')
-  );
+  const [isModalVisible, setIsModalVisible] = useState(() => !sessionStorage.getItem('hasSeenModal'));
 
   const musicRoutes = ['/', '/ranking', '/mypage'];
   const shouldPlayMusic = musicRoutes.includes(location.pathname);
@@ -65,47 +64,64 @@ const MusicPlayer: React.FC<{
 
   const volumeUpIcon = (
     <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="feather feather-volume-2"
+      xmlns='http://www.w3.org/2000/svg'
+      width='24'
+      height='24'
+      viewBox='0 0 24 24'
+      fill='none'
+      stroke='currentColor'
+      strokeWidth='2'
+      strokeLinecap='round'
+      strokeLinejoin='round'
+      className='feather feather-volume-2'
     >
-      <polygon points="3 9 9 9 13 5 13 19 9 15 3 15"></polygon>
-      <path d="M16.5 12c0 1.3-.5 2.5-1.4 3.5"></path>
-      <path d="M19.5 12c0 2-1 3.8-2.5 4.7"></path>
-      <path d="M22.5 12c0 2.9-1.5 5.4-3.5 6.9"></path>
+      <polygon points='3 9 9 9 13 5 13 19 9 15 3 15'></polygon>
+      <path d='M16.5 12c0 1.3-.5 2.5-1.4 3.5'></path>
+      <path d='M19.5 12c0 2-1 3.8-2.5 4.7'></path>
+      <path d='M22.5 12c0 2.9-1.5 5.4-3.5 6.9'></path>
     </svg>
   );
 
   const volumeMuteIcon = (
     <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="feather feather-volume-x"
+      xmlns='http://www.w3.org/2000/svg'
+      width='24'
+      height='24'
+      viewBox='0 0 24 24'
+      fill='none'
+      stroke='currentColor'
+      strokeWidth='2'
+      strokeLinecap='round'
+      strokeLinejoin='round'
+      className='feather feather-volume-x'
     >
-      <polygon points="3 9 9 9 13 5 13 19 9 15 3 15"></polygon>
-      <line x1="18" y1="9" x2="22" y2="13"></line>
-      <line x1="22" y1="9" x2="18" y2="13"></line>
+      <polygon points='3 9 9 9 13 5 13 19 9 15 3 15'></polygon>
+      <line
+        x1='18'
+        y1='9'
+        x2='22'
+        y2='13'
+      ></line>
+      <line
+        x1='22'
+        y1='9'
+        x2='18'
+        y2='13'
+      ></line>
     </svg>
   );
 
   return (
     <>
-      <audio ref={audioRef} loop style={{ display: 'none' }}>
-        <source src={mainBgm} type="audio/mp3" />
+      <audio
+        ref={audioRef}
+        loop
+        style={{ display: 'none' }}
+      >
+        <source
+          src={mainBgm}
+          type='audio/mp3'
+        />
       </audio>
 
       {shouldPlayMusic && (
@@ -124,10 +140,10 @@ const MusicPlayer: React.FC<{
         >
           {showVolumeControl && (
             <input
-              type="range"
-              min="0"
-              max="1"
-              step="0.01"
+              type='range'
+              min='0'
+              max='1'
+              step='0.01'
               value={volume}
               onChange={(e) => setVolume(parseFloat(e.target.value))}
               style={{
@@ -154,7 +170,10 @@ const MusicPlayer: React.FC<{
         </div>
       )}
 
-      <Modal isVisible={isModalVisible} onClose={handleCloseModal} />
+      <Modal
+        isVisible={isModalVisible}
+        onClose={handleCloseModal}
+      />
     </>
   );
 };
@@ -166,12 +185,35 @@ const App: React.FC = () => {
     <Router>
       <MusicPlayer onMainMusicControl={setMainMusicControl} />
       <Routes>
-        <Route path="/" element={<MainPage onMainMusicControl={mainMusicControl} />} />
-        <Route path="/ranking" element={<Ranking />} />
-        <Route path="/game/:id" element={<GamePage />} />
-        <Route path="/mypage" element={<MyPage />} />
-        <Route path="/replay/:id" element={<Replay />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route
+          path='/'
+          element={<MainPage onMainMusicControl={mainMusicControl} />}
+        />
+        <Route
+          path='/ranking'
+          element={<Ranking />}
+        />
+        <Route
+          path='/game/:id'
+          element={<GamePage />}
+        />
+        <Route
+          path='/mypage'
+          element={<MyPage />}
+        />
+        <Route
+          path='/replay/:id'
+          element={<Replay />}
+        />
+        <Route
+          path='*'
+          element={
+            <Navigate
+              to='/'
+              replace
+            />
+          }
+        />
       </Routes>
     </Router>
   );

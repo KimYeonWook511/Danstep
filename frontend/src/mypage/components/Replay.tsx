@@ -152,7 +152,7 @@ const Replay: React.FC = () => {
 
   const playBeep = () => {
     if (beepSoundRef.current) {
-      beepSoundRef.current.volume=0.2;
+      beepSoundRef.current.volume = 0.2;
       beepSoundRef.current.play();
     }
   };
@@ -429,8 +429,9 @@ const Replay: React.FC = () => {
             <canvas
               ref={canvasRef}
               className='canvas video-canvas'
-            />
+            ></canvas>
           </div>
+
           <div
             style={{
               width: '100%',
@@ -469,6 +470,23 @@ const Replay: React.FC = () => {
             className={`container ${detectedArmsUp ? 'no-border' : isYAligned.current ? 'aligned' : 'not-aligned'}`}
             style={{ width: '100%', height: '90%' }}
           >
+            <div
+              style={{
+                position: 'absolute',
+                top: '10px',
+                left: '20px',
+                color: 'red',
+                fontSize: '30px',
+                fontWeight: 'bold',
+                fontFamily: 'neon-text',
+                zIndex: 10,
+                display: 'flex',
+                alignItems: 'center',
+              }}
+              className='animated-text-time'
+            >
+              [REC]
+            </div>
             <canvas
               ref={camcanvasRef}
               className='canvas cam-canvas'
