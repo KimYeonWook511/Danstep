@@ -59,3 +59,21 @@
 button {
   outline: none;
 }
+
+.map-hover {
+  border: 1px solid black;
+  padding: 0px;
+  border-radius: 0px;
+  transition:
+    border-color 0.2s,
+    border-width 0.2s,
+    border-radius 0.2s,
+    padding 0.2s,
+    transform 0.2s; /* 기존 transform 속성 유지 */
+}
+
+.map-hover:hover {
+  border: 3px solid silver;
+  padding: 10px;
+  border-radius: 20px;
+}

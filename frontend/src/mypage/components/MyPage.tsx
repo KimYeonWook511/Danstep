@@ -63,7 +63,7 @@ const Mypage: React.FC = () => {
       setNickname(null);
     }
     localStorage.removeItem('accessToken');
-    sessionStorage.removeItem("hasSeenModal");
+    sessionStorage.removeItem('hasSeenModal');
     navigate('/');
   };
 
@@ -163,8 +163,7 @@ const Mypage: React.FC = () => {
               style={{
                 fontFamily: 'neon-number',
                 color: 'yellow',
-                height: '10%',
-                marginTop: '5%',
+                height: '100%',
                 alignContent: 'center',
                 fontSize: '50px',
               }}
@@ -193,13 +192,13 @@ const Mypage: React.FC = () => {
                 margin: '10px',
                 padding: '10px',
                 backgroundColor: 'black',
-                border: '1px solid white',
-                borderRadius: '5px',
+                fontFamily: 'neon-text',
+                fontSize: '25px',
               }}
               onClick={() => handleTabChange('video')}
               className='grow-button'
             >
-              플레이 영상
+              replay
             </button>
             <button
               style={{
@@ -211,13 +210,13 @@ const Mypage: React.FC = () => {
                 margin: '10px',
                 padding: '10px',
                 backgroundColor: 'black',
-                border: '1px solid white',
-                borderRadius: '5px',
+                fontFamily: 'neon-text',
+                fontSize: '25px',
               }}
               onClick={() => handleTabChange('profile')}
               className='grow-button'
             >
-              프로필 수정
+              edit info
             </button>
             <button
               style={{
@@ -229,13 +228,13 @@ const Mypage: React.FC = () => {
                 margin: '10px',
                 padding: '10px',
                 backgroundColor: 'black',
-                border: '1px solid white',
-                borderRadius: '5px',
+                fontFamily: 'neon-text',
+                fontSize: '25px',
               }}
               onClick={handleBackClick}
               className='grow-button'
             >
-              메인페이지로 이동
+              Go back
             </button>
             <button
               style={{
@@ -247,13 +246,13 @@ const Mypage: React.FC = () => {
                 margin: '10px',
                 padding: '10px',
                 backgroundColor: 'black',
-                border: '1px solid white',
-                borderRadius: '5px',
+                fontFamily: 'neon-text',
+                fontSize: '25px',
               }}
               className='grow-button'
               onClick={handleLogout}
             >
-              로그아웃
+              logout
             </button>
           </div>
         </div>
