@@ -45,7 +45,7 @@ const GamePage: React.FC = () => {
     // 게임 데이터가 로드된 후에만 오디오를 재생, 이미 오디오가 생성된 경우 새로 생성하지 않음
     if (game && !audioRef.current) {
       audioRef.current = new Audio(bgm);
-      audioRef.current.volume = 0.1;
+      audioRef.current.volume = 0.05;
       audioRef.current.play().catch((error) => {
       });
     }

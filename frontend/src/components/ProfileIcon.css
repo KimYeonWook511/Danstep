@@ -2,8 +2,8 @@
 
 :root {
   /* 배경색을 투명하게 설정 */
-  --bg: rgba(5, 8, 1); 
-  --clr: #95f9fe;
+  --bg: rgba(5, 8, 1);
+  --clr: #f376e2;
 }
 
 .yellow-profile-button {
@@ -21,23 +21,23 @@
 .yellow-profile-button::before {
   content: '';
   position: absolute;
-  inset: 15px;    
-  box-shadow: 
-  0 0 0 12px var(--bg),
-  0 0 0 14px var(--clr);
+  inset: 15px;
+  box-shadow:
+    0 0 0 12px var(--bg),
+    0 0 0 14px var(--clr);
   transition: 0.5s;
 }
 
 .yellow-profile-button:hover::before {
   inset: 10px;
-
 }
 
 .yellow-profile-button::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: var(--bg);
+  background-color: var(--bg);
+  border-radius: 15px;
   transform: rotate(45deg);
   transition: 0.5s;
 }
@@ -54,7 +54,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
- 
 }
 
 .yellow-profile-button a i {
@@ -86,4 +85,4 @@
 .yellow-profile-button:hover a i,
 .yellow-profile-button a span {
   filter: drop-shadow(0 0 20px var(--clr)) drop-shadow(0 0 40px var(--clr)) drop-shadow(0 0 60px var(--clr));
-} 
+}

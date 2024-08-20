@@ -89,9 +89,9 @@ const PlayVideo: React.FC<PlayVideoProps> = ({ videos, onDelete }) => {
           fontSize: '20px',
         }}
       >
-        <p style={{ width: '15%' }}>Game</p>
-        <p style={{ width: '30%' }}>Score</p>
-        <p style={{ width: '30%' }}>date</p>
+        <p style={{ width: '15%', fontFamily: 'neon-text', fontSize: '22px', color: 'white' }}>Game</p>
+        <p style={{ width: '30%', fontFamily: 'neon-text', fontSize: '22px', color: 'white' }}>Score</p>
+        <p style={{ width: '30%', fontFamily: 'neon-text', fontSize: '22px', color: 'white' }}>date</p>
         <p style={{ width: '25%' }}></p>
       </div>
       <hr style={{ marginTop: '10px', marginBottom: '20px' }}></hr>
@@ -110,6 +110,7 @@ const PlayVideo: React.FC<PlayVideoProps> = ({ videos, onDelete }) => {
             fontSize: '18px',
             alignItems: 'center',
           }}
+          className='map-hover'
         >
           <p
             style={{
@@ -122,7 +123,10 @@ const PlayVideo: React.FC<PlayVideoProps> = ({ videos, onDelete }) => {
               borderRadius: '20px',
             }}
           >
-            <img src={video.thumbnailUrl} title={video.title} />
+            <img
+              src={video.thumbnailUrl}
+              title={video.title}
+            />
           </p>
           <p style={{ width: '30%' }}>{(video.score / 100).toFixed(2)}</p>
           <p style={{ width: '30%' }}>{formatDate(video.resultDate)}</p>

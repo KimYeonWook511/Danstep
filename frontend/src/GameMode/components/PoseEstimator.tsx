@@ -283,7 +283,7 @@ const PoseEstimator: React.FC<PoseEstimatorProps> = ({ game, pauseAudio, resumeA
 
   const playBeep = () => {
     if (beepSoundRef.current) {
-      beepSoundRef.current.volume = 0.2;
+      beepSoundRef.current.volume = 0.1;
       beepSoundRef.current.play();
     }
   };
