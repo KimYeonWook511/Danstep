@@ -14,6 +14,7 @@ const MusicPlayer: React.FC<{
 }> = ({ onMainMusicControl }) => {
   const location = useLocation();
   const audioRef = useRef<HTMLAudioElement>(null);
+
   const [isMuted, setIsMuted] = useState(false);
   const [volume, setVolume] = useState(0.05);
   const [showVolumeControl, setShowVolumeControl] = useState(false);
