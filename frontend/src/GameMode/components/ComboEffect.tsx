@@ -10,13 +10,13 @@ const ComboEffect: React.FC<ComboEffectProps> = ({ combo, grade }) => {
     const lowerGrade = grade.toLowerCase();
 
     if (lowerGrade === 'perfect') {
-      return { color: 'gold', rgb: '255, 215, 0' }; // 금색
+      return { color: 'gold', rgb: '255, 215, 0', fontSize: '80px' }; // 금색
     } else if (lowerGrade === 'great') {
-      return { color: 'blue', rgb: '0, 0, 255' }; // 파랑색
+      return { color: 'blue', rgb: '0, 0, 255', fontSize: '63px' }; // 파랑색
     } else if (lowerGrade === 'good') {
-      return { color: 'green', rgb: '0, 128, 0' }; // 초록색
+      return { color: 'green', rgb: '0, 128, 0', fontSize: '53px' }; // 초록색
     } else if (lowerGrade === 'bad') {
-      return { color: 'red', rgb: '255, 0, 0' }; // 빨간색
+      return { color: 'red', rgb: '255, 0, 0', fontSize: '45px' }; // 빨간색
     }
   };
 
@@ -50,7 +50,7 @@ const ComboEffect: React.FC<ComboEffectProps> = ({ combo, grade }) => {
           style={
             {
               textAlign: 'center',
-              fontSize: '80px',
+              fontSize: gradeColor?.fontSize,
               '--neon-color': gradeColor?.color,
               '--neon-color-rgb': gradeColor?.rgb,
             } as React.CSSProperties

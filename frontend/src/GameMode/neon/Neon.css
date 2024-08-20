@@ -169,3 +169,10 @@
     opacity: 1; /* 최대 투명도 */
   }
 }
+
+.animated-text-time {
+  color: red; /* 보라색 */
+  animation:
+    grow-shrink 0.3s infinite alternate,
+    neon-glow-red 0.3s infinite alternate;
+}

@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Lato:400,700');
 
 :root {
-  --color: #95f9fe;
+  --color: #f376e2;
 }
 
 body {
@@ -160,8 +160,11 @@ body {
 }
 
 .lnr {
-  font-size: 1.4em;
-  margin-right: 10px;
+  font-size: 17px;
+  font-weight: bold;
+  color: rgba(255, 255, 255, 0.786);
   position: relative;
-  top: 2px;
+  font-family: 'neon-text';
+  font-size: 18px;
+  text-align: 'center';
 }
