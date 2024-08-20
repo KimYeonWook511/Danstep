@@ -15,7 +15,7 @@ const MusicPlayer: React.FC<{
   const location = useLocation();
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isMuted, setIsMuted] = useState(false);
-  const [volume, setVolume] = useState(0.1);
+  const [volume, setVolume] = useState(0.05);
   const [showVolumeControl, setShowVolumeControl] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(() => !sessionStorage.getItem('hasSeenModal'));
 
