@@ -4,7 +4,7 @@
 ### Danstep
 
 - 시작 화면
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/72fcfd30-6b49-45eb-ac23-3ca45d4f32fb/3c6a3f71-2c5e-46ba-9926-65137b133cf3/image.png)
+![image.png](.readme-img/mainpage.png)
 
 - 메인 페이지
 <br/> <img src='./readme-img/MainPage.gif' width="900" height="auto"/> <br/>
