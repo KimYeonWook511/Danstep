@@ -11,6 +11,7 @@ import com.danstep.util.S3Util;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -89,8 +90,19 @@ public class ResultServiceImpl implements ResultService {
     @Override
     @Transactional(readOnly = true)
     public List<GetUserResultDTO> getUserResults(String username) {
+        List<UserResultDTO> list = resultMapper.getUserResults(username);
 
-        return resultMapper.getUserResults(username);
+        List<GetUserResultDTO> userResults = new ArrayList<>();
+        GetUserResultDTO getUserResultDTO;
+
+        for (UserResultDTO userResultDTO : list) {
+            getUserResultDTO = new GetUserResultDTO(userResultDTO);
+            getUserResultDTO.setThumbnailUrl(s3Util.getPublicUrl("games", Integer.toString(userResultDTO.getGameInfoId()), userResultDTO.getThumbnailFilename()));
+
+            userResults.add(getUserResultDTO);
+        }
+
+        return userResults;
     }
 
     @Override
@@ -142,7 +154,8 @@ public class ResultServiceImpl implements ResultService {
             System.out.println("result pose 삭제 실패!!");
             // 삭제 실패시 처리 로직
             // 현재 시간이 없으니 우선 트랜잭션 처리
-            // 추후 스프링 배치와 같은걸 활용해서 S3 버킷을 비워보자!!
+            // 추후 스프링 스케쥴러와 같은걸 활용해서 S3 버킷을 비워보자!!
+
             return;
         }
 

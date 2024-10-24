@@ -23,4 +23,15 @@ public class GetUserResultDTO {
 
     // game_info join
     private String title;
+    private String thumbnailUrl;
+
+    public GetUserResultDTO(UserResultDTO userResultDTO) {
+        this.resultInfoId = userResultDTO.getResultInfoId();
+        this.gameInfoId = userResultDTO.getGameInfoId();
+        this.resultDate = userResultDTO.getResultDate();
+        this.score = userResultDTO.getScore();
+        this.username = userResultDTO.getUsername();
+        this.nickname = userResultDTO.getNickname();
+        this.title = userResultDTO.getTitle();
+    }
 }

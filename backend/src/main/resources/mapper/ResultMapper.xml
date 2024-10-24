@@ -3,7 +3,7 @@
 
 <mapper namespace="com.danstep.result.model.mapper.ResultMapper">
 
-    <resultMap id="getUserResultBasic" type="com.danstep.result.model.dto.GetUserResultDTO">
+    <resultMap id="getUserResultBasic" type="com.danstep.result.model.dto.UserResultDTO">
         <result property="resultInfoId" column="result_info_id" />
         <result property="gameInfoId" column="game_info_id" />
         <result property="resultDate" column="result_date" />
@@ -16,6 +16,7 @@
 
         <!-- game_info join -->
         <result property="title" column="title" />
+        <result property="thumbnailFilename" column="thumbnail_filename" />
     </resultMap>
 
     <resultMap id="replayBasic" type="com.danstep.result.model.dto.ReplayDTO">
@@ -47,7 +48,7 @@
 
     <select id="getUserResults" resultMap="getUserResultBasic">
         SELECT ri.id AS result_info_id, ri.game_info_id, ri.result_date,
-               ri.score, ui.username, ui.nickname, gi.title
+               ri.score, ui.username, ui.nickname, gi.title, gi.thumbnail_filename
         FROM result_info AS ri
         LEFT JOIN user_info AS ui
           ON ui.username = #{username}
